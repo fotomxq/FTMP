@@ -48,7 +48,7 @@ class SysLog {
     public function __construct(&$db, $ip, $dir) {
         $this->db = $db;
         $this->ip = $ip;
-        $this->tableName = $db->tables['log'];
+        $this->tableName = DB_PREFIX . 'log';
         $this->fileDir = $dir;
     }
 

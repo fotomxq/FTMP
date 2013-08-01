@@ -62,7 +62,7 @@ class CoreDB extends PDO {
     }
 
     /**
-     * 遍历插入PDO数据
+     * 通用执行SQL
      * @param string $sql SQL语句
      * @param array $attrs 数据数组 eg:array(':id'=>array('value','PDO::PARAM_INT'),...)
      * @param int $resType 返回类型 0-boolean 1-fetch 2-fetchColumn 3-fetchAll 4-lastID
@@ -108,12 +108,12 @@ class CoreDB extends PDO {
     private function connect() {
         try {
             if ($this->status == false) {
-                if (parent::__construct($this->dsn, $this->user, $this->pass, array(PDO::ATTR_PERSISTENT => $this->persistent, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8';"))) {
+                if (parent::__construct($this->dsn, $this->user, $this->pass, array(PDO::ATTR_PERSISTENT => $this->persistent, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'' . $this->encoding . '\';'))) {
                     $this->status = true;
-                    $this->setEncoding($this->encoding);
+                    //$this->setEncoding($this->encoding);
                 }
             }
-        } catch (PDOException $pdoe) {
+        } catch (PDOException $e) {
             $this->status = false;
         }
     }

@@ -12,7 +12,7 @@ class SysBase {
      * 数据库句柄
      * @var CoreDB 
      */
-    protected $db;
+    private $db;
 
     /**
      * 日志句柄
@@ -34,15 +34,99 @@ class SysBase {
     }
 
     /**
-     * 执行SQL
+     * 执行sql-select
      * @param string $sql SQL语句
      * @param array $attrs 数据数组 eg:array(':id'=>array('value','PDO::PARAM_INT'),...)
-     * @param int $resType 返回类型 0-boolean 1-fetch 2-fetchColumn 3-fetchAll 4-lastID
-     * @param int $resFetch PDO-FETCH类型，如果返回fetchColumn则为列偏移值
-     * @return boolean|PDOStatement 成功则返回PDOStatement句柄，失败返回false
+     * @param int $resType 返回类型 1-fetch 2-fetchColumn 3-fetchAll
+     * @param int $resFetch PDO-FETCH类型
+     * @return boolean|PDOStatement 成功则返回PDOStatement句柄，失败返回null
      */
-    protected function execSQLPA($sql, $attrs = null, $resType = 0, $resFetch = null) {
-        return $this->db->prepareAttr($sql, $attrs, $resType, $resFetch);
+    protected function execSQLSelect($sql, $attrs = null, $resType = 1, $resFetch = null) {
+        try {
+            $sth = $this->db->prepare($sql);
+            if ($attrs != null) {
+                foreach ($attrs as $k => $v) {
+                    if (is_array($v) == true) {
+                        $sth->bindParam($k, $v[0], $v[1]);
+                    } else {
+                        $sth->bindParam($k, $v);
+                    }
+                }
+            }
+            if ($sth->execute() == true) {
+                if ($resType == 1) {
+                    return $sth->fetch($resFetch);
+                } elseif ($resType == 2) {
+                    return $sth->fetchColumn($resFetch);
+                } elseif ($resType == 3) {
+                    return $sth->fetchAll($resFetch);
+                }
+            }
+            return null;
+        } catch (PDOException $e) {
+            return null;
+        } catch (PDOStatement $e) {
+            return null;
+        }
+    }
+
+    /**
+     * 执行sql-insert
+     * @param string $sql SQL语句
+     * @param array $attrs 数据数组 eg:array(':id'=>array('value','PDO::PARAM_INT'),...)
+     * @return int 插入ID值
+     */
+    protected function execSQLInsert($sql, $attrs = null) {
+        if ($this->execSQLBoolean($sql, $attrs) == true) {
+            return $this->db->lastInsertId();
+        }
+        return 0;
+    }
+
+    /**
+     * 执行sql-update
+     * @param string $sql SQL语句
+     * @param array $attrs 数据数组 eg:array(':id'=>array('value','PDO::PARAM_INT'),...)
+     * @return boolean 是否成功
+     */
+    protected function execSQLUpdate($sql, $attrs) {
+        return $this->execSQLBoolean($sql, $attrs);
+    }
+
+    /**
+     * 执行sql-delete
+     * @param string $sql SQL语句
+     * @param array $attrs 数据数组 eg:array(':id'=>array('value','PDO::PARAM_INT'),...)
+     * @return boolean 是否成功
+     */
+    protected function execSQLDelete($sql, $attrs) {
+        return $this->execSQLBoolean($sql, $attrs);
+    }
+
+    /**
+     * 执行SQL-boolean类语句
+     * @param string $sql SQL语句
+     * @param array $attrs 数据数组 eg:array(':id'=>array('value','PDO::PARAM_INT'),...)
+     * @return boolean 是否成功
+     */
+    private function execSQLBoolean($sql, $attrs = null) {
+        try {
+            $sth = $this->db->prepare($sql);
+            if ($attrs != null) {
+                foreach ($attrs as $k => $v) {
+                    if (is_array($v) == true) {
+                        $sth->bindParam($k, $v[0], $v[1]);
+                    } else {
+                        $sth->bindParam($k, $v);
+                    }
+                }
+            }
+            return $sth->execute();
+        } catch (PDOException $e) {
+            return false;
+        } catch (PDOStatement $e) {
+            return false;
+        }
     }
 
     /**

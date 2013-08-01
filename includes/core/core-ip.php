@@ -3,8 +3,8 @@
 /**
  * IP操作类
  * @author fotomxq <fotomxq.me>
- * @version 1
- * @package sys
+ * @version 2
+ * @package core
  */
 class CoreIP {
 
@@ -25,7 +25,7 @@ class CoreIP {
      * @var string 
      */
     private $addressDataSrc;
-    
+
     /**
      * IP类型 eg: 4 | 6
      * @var int 
@@ -100,7 +100,7 @@ class CoreIP {
      * 获取当前Ip
      * @return string
      */
-    public function getIP() {
+    private function getIP() {
         if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
             $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
         } elseif (isset($_SERVER["HTTP_CLIENT_IP"])) {
@@ -131,7 +131,7 @@ class CoreIP {
      * @param string $ip IP地址
      * @return string IP真实地址
      */
-    public function getIPAddress($ip) {
+    private function getIPAddress($ip) {
         if ($this->addressDataSrc == '') {
             return '';
         }

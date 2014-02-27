@@ -1,69 +1,50 @@
 <?php
 
 /**
- * 配置文件
+ * 全局配置文件
  * @author fotomxq <fotomxq.me>
- * @version 2
- * @package sys
+ * @version 1
+ * @package config
  */
-//////////////////
-//数据库定义
-//////////////////
-//PDO-DSN eg: mysql:host=localhost;dbname=databasename;charset=utf8
-$dbDSN = 'mysql:host=localhost;dbname=ftmpersonal;charset=utf8';
-//数据库用户名
-$dbUser = 'admin';
-//数据库密码
-$dbPasswd = 'admin';
-//是否持久化连接
-$dbPersistent = true;
-//连接编码
-$dbEncoding = 'utf8';
-//表名称前缀
-define('DB_PREFIX', 'fp_');
-
 //////////////////
 //路径定义
 //////////////////
 //路径分隔符
 define('DS', DIRECTORY_SEPARATOR);
 //绝对路径
-define('DIR_ROOT', __DIR__ . DS);
-//用户数据
-define('DIR_DATA', DIR_ROOT . 'content');
+define('DIR_ROOT', dirname(__FILE__) . DS);
 //库路径
-define('DIR_LIB', DIR_ROOT . 'includes');
+define('DIR_LIB', DIR_ROOT . 'libs');
+//配置目录路径
+define('DIR_CONFIG', DIR_ROOT . 'conf');
+//上传目录路径
+define('DIR_UPLOAD', DIR_ROOT . 'upload');
+//缓冲目录路径
+define('DIR_CACHE', DIR_ROOT . 'cache');
+//主题目录路径
+define('DIR_THEME', DIR_ROOT . 'theme');
 
 //////////////////
-//目录设定
+//缓冲器
 //////////////////
-//备份目录
-define('DIR_BACKUP', DIR_DATA . DS . 'backup');
-//缓冲目录
-define('DIR_CACHE', DIR_DATA . DS . 'cache');
-//日志目录
-define('DIR_LOG', DIR_DATA . DS . 'log');
-//上传文件目录
-define('DIR_UPLOAD', DIR_DATA . DS . 'uploads');
-//lib-core目录
-define('DIR_LIB_CORE', DIR_LIB . DS . 'core' . DS);
-//lib-sys目录
-define('DIR_LIB_SYS', DIR_LIB . DS . 'sys' . DS);
-//lib-plugs目录
-define('DIR_LIB_PLUG', DIR_LIB . DS . 'plug' . DS);
+//缓冲器开关
+define('CACHE_ON', true);
+//失效时间长度 ( 秒 )
+define('CACHE_LIMIT_TIME', 86400);
 
-//////////////////
-//其他设定
 //////////////////
 //URL
-define('WEB_URL', 'http://192.168.1.101/ftmp');
-//Debug模式开关
-define('DEBUG_ON', true);
-//页面编码
-define('PAGE_CHARSET','utf-8');
+//////////////////
+//URL
+define('WEB_URL', 'http://localhost/ftmp/');
+//assets
+define('WEB_URL_ASSETS', WEB_URL . 'theme');
 
 //////////////////
-//定义时区
+//其他设置
 //////////////////
+//网站开关，超级开关，关闭后后台也无法使用
+define('WEB_ON', true);
+//定义时区
 date_default_timezone_set('PRC');
 ?>

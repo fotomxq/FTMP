@@ -5,9 +5,9 @@
  * <p>需要额外的扩展 : CoreHeader</p>
  * @author fotomxq <fotomxq.me>
  * @version 1
- * @package core
+ * @package extend
  */
-class CoreFeedback {
+class ExtendFeedback {
 
     /**
      * 输出反馈值

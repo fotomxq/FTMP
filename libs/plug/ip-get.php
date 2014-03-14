@@ -4,9 +4,9 @@
  * 获取IP地址
  * @author fotomxq <fotomxq.me>
  * @version 1
- * @package core
+ * @package plug
  */
-function CoreIPGet(){
+function PlugIPGet(){
         if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
             $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
         } elseif (isset($_SERVER["HTTP_CLIENT_IP"])) {

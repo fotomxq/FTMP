@@ -2,12 +2,13 @@
 
 /**
  * 缓冲器
- * <p>额外扩展 : CoreFile</p>
+ * <p>需要扩展 : CoreFile</p>
  * @author fotomxq <fotomxq.me>
  * @version 1
- * @package core
+ * @package extend
+ * @tudo 该文件作废，需要根据cache重写.
  */
-class CoreCache {
+class ExtendCache {
 
     /**
      * 缓冲目录

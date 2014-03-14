@@ -6,15 +6,17 @@
  * @version 1
  * @package px
  */
+
 //引用登录检测模块
 require('logged.php');
+
 ?>
 <!DOCTYPE html>
 <html>
     <head>
         <?php require(DIR_LIB . DS . 'page' . DS . 'header-meta.php'); ?>
         <title>PX Tool</title>
-        <link href="<?php echo WEB_URL_ASSETS; ?>/px/css/px.css" rel="stylesheet">
+        <link href="<?php echo WEB_URL_ASSETS; ?>/app/px/css/px.css" rel="stylesheet">
         <?php require(DIR_LIB . DS . 'page' . DS . 'header-assets.php'); ?>
     </head>
     <body>

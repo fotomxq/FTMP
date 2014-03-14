@@ -1,22 +1,20 @@
 <?php
 
 /**
- * 所有应用引用处理
+ * glob全局引用
  * @author fotomxq <fotomxq.me>
  * @version 1
- * @package center
- * @tudo 添加获取应用assets函数处理,修改目录路径
+ * @package debug
  */
 //引用全局配置
-require('../../config.php');
+require('../config.php');
 //引用中心配置
 require('config.php');
 
 //如果平台关闭
 if (WEB_ON == false) {
-    die('FTM closed.');
+    //die('FTM closed.');
 }
-
 //引用error
 require(DIR_LIB . DS . 'core' . DS . 'error.php');
 
@@ -44,6 +42,4 @@ require(DIR_LIB . DS . 'core' . DS . 'file.php');
 
 //引用缓冲处理
 require(DIR_LIB . DS . 'core' . DS . 'cache.php');
-
-//引用
 ?>

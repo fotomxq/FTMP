@@ -9,12 +9,16 @@
  * @todo 加入读取数据库用户、密码
  * @todo 加入验证码
  */
+
 //引用全局
 require('glob.php');
+
 //引用过滤器
 require(DIR_LIB . DS . 'core' . DS . 'filter.php');
+
 //引用登录模块
 require(DIR_LIB . DS . 'plug' . DS . 'login.php');
+
 //验证提交信息
 if (isset($_POST['username']) == true && isset($_POST['password']) == true) {
     //暂时没有验证
@@ -24,6 +28,7 @@ if (isset($_POST['username']) == true && isset($_POST['password']) == true) {
     $dbUsername = $_POST['username'];
     $dbPassword = $_POST['password'];
     $dbVcode = 1234;
+
     //更新登录状态
     $login = new PlugLogin($session, VAR_CENTER_LOGIN_NAME);
     $userInputs = array($userInputPassword, $userInputVcode);

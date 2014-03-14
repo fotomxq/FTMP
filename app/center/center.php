@@ -17,7 +17,7 @@ $appList = $db->prepareAttr($sql, null, 3);
     <head>
         <?php require(DIR_LIB . DS . 'page' . DS . 'header-meta.php'); ?>
         <title>FTM Personal Center</title>
-        <link href="<?php echo WEB_URL_ASSETS; ?>/center/css/center.css" rel="stylesheet">
+        <link href="<?php echo WEB_URL_ASSETS; ?>/app/center/css/center.css" rel="stylesheet">
         <?php require(DIR_LIB . DS . 'page' . DS . 'header-assets.php'); ?>
     </head>
     <body>

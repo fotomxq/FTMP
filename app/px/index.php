@@ -16,7 +16,7 @@ $session->clear($pxSessionVarName);
         <?php require(DIR_LIB . DS . 'page' . DS . 'header-meta.php'); ?>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>PX Login</title>
-        <link href="<?php echo WEB_URL_ASSETS; ?>/px/css/index.css" rel="stylesheet">
+        <link href="<?php echo WEB_URL_ASSETS; ?>/app/px/css/index.css" rel="stylesheet">
         <?php require(DIR_LIB . DS . 'page' . DS . 'header-assets.php'); ?>
     </head>
     <body>

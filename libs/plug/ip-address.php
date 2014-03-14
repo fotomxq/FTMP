@@ -4,9 +4,9 @@
  * 获取IP真实地址
  * @author fotomxq <fotomxq.me>
  * @version 1
- * @package core
+ * @package plug
  */
-function CoreIPAddress($ip,$datFile){
+function PlugIPAddress($ip,$datFile){
         if (!$fd = @fopen($datFile, 'rb')) {
             return 'IP date file not exists or access denied';
         }

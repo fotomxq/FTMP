@@ -138,7 +138,7 @@ define('TABLE_COMMENT','sys_comment');
 //数据库定义
 //////////////////
 //PDO-DSN eg: mysql:host=localhost;dbname=databasename;charset=utf8
-$dbDSN = 'mysql:host=localhost;dbname=ftmcms;charset=utf8';
+$dbDSN = 'mysql:host=localhost;dbname=ftmp;charset=utf8';
 //数据库用户名
 $dbUser = 'admin';
 //数据库密码

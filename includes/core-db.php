@@ -4,7 +4,7 @@
  * PDO数据库处理封装。
  * 
  * @author fotomxq <fotomxq.me>
- * @version 1
+ * @version 2
  * @package core
  */
 
@@ -100,6 +100,72 @@ class CoreDB extends PDO{
             return 0;
         }
 	}
+
+    /**
+     * SQL获取数据
+     * @param  string  $table     表名称
+     * @param  array  $fields    字段组
+     * @param  string  $where     条件语句
+     * @param  array  $attrs     条件语句对应PDO过滤器
+     * @param  int $page      页数，如果为0则表明获取单个数据
+     * @param  int $max       页长
+     * @param  string  $sortField 排序字段
+     * @param  boolean $desc      是否倒序
+     * @return array             数据组，如果为空则返回null
+     */
+    public function sqlSelect($table,$fields,$where='1',$attrs=null,$page=0,$max=10,$sortField='id',$desc=false){
+        $descStr = $desc === true ? 'DESC' : 'ASC';
+        $sql = 'SELECT `'.implode('`,`', $fields).'` FROM `'.$table.'` WHERE '.$where;
+        if($page > 0){
+            $sql .= ' ORDER BY '.$sortField.' '.$descStr.' LIMIT '.(($page-1)*$max).','.$max;
+            return $this->runSQL($sql,$attrs,3,PDO::FETCH_ASSOC);
+        }
+        return $this->runSQL($sql,$attrs,1,PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * SQL插入语句
+     * @param  string $table  表名称
+     * @param  array $fields 字段组
+     * @param  string $value  值字符串
+     * @param  array $attrs  PDO过滤器
+     * @return int 新的ID
+     */
+    public function sqlInsert($table,$fields,$value,$attrs){
+        $sql = 'INSERT INTO `'.$table.'`(`'.implode('`,`', $fields).'`) VALUES('.$value.')';
+        return $this->runSQL($sql,$attrs,4);
+    }
+
+    /**
+     * SQL更新语句
+     * @param  string $table 表名称
+     * @param  array $sets  SET部分组
+     * @param  string $where 条件语句
+     * @param  array $attrs PDO过滤器
+     * @return boolean 是否成功
+     */
+    public function sqlUpdate($table,$sets,$where,$attrs){
+        $sql = 'UPDATE `'.$table.'` SET ';
+        $sqlSet = '';
+        foreach($sets as $k=>$v){
+            $sqlSet .= ',`'.$k.'` = '.$v;
+        }
+        $sql .= substr($sqlSet, 1);
+        $sql .= ' WHERE '.$where;
+        return $this->runSQL($sql,$attrs,0);
+    }
+
+    /**
+     * SQL删除语句
+     * @param  string $table 表名称
+     * @param  string $where 条件语句
+     * @param  array $attrs PDO过滤器
+     * @return boolean        是否成功
+     */
+    public function sqlDelete($table,$where,$attrs){
+        $sql = 'DELETE FROM `'.$table.'` WHERE '.$where;
+        return $this->runSQL($sql,$attrs,0);
+    }
 
     /**
      * 设定编码

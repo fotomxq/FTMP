@@ -4,7 +4,7 @@
  * 全局配置文件
  * 
  * @author fotomxq <fotomxq.me>
- * @version 3
+ * @version 4
  * @package config
  */
 
@@ -48,7 +48,7 @@ define('UPLOAD_IMG_SIZE_H', 3000);
 define('UPLOAD_DOWN_PHP', true);
 
 //////////////////
-//缓冲器
+//日志系统
 //////////////////
 //日志开关
 define('LOG_ON',true);
@@ -69,6 +69,12 @@ define('CACHE_ON', true);
 define('CACHE_LIMIT_TIME', 1296000);
 //缓冲目录
 define('CACHE_DIR',DIR_DATA.DS.'cache');
+
+//////////////////
+//用户系统
+//////////////////
+//全局登录Session设定
+define('USER_SESSION_LOGIN_NAME','login');
 
 //////////////////
 //在线应聘

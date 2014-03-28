@@ -33,10 +33,10 @@ class SysPost{
 
 	/**
 	 * 状态
-	 * 0-回收站 1-发布 2-草稿 3-修订
+	 * trash-回收站 1-发布 2-草稿 3-修订
 	 * @var array
 	 */
-	private $status = array(0,1,2,3);
+	private $status = array('trash'=>0,'public'=>1,''=>2,''=>3);
 
 	/**
 	 * 类型

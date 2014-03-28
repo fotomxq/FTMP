@@ -20,7 +20,7 @@ require('glob.php');
     <meta name="author" content="">
     <link rel="shortcut icon" href="includes/assets/imgs/favicon.png">
 
-    <title><?php echo $webData['WEB-TITLE']; ?></title>
+    <title>Sign In - <?php echo $webData['WEB-TITLE']; ?></title>
     <link href="includes/assets/css/bootstrap.css" rel="stylesheet">
     <link href="includes/assets/css/index.css" rel="stylesheet">
 
@@ -34,23 +34,20 @@ require('glob.php');
   <body>
     <div class="container">
 
-      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="index.php"><?php echo $webData['WEB-TITLE']; ?> Login</a>
-        </div>
-      </div>
-    </div>
+    <form class="form-signin" role="form">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input type="email" class="form-control" placeholder="Email address" required autofocus>
+        <input type="password" class="form-control" placeholder="Password" required>
+        <label class="checkbox">
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
 
     </div><!-- /.container -->
 
     <script src="includes/assets/js/jquery.js"></script>
     <script src="includes/assets/js/bootstrap.js"></script>
+    <script src="includes/assets/js/icheck.js"></script>
   </body>
 </html>

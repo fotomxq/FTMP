@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
 --
 
 INSERT INTO `sys_user` (`id`, `user_nicename`, `user_login`, `user_passwd`, `user_date`, `user_ip`, `user_status`) VALUES
-(1, 'admin', 'admin', 'dd94709528bb1c83d08f3088d4043f4742891f4f', '2014-03-28 17:16:30', '1.1.1.1', 0);
+(1, 'admin', 'admin@admin.com', 'dd94709528bb1c83d08f3088d4043f4742891f4f', '2014-03-28 17:16:30', '1.1.1.1', 0);
 
 -- --------------------------------------------------------
 

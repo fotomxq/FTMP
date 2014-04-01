@@ -9,7 +9,7 @@
  */
 
 //引用配置文件
-require(dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
+require('config.php');
 
 //错误处理模块
 require(DIR_LIB.DS.'core-error.php');
@@ -38,11 +38,11 @@ $filter = new CoreFilter();
 //IP类
 require(DIR_LIB.DS.'core-ip.php');
 $ip = new CoreIP();
-$ipAddr = $ip->getIP();
+$ipAddrs = $ip->getIP();
 
 //日志类
 require(DIR_LIB.DS.'core-log.php');
-$log = new CoreLog(LOG_ON,LOG_DIR,LOG_TYPE,$ipAddr);
+$log = new CoreLog(LOG_ON,LOG_DIR,LOG_TYPE);
 
 //配置处理器
 require(DIR_LIB.DS.'sys-config.php');
@@ -56,12 +56,7 @@ if($webData){
 }else{
 	$webData = null;
 	$webData['WEB-TITLE'] = $config->get(1);
-	$webData['USER-LIMIT-TIME'] = $config->get('USER-LIMIT-TIME');
 	$cache->set($cacheWebDataName,json_encode($webData));
 }
-
-//用户处理器
-require(DIR_LIB.DS.'sys-user.php');
-$user = new SysUser($db,TABLE_USER,TABLE_USER_META,USER_SESSION_LOGIN_NAME,(int)$webData['USER-LIMIT-TIME']);
 
 ?>

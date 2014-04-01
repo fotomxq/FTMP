@@ -65,10 +65,6 @@
     		</thead>
     		<tbody>
           <tr>
-            <td>体重处理器测试</td>
-            <td><a class="btn btn-default" href="app-weight.php" target="_self">Start</a></td>
-          </tr>
-          <tr>
             <td>用户系统测试</td>
             <td><a class="btn btn-default" href="sys-user.php" target="_self">Start</a></td>
           </tr>

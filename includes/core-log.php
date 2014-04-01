@@ -51,12 +51,6 @@ class CoreLog{
 	private $limitSize = 0;
 
 	/**
-	 * IP地址
-	 * @var string
-	 */
-	private $ip;
-
-	/**
 	 * 初始化
 	 * <p>日志形式</p>
 	 * <p>0 - 发送到PHP日志记录系统</p>
@@ -68,20 +62,20 @@ class CoreLog{
 	 * @param string $logDir  日志所在目录
 	 * @param int $logType 日志记录形式
 	 */
-	public function __construct($logOpen,$logDir,$logType,$ip){
+	public function __construct($logOpen,$logDir,$logType){
 		$this->logOpen = $logOpen;
 		$this->logDir = $logDir;
 		$this->setNameType = $logType;
-		$this->ip = $ip;
 	}
 
 	/**
 	 * 添加日志
 	 * @param string $local 位置
 	 * @param string $message 消息内容
+	 * @param string $ip      IP地址
 	 * @return boolean      是否成功
 	 */
-	public function add($local,$message){
+	public function add($local,$message,$ip){
 		if($this->logOpen == true){
 			$timeYm = date('Ym');
 			$dir = $this->logDir;
@@ -111,13 +105,13 @@ class CoreLog{
 					break;
 			}
 			if($this->setNameType == 0){
-				$data = $this->ip . ' ' . $message;
+				$data = $ip . ' ' . $message;
 				$this->addSysLog($local,LOG_INFO,$data);
 				return true;
 			}else{
 				if($this->createDir($dir) == true){
 					$time = date('Y-m-d H:i:s');
-					$data = $time . ' <' . $local . '> ' . $this->ip . ' ' . $message;
+					$data = $time . ' <' . $local . '> ' . $ip . ' ' . $message;
 					return $this->saveFile($src,$data);
 				}
 			}

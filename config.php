@@ -5,7 +5,7 @@
  * 
  * @author fotomxq <fotomxq.me>
  * @version 4
- * @package config
+ * @package web
  */
 
 //////////////////
@@ -19,6 +19,8 @@ define('DIR_ROOT', dirname(__FILE__) . DS);
 define('DIR_DATA', DIR_ROOT . 'content');
 //库路径
 define('DIR_LIB', DIR_ROOT . 'includes');
+//APP路径
+define('DIR_APP', DIR_ROOT . 'app');
 
 //////////////////
 //上传文件设定
@@ -106,7 +108,7 @@ define('COMMENT_AUDIT_ON', true);
 //其他设定
 //////////////////
 //URL
-define('WEB_URL', 'http://localhost/syjx');
+define('WEB_URL', 'http://localhost/ftmp');
 //Debug模式开关
 define('DEBUG_ON', true);
 //网站开关，超级开关，关闭后后台也无法使用
@@ -133,12 +135,6 @@ define('TABLE_CONFIG','sys_config');
 define('TABLE_USER','sys_user');
 //用户元表
 define('TABLE_USER_META','sys_usermeta');
-//POST表
-define('TABLE_POST','sys_posts');
-//POST元表
-define('TABLE_POST_META','sys_postmeta');
-//评论表
-define('TABLE_COMMENT','sys_comment');
 
 //////////////////
 //数据库定义
@@ -153,4 +149,13 @@ $dbPasswd = 'admin';
 $dbPersistent = true;
 //连接编码
 $dbEncoding = 'UTF8';
+
+//////////////////
+//APP
+//////////////////
+//APP注册表
+$appList = array(
+	'weight'=>array('name'=>'体重记录','des'=>'记录体重并提供建议。','table'=>array('weight')),
+	'music'=>array('name'=>'音乐中心','des'=>'音乐及多媒体中心。','table'=>array('music'))
+	);
 ?>

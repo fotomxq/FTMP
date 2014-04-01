@@ -3,7 +3,7 @@
 /**
  * 用户输入过滤器
  * @author fotomxq <fotomxq.me>
- * @version 1
+ * @version 2
  * @package core
  */
 class CoreFilter {
@@ -66,6 +66,8 @@ class CoreFilter {
      * @param string $str 字符串
      * @param int $length 长度
      * @param int $start 起始
+     * @param boolean $nohtml 是否去HTML标签
+     * @param boolean $stripTag 是否去特殊字符
      * @return string 过滤后的字符串
      */
     public function getString($str, $length, $start = 0, $nohtml = false, $stripTag = false) {

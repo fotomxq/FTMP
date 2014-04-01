@@ -23,14 +23,14 @@ class SysComment{
 	 * 字段组
 	 * @var array
 	 */
-	private $fields = array('id','post_id','comment_author','comment_content','comment_date','comment_ip','comment_parent','comment_sha1','user_id');
+	private $fields = array('id','post_id','comment_status','comment_author','comment_content','comment_date','comment_ip','comment_parent','comment_sha1','user_id');
 
 	/**
 	 * 状态
-	 * 0-等待审核;1-发布;2-垃圾;3-回收站
+	 * wait-等待审核;public-发布;trash-垃圾;recycle-回收站
 	 * @var array
 	 */
-	private $status = array(0,1,2,3);
+	private $status = array('wait'=>0,'public'=>1,'trash'=>2,'recycle'=>3);
 
 	/**
 	 * 初始化
@@ -42,6 +42,9 @@ class SysComment{
 		$this->tableName = $tableName;
 	}
 
+	public function viewList($where,$attrs,$page=1,$max=10,$sort=4,$desc=true){
+	}
+
 	public function add($data){
 		$sql = 'INSERT INTO `'.$this->tableName.'`() VALUES()';
 		return false;
@@ -49,6 +52,21 @@ class SysComment{
 	public function edit($id,$data){
 		$sql = '';
 	}
+
+	/**
+	 * 审核评论
+	 * @param  int $id     ID
+	 * @param  string $status 状态键位
+	 * @return boolean         是否成功
+	 */
+	public function audit($id,$status){
+		$where = '`'.$this->fields[0].'` = :id';
+		$sets = array($this->fields[2]=>':status');
+		$statusStr = isset($this->status[$status]) == true ? $this->status[$status] : $this->status[0];
+		$attrs = array(':id'=>array($id,PDO::PARAM_INT),':status'=>array($statusStr,PDO::PARAM_INT));
+		return $this->db->sqlUpdate($this->tableName,$sets,$where,$attrs);
+	}
+	
 	public function del($id){
 	}
 	public function delPOST($postID){

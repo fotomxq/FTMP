@@ -19,4 +19,11 @@ $appPage['temp']['css'] = array('page');
 
 //设定引用脚本和样式
 $appPage['js'] = array('index');
+
+//定义菜单
+$appPage['menu-left'] = array(
+	array('title'=>'电台','url'=>'#Menu-FM','active'=>true),
+	array('title'=>'管理','url'=>'#Menu-Manage'),
+	array('title'=>'添加','url'=>'#Menu-add')
+	);
 ?>

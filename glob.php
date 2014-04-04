@@ -4,7 +4,7 @@
  * 所有非特殊页面必须引用的页面，包含必备的配置和库引用。
  * 
  * @author fotomxq <fotomxq.me>
- * @version 3
+ * @version 4
  * @package web
  */
 
@@ -23,6 +23,9 @@ $cache = new CoreCache(CACHE_ON,CACHE_LIMIT_TIME,CACHE_DIR);
 
 //文件处理
 require(DIR_LIB.DS.'core-file.php');
+
+//设定时区
+date_default_timezone_set('PRC');
 
 //数据库
 require(DIR_LIB.DS.'core-db.php');

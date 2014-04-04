@@ -2,7 +2,7 @@
 /**
  * 通用模版-Munu
  * @author fotomxq <fotomxq.me>
- * @version 1
+ * @version 2
  * @package app-template
  */
 if(isset($appPage) != true) die();
@@ -20,6 +20,13 @@ if(isset($appPage) != true) die();
           <a class="navbar-brand" href="index.php"><?php echo $webData['WEB-TITLE']; ?> <?php echo $appPage['title']; ?></a>
         </div>
         <div class="collapse navbar-collapse">
+          <?php if(isset($appPage['menu-left']) == true){ ?>
+          <ul class="nav navbar-nav">
+            <?php foreach($appPage['menu-left'] as $v){ ?>
+            <li<?php if($v['active']){ echo ' class="active"'; }?>><a href="<?php echo $v['url']; ?>"<?php if($v['target']){ echo ' target="'.$v['target'].'"'; }?>><?php echo $v['title']; ?></a></li>
+            <?php } ?>
+          </ul>
+          <?php } ?>
           <ul class="nav navbar-nav navbar-right">
           	<li><a href="../../center.php">Center</a></li>
             <li><a href="action-logout.php">Logout</a></li>

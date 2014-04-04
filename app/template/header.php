@@ -1,5 +1,13 @@
 <?php
+/**
+ * 通用模版-Header
+ * @author fotomxq <fotomxq.me>
+ * @version 2
+ * @package app-template
+ */
+
 if(isset($appPage) != true) die();
+
 if(isset($appPage['glob']) == true){
   if(array_search('messenger',$appPage['glob']['pack']) !== false){
     array_push($appPage['glob']['css'],'messenger');
@@ -36,16 +44,16 @@ if(isset($appPage['glob']) == true){
         }
       }
     }
-    if(isset($appPage['css']) == true){
-      foreach($appPage['css'] as $v){
-        echo '<<link href="assets/css/'.$v.'.css" rel="stylesheet">';
-      }
-    }
     if(isset($appPage['temp']) == true){
       if(isset($appPage['temp']['css']) == true){
         foreach($appPage['temp']['css'] as $v){
           echo '<link href="../template/assets/css/'.$v.'.css" rel="stylesheet">';
         }
+      }
+    }
+    if(isset($appPage['css']) == true){
+      foreach($appPage['css'] as $v){
+        echo '<link href="assets/css/'.$v.'.css" rel="stylesheet">';
       }
     }
     ?>

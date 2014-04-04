@@ -1,4 +1,11 @@
 <?php
+/**
+ * 通用模版-Footer
+ * @author fotomxq <fotomxq.me>
+ * @version 1
+ * @package app-template
+ */
+
 if(isset($appPage) != true) die();
 ?>
 <div id="footer">

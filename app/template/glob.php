@@ -1,9 +1,9 @@
 <?php
 /**
- * APP全局设定
+ * 通用模版-全局设定
  * @author fotomxq <fotomxq.me>
  * @version 1
- * @package web
+ * @package app-template
  */
 //引用登录检测模块
 require(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'glob.php');

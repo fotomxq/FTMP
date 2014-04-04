@@ -2,7 +2,7 @@
 /**
  * 体重记录类
  * @author fotomxq <fotomxq.me>
- * @version 1
+ * @version 2
  * @package app-weight-lib
  */
 
@@ -47,9 +47,10 @@ class AppWeight{
 	 * 查看指定日期的记录
 	 * @param  string $startDate 开始日期
 	 * @param  string $endDate   截止日期，如果给定null则表明查询某个日期的记录
+	 * @param string $avg  是否获取该时间段的某个健位的平均值
 	 * @return array            记录组，失败则返回null
 	 */
-	public function view($startDate,$endDate=null){
+	public function view($startDate,$endDate=null,$avg=null){
 		$where = '`'.$this->fields[1].'` = :userID AND ';
 		$attrs = array(':userID'=>array($this->userID,PDO::PARAM_INT),':start'=>array($startDate,PDO::PARAM_STR));
 		if($endDate == null){
@@ -58,7 +59,13 @@ class AppWeight{
 		}else{
 			$where .= '`'.$this->fields[2].'` >= :start AND `'.$this->fields[2].'` <= :end';
 			$attrs[':end'] = array($endDate,PDO::PARAM_STR);
-			return $this->db->sqlSelect($this->tableName,$this->fields,$where,$attrs,1,99999,$this->fields[2],false);
+			if($avg == null){
+				return $this->db->sqlSelect($this->tableName,$this->fields,$where,$attrs,1,99999,$this->fields[2],false);
+			}else{
+				$avgField = isset($this->fields[$avg]) == true ? $this->fields[$avg] : $this->fields[0];
+				$sql = 'SELECT AVG(`'.$avgField.'`) FROM `'.$this->tableName.'` WHERE '.$where;
+				return $this->db->runSQL($sql,$attrs,2,0);
+			}
 		}
 	}
 

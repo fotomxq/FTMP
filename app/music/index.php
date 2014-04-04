@@ -1,9 +1,9 @@
 <?php
 /**
- * 体重记录首页
+ * 音乐首页
  * @author fotomxq <fotomxq.me>
- * @version 2
- * @package app-weight-page
+ * @version 1
+ * @package app-music-page
  */
 
 //引用全局
@@ -14,22 +14,22 @@ require(DIR_APP_TEMPLATE.DS.'header.php');
 require(DIR_APP_TEMPLATE.DS.'menu.php');
 ?>
 <div class="container marketing container-fixed">
-	<h2 class="page-header">Chart</h2>
-	<div class="row row-fixed">
+  <h2 class="page-header">Chart</h2>
+  <div class="row row-fixed">
     <label>
       <div class="icheckbox"><input type="radio" id="chartWeight" name="chartSelect"> 体重</div>
     </label>
     <label>
       <div class="icheckbox"><input type="radio" id="chartFat" name="chartSelect"> 体脂 </div>
     </label>
-  	<a class="btn btn-default" href="#chartWeek"><span class="glyphicon glyphicon-credit-card"></span> 最近7天</a>
-  	<a class="btn btn-default" href="#chartMonth"><span class="glyphicon glyphicon-calendar"></span> 本月</a>
-  	<a class="btn btn-default" href="#chartYear"><span class="glyphicon glyphicon-calendar"></span> 年</a>
+    <a class="btn btn-default" href="#chartWeek"><span class="glyphicon glyphicon-credit-card"></span> 最近7天</a>
+    <a class="btn btn-default" href="#chartMonth"><span class="glyphicon glyphicon-calendar"></span> 本月</a>
+    <a class="btn btn-default" href="#chartYear"><span class="glyphicon glyphicon-calendar"></span> 年</a>
   </div>
-	<div class="row">
-		<canvas id="weightChart" width="900" height="300"></canvas>
-	</div>
-	<h2 class="page-header">Set</h2>
+  <div class="row">
+    <canvas id="weightChart" width="900" height="300"></canvas>
+  </div>
+  <h2 class="page-header">Set</h2>
   <div class="row row-fixed">
     <div class="col-lg-3">
       <div class="input-group">

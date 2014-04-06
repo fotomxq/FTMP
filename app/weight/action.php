@@ -2,7 +2,7 @@
 /**
  * 体重Action-Ajax处理器
  * @author fotomxq <fotomxq.me>
- * @version 2
+ * @version 4
  * @package app-weight-action
  */
 //引用全局
@@ -75,6 +75,41 @@ if(isset($_GET['type']) == true){
 						}
 					break;
 				}
+			}
+		break;
+		//获取最近
+		case 'day':
+			if(isset($_GET['max']) == true){
+				$max = (int)$_GET['max'];
+				$cacheName = 'DAY-'.$max;
+				$res;
+				if(isset($appWeightData[$cacheName])){
+					$res = $appWeightData[$cacheName];
+				}else{
+					$res = $appWeight->viewTop($max);
+					$cache->set($cacheName,json_encode($res));
+				}
+				if($res){
+					CoreHeader::toJson($res);
+				}
+			}
+		break;
+		//获取本周
+		case 'week':
+			$weekDayFirstTime = time() - ((date('N') - 1) * 86400);
+			$weekDayEndTime = $weekDayFirstTime + (6 * 86400);
+			$weekDayFirst = date('Y-m-d',$weekDayFirstTime);
+			$weekDayEnd = date('Y-m-d',$weekDayEndTime);
+			$cacheName = 'WEEK';
+			$res;
+			if(isset($appWeightData[$cacheName])){
+				$res = $appWeightData[$cacheName];
+			}else{
+				$res = $appWeight->view($weekDayFirst,$weekDayEnd);
+				$cache->set($cacheName,json_encode($res));
+			}
+			if($res){
+				CoreHeader::toJson($res);
 			}
 		break;
 		//设定值

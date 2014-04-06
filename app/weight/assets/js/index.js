@@ -8,6 +8,14 @@ wData.get = function(start,end,func){
 wData.interval = function(type,show,func){
 	$.getJSON('action.php',{'type':'interval','i':type,'t':show},func);
 }
+//获取最近
+wData.day = function(max,func){
+	$.getJSON('action.php',{'type':'day','max':max},func);
+}
+//获取本周
+wData.week = function(func){
+	$.getJSON('action.php',{'type':'week'},func);
+}
 //向服务器提交数据
 wData.set = function(date,weight,fat,note,tagDinner,tagSport,tagSleep,tagToilet,tagSick,tagAlcohol){
 	$.post('action.php?type=set',{
@@ -39,7 +47,9 @@ chart.handle2;
 //当前显示类型
 chart.showType = 'weight';
 //当前显示时间区间
-chart.showInterval = 'chartWeek';
+chart.showInterval = 'chartDay';
+//获取最近记录的条数
+chart.dayMax = 10;
 //图表ID
 chart.id = $('#weightChart');
 //上一次从服务器获取的原始数据
@@ -71,6 +81,10 @@ chart.run = function(){
 		chart.showType = 'fat';
 		chart.refData();
 	});
+	//图表显示最近
+	$('a[href="#chartDay"]').click(function(){
+		chart.selectDay();
+	});
 	//图表显示周
 	$('a[href="#chartWeek"]').click(function(){
 		chart.selectWeek();
@@ -86,7 +100,7 @@ chart.run = function(){
 	//选定体重类型
 	$('#chartWeight').iCheck('check');
 	//初始化图表
-	chart.selectWeek();
+	chart.selectDay();
 }
 //刷新图表数据
 chart.ref = function(){
@@ -95,6 +109,9 @@ chart.ref = function(){
 //重新刷新数据显示类型
 chart.refData = function(){
 	switch(chart.showInterval){
+		case 'chartDay':
+			chart.selectDay();
+		break;
 		case 'chartWeek':
 			chart.selectWeek();
 		break;
@@ -110,37 +127,47 @@ chart.refData = function(){
 chart.get = function(start,end){
 	chart.data = wData.get(start,end);
 }
-//定义按钮组按下按钮
-chart.setButtonActive = function(w){
-	$('a[href="#chartWeek"]').removeClass('active');
-	$('a[href="#chartMonth"]').removeClass('active');
-	$('a[href="#chartYear"]').removeClass('active');
-	$('a[href="#'+w+'"]').addClass('active');
-	chart.showInterval = w;
+//图表显示最近
+chart.selectDay = function(){
+	chart.selectRun('chartDay');
+	wData.day(chart.dayMax,function(data){
+		if(data){
+			chart.dataServer = data;
+			for(var i=0;i<data.length;i++){
+				chart.data['labels'][i] = data[i]['weight_date'];
+				if(chart.showType == 'weight'){
+					chart.data['datasets'][0]['data'][i] = Math.abs(data[i]['weight_weight']);
+				}else{
+					chart.data['datasets'][0]['data'][i] = Math.abs(data[i]['weight_fat']);
+				}
+			}
+		}
+		chart.ref();
+	});
 }
 //图表显示周
 chart.selectWeek = function(){
-	chart.setButtonActive('chartWeek');
-	chart.data['labels'] = new Array();
-	chart.data['datasets'][0]['data'] = new Array();
+	chart.selectRun('chartWeek');
 	for(var i=1;i<8;i++){
 		chart.data['labels'].push('周' + FtmpDate.chsWeeks[i-1]);
 	}
 	var wArr = FtmpDate.getSinceWeek();
 	var ws = chart.makeDataArr(wArr[0],wArr[1]);
-	wData.get(FtmpDate.getTime(wArr[0],'yyyy-mm-dd'),FtmpDate.getTime(wArr[1],'yyyy-mm-dd'),function(data){
+	wData.week(function(data){
 		chart.dataServer = data;
-		if(data){
-			chart.makeData(ws,data);
+		for(var i=0;i<7;i++){
+			if(data[i]){
+				chart.data['datasets'][0]['data'][i] = data[i]['weight_weight'];
+			}else{
+				chart.data['datasets'][0]['data'][i] = 0;
+			}
 		}
 		chart.ref();
 	});
 }
 //图表显示月
 chart.selectMonth = function(){
-	chart.setButtonActive('chartMonth');
-	chart.data['labels'] = new Array();
-	chart.data['datasets'][0]['data'] = new Array();
+	chart.selectRun('chartMonth');
 	var wArr = FtmpDate.getSinceMonth(0,0);
 	var monthDay = FtmpDate.getMonthDay(0,0);
 	for(i=1;i<=monthDay;i++){
@@ -149,26 +176,20 @@ chart.selectMonth = function(){
 	var ws = chart.makeDataArr(wArr[0],wArr[1]);
 	wData.get(FtmpDate.getTime(wArr[0],'yyyy-mm-dd'),FtmpDate.getTime(wArr[1],'yyyy-mm-dd'),function(data){
 		chart.dataServer = data;
-		if(data){
-			chart.makeData(ws,data);
-		}
+		chart.makeData(ws,data);
 		chart.ref();
 	});
 }
 //图表显示年
 chart.selectYear = function(){
-	chart.setButtonActive('chartYear');
-	chart.data['labels'] = new Array();
-	chart.data['datasets'][0]['data'] = new Array();
+	chart.selectRun('chartYear');
 	var date = new Date();
 	for(var i=1;i<13;i++){
 		chart.data['labels'].push(i+'月');
 	}
 	wData.interval('year',chart.showType,function(data){
 		chart.dataServer = data;
-		if(data){
-			chart.data['datasets'][0]['data'] = data;
-		}
+		chart.data['datasets'][0]['data'] = data;
 		chart.ref();
 	});
 }
@@ -182,22 +203,35 @@ chart.makeDataArr = function(startTime,endTime){
 	}
 	return arr;
 }
+//初始化相关数据
+chart.selectRun = function(w){
+	//初始化按钮组
+	$('a[href="#chartDay"]').removeClass('active');
+	$('a[href="#chartWeek"]').removeClass('active');
+	$('a[href="#chartMonth"]').removeClass('active');
+	$('a[href="#chartYear"]').removeClass('active');
+	$('a[href="#'+w+'"]').addClass('active');
+	chart.showInterval = w;
+	//初始化数据
+	chart.data['labels'] = new Array();
+	chart.data['datasets'][0]['data'] = new Array();
+}
 //根据时间配对数据，自动留空无效数据
 chart.makeData = function(dataArr,data){
-	for(i=0;i<dataArr.length;i++){
+	for(var i=0;i<dataArr.length;i++){
 		chart.data['datasets'][0]['data'][i] = 0;
 	}
-	$.each(data,function(i,n){
-		for(i=0;i<dataArr.length;i++){
-			if(n['weight_date'] == dataArr[i]){
+	for(var i=0;i<data.length;i++){
+		for(j=0;j<dataArr.length;j++){
+			if(data[i]['weight_date'] == dataArr[j]){
 				if(chart.showType == 'weight'){
-					chart.data['datasets'][0]['data'][i] = Math.abs(n['weight_weight']);
+					chart.data['datasets'][0]['data'][j] = Math.abs(data[i]['weight_weight']);
 				}else{
-					chart.data['datasets'][0]['data'][i] = Math.abs(n['weight_fat']);
+					chart.data['datasets'][0]['data'][j] = Math.abs(data[i]['weight_fat']);
 				}
 			}
 		}
-	});
+	}
 }
 
 //设定
@@ -284,6 +318,7 @@ set.refSet = function(){
 			set.setCheck(set.tagToilet,data['weight_tag_toilet']);
 			set.setCheck(set.tagSick,data['weight_tag_sick']);
 			set.setCheck(set.tagAlcohol,data['weight_tag_alcohol']);
+			chart.refData();
 		}
 	});
 }

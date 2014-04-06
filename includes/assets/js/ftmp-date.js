@@ -142,7 +142,7 @@ FtmpDate.getSinceDay = function(d,format){
  */
 FtmpDate.getSinceWeek = function(){
 	var date = new Date();
-	var l = new Date(date - (date.getDay() - 1) * 86400000);
+	var l = new Date(date.getTime()-(date.getDay()-1)*86400000);
 	var r = new Date((l / 1000 + 6 * 86400) * 1000);
 	return [l.getTime(),r.getTime()];
 }

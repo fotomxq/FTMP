@@ -22,7 +22,8 @@ require(DIR_APP_TEMPLATE.DS.'menu.php');
     <label>
       <div class="icheckbox"><input type="radio" id="chartFat" name="chartSelect"> 体脂 </div>
     </label>
-  	<a class="btn btn-default" href="#chartWeek"><span class="glyphicon glyphicon-credit-card"></span> 最近7天</a>
+    <a class="btn btn-default" href="#chartDay"><span class="glyphicon glyphicon-credit-card"></span> 最近</a>
+  	<a class="btn btn-default" href="#chartWeek"><span class="glyphicon glyphicon-credit-card"></span> 本周</a>
   	<a class="btn btn-default" href="#chartMonth"><span class="glyphicon glyphicon-calendar"></span> 本月</a>
   	<a class="btn btn-default" href="#chartYear"><span class="glyphicon glyphicon-calendar"></span> 年</a>
   </div>

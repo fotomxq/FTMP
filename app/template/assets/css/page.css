@@ -46,3 +46,8 @@ code {
 .container-fixed{
   padding-bottom:25px !important;
 }
+
+.logo{
+  width: 20px;
+  max-height: 20px
+}

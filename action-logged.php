@@ -16,4 +16,14 @@ if($userID < 1){
 	CoreHeader::toURL('index.php');
 }
 
+//获取用户权限判断组
+$userPowers = $user->checkPower($userID,$user->powerValues);
+
+//判断用户是否具备基本权限
+if(!$userPowers){
+	CoreHeader::toURL('index.php?power');
+}
+if(!$userPowers['NORMAL']){
+	die('No Power.');
+}
 ?>

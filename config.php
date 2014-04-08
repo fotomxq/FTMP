@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 配置文件
  * 全局配置文件
@@ -7,7 +8,6 @@
  * @version 4
  * @package web
  */
-
 //////////////////
 //路径定义
 //////////////////
@@ -53,14 +53,14 @@ define('UPLOAD_DOWN_PHP', true);
 //日志系统
 //////////////////
 //日志开关
-define('LOG_ON',true);
+define('LOG_ON', true);
 //////////////////
 //日志目录
-define('LOG_DIR',DIR_DATA.DS.'logs');
+define('LOG_DIR', DIR_DATA . DS . 'logs');
 //////////////////
 //日志记录形式
 //0 - 发送到PHP日志记录系统 ; 1 - 年月.log ; 2 - 年月/日.log ; 3 - 年月/日-时.log ; 4 - 年/月/日-时.log
-define('LOG_TYPE',0);
+define('LOG_TYPE', 0);
 
 //////////////////
 //缓冲器
@@ -70,13 +70,13 @@ define('CACHE_ON', true);
 //失效时间长度 ( 秒 )
 define('CACHE_LIMIT_TIME', 1296000);
 //缓冲目录
-define('CACHE_DIR',DIR_DATA.DS.'cache');
+define('CACHE_DIR', DIR_DATA . DS . 'cache');
 
 //////////////////
 //用户系统
 //////////////////
 //全局登录Session设定
-define('USER_SESSION_LOGIN_NAME','login');
+define('USER_SESSION_LOGIN_NAME', 'login');
 
 //////////////////
 //在线应聘
@@ -122,19 +122,19 @@ date_default_timezone_set('PRC');
 //启动session
 @session_start();
 //错误页面
-define('ERROR_PAGE','error.php');
+define('ERROR_PAGE', 'error.php');
 //百度云计算LBS秘匙
-define('BAIDU_KEY','F44c8a7c7da1d5a1a6bac28a5fd767bc');
+define('BAIDU_KEY', 'F44c8a7c7da1d5a1a6bac28a5fd767bc');
 
 //////////////////
 //数据表名称
 //////////////////
 //配置表
-define('TABLE_CONFIG','sys_config');
+define('TABLE_CONFIG', 'sys_config');
 //用户表
-define('TABLE_USER','sys_user');
+define('TABLE_USER', 'sys_user');
 //用户元表
-define('TABLE_USER_META','sys_usermeta');
+define('TABLE_USER_META', 'sys_usermeta');
 
 //////////////////
 //数据库定义
@@ -155,7 +155,7 @@ $dbEncoding = 'UTF8';
 //////////////////
 //APP注册表
 $appList = array(
-	'weight'=>array('name'=>'体重记录','des'=>'记录体重并提供建议。','table'=>array('weight')),
-	'music'=>array('name'=>'音乐中心','des'=>'音乐及多媒体中心。','table'=>array('music'))
-	);
+    'weight' => array('name' => '体重记录', 'des' => '记录体重并提供建议。', 'table' => array('weight')),
+    'music' => array('name' => '音乐中心', 'des' => '音乐及多媒体中心。', 'table' => array('music'))
+);
 ?>

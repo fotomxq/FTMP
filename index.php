@@ -3,7 +3,7 @@
  * 网站首页
  * 
  * @author fotomxq <fotomxq.me>
- * @version 1
+ * @version 2
  * @package web
  */
 
@@ -42,8 +42,8 @@ if($userID > 0){
 
     <form class="form-signin" role="form" action="action-login.php" method="post">
       <h2 class="form-signin-heading">Please sign in</h2>
-      <input type="email" name="email" class="form-control" placeholder="Email address" required autofocus>
-      <input type="password" name="password" class="form-control" placeholder="Password" required>
+      <input type="email" name="email" class="form-control" placeholder="Email address" required autofocus<?php if(DEBUG_ON===true) echo ' value="admin@admin.com"'; ?>>
+      <input type="password" name="password" class="form-control" placeholder="Password" required<?php if(DEBUG_ON===true) echo ' value="adminadmin"'; ?>>
       <label class="checkbox">
         <input type="checkbox" name="remember" value="remember-me"> Remember me
       </label>

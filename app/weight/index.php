@@ -2,7 +2,7 @@
 /**
  * 体重记录首页
  * @author fotomxq <fotomxq.me>
- * @version 4
+ * @version 5
  * @package app-weight-page
  */
 //引用全局
@@ -84,7 +84,7 @@ require(DIR_APP_TEMPLATE . DS . 'menu.php');
         </div>
     </div>
     <div id="contentChart">
-        <h2 class="page-header" id="urlChart"><span class="glyphicon glyphicon-signal"></span> 图表</h2>
+        <h2 class="page-header" id="urlChart"><span class="glyphicon glyphicon-stats"></span> 图表</h2>
         <div class="row row-fixed">
             <label><div class="icheckbox"><input type="radio" id="chartWeight" name="chartSelect"> 体重</div></label>
             <label><div class="icheckbox"><input type="radio" id="chartFat" name="chartSelect"> 体脂 </div></label>

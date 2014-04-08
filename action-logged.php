@@ -5,6 +5,7 @@
  * @author fotomxq <fotomxq.me>
  * @version 5
  * @package web
+ * @todo 获取用户可用的APP列表
  */
 //引用全局
 require(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'glob.php');

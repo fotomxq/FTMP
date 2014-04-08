@@ -2,7 +2,7 @@
 /**
  * 通用模版-Header
  * @author fotomxq <fotomxq.me>
- * @version 2
+ * @version 3
  * @package app-template
  */
 
@@ -57,7 +57,9 @@ if(isset($appPage['glob']) == true){
       }
     }
     ?>
-
+    <script>
+        <?php if($appPage['menu-content']){ ?>var menuHide = [<?php echo json_encode($appPage['menu-content']); ?>];<?php } ?>
+    </script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="../../includes/assets/js/html5shiv.js"></script>

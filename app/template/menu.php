@@ -2,7 +2,7 @@
 /**
  * 通用模版-Munu
  * @author fotomxq <fotomxq.me>
- * @version 3
+ * @version 4
  * @package app-template
  */
 if(isset($appPage) != true) die();
@@ -17,7 +17,7 @@ if(isset($appPage) != true) die();
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="index.php"><img src="assets/imgs/favicon.png" class="logo"> <?php echo $webData['WEB-TITLE']; ?> <?php echo $appPage['title']; ?></a>
+          <a class="navbar-brand" href="index.php"><img src="assets/imgs/favicon.png" class="logo"> <?php echo $appPage['title']; ?></a>
         </div>
         <div class="collapse navbar-collapse">
           <?php if(isset($appPage['menu-left']) == true){ ?>
@@ -28,8 +28,8 @@ if(isset($appPage) != true) die();
           </ul>
           <?php } ?>
           <ul class="nav navbar-nav navbar-right">
-          	<li><a href="../../center.php"><span class="glyphicon glyphicon-home"></span> Center</a></li>
-            <li><a href="action-logout.php"><span class="glyphicon glyphicon-remove-sign"></span> Logout</a></li>
+          	<li><a href="../../center.php"><span class="glyphicon glyphicon-home"></span> 中心</a></li>
+            <li><a href="action-logout.php"><span class="glyphicon glyphicon-remove-sign"></span> 退出</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

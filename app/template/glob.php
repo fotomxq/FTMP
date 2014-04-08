@@ -2,7 +2,7 @@
 /**
  * 通用模版-全局设定
  * @author fotomxq <fotomxq.me>
- * @version 2
+ * @version 3
  * @package app-template
  */
 //引用登录检测模块
@@ -45,7 +45,9 @@ define(DIR_APP_TEMPLATE,DIR_APP.DS.'template');
  * 		 	'active' - 是否激活状态(boolean),
  * 		 	'target' - 打开方式,如'_blank'
  * 		)
- * )
+ * ),
+ * 'menu-content-hide'=>true/false - 是否开启菜单跳转隐藏功能，自动隐藏其他无关内容
+ * 'menu-content'=>array(array('#url...','#content...'),...) - 菜单跳转URL对应的内容，如果menu-content-hide开启有效
  * );
  */
 $appPage;

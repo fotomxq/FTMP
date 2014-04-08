@@ -2,7 +2,7 @@
 /**
  * 页面-菜单部分
  * @author fotomxq <fotomxq.me>
- * @version 2
+ * @version 3
  * @package web
  */
 if(!isset($pageArr)) die();
@@ -20,10 +20,10 @@ if(!isset($pageArr)) die();
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li<?php if($pageArr['menu-focus'] == 'center'){echo ' class="active"';} ?>><a href="center.php"><span class="glyphicon glyphicon-home"></span> Center</a></li>
-            <li<?php if($pageArr['menu-focus'] == 'user'){echo ' class="active"';} ?>><a href="center-user.php"><span class="glyphicon glyphicon-credit-card"></span> User</a></li>
-            <li<?php if($pageArr['menu-focus'] == 'operate'){echo ' class="active"';} ?>><a href="center-operate.php"><span class="glyphicon glyphicon-certificate"></span> Operate</a></li>
-            <li><a href="action-logout.php"><span class="glyphicon glyphicon-remove-sign"></span> Logout</a></li>
+            <li<?php if($pageArr['menu-focus'] == 'center'){echo ' class="active"';} ?>><a href="center.php"><span class="glyphicon glyphicon-home"></span> 中心</a></li>
+            <li<?php if($pageArr['menu-focus'] == 'user'){echo ' class="active"';} ?>><a href="center-user.php"><span class="glyphicon glyphicon-credit-card"></span> 用户</a></li>
+            <li<?php if($pageArr['menu-focus'] == 'operate'){echo ' class="active"';} ?>><a href="center-operate.php"><span class="glyphicon glyphicon-certificate"></span> 全局</a></li>
+            <li><a href="action-logout.php"><span class="glyphicon glyphicon-remove-sign"></span> 退出</a></li>
           </ul>
         </div>
       </div>

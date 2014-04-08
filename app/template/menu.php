@@ -2,12 +2,11 @@
 /**
  * 通用模版-Munu
  * @author fotomxq <fotomxq.me>
- * @version 4
+ * @version 5
  * @package app-template
  */
 if(isset($appPage) != true) die();
 ?>
-    <!-- Fixed navbar -->
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -31,6 +30,6 @@ if(isset($appPage) != true) die();
           	<li><a href="../../center.php"><span class="glyphicon glyphicon-home"></span> 中心</a></li>
             <li><a href="action-logout.php"><span class="glyphicon glyphicon-remove-sign"></span> 退出</a></li>
           </ul>
-        </div><!--/.nav-collapse -->
+        </div>
       </div>
     </div>

@@ -2,7 +2,7 @@
 /**
  * APP全局设定
  * @author fotomxq <fotomxq.me>
- * @version 3
+ * @version 4
  * @package web
  */
 //引用应用模版全局定义
@@ -22,7 +22,7 @@ $appPage['temp']['js'] = array('menu');
 $appPage['js'] = array('index');
 
 //设定顶部菜单
-$appPage['menu-left'] = array(array('url'=>'#urlSet','title'=>'设置','active'=>true),array('url'=>'#urlChart','title'=>'图表'));
+$appPage['menu-left'] = array(array('url'=>'#urlSet','title'=>'<span class="glyphicon glyphicon-pushpin"></span> 设置','active'=>true),array('url'=>'#urlChart','title'=>'<span class="glyphicon glyphicon-signal"></span> 图表'));
 $appPage['menu-content-hide'] = true;
 $appPage['menu-content'] = array(array('#urlSet','#contentSet'),array('#urlChart','#contentChart'));
 ?>

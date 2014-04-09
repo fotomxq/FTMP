@@ -2,7 +2,7 @@
 /**
  * APP全局设定
  * @author fotomxq <fotomxq.me>
- * @version 5
+ * @version 6
  * @package web
  */
 //引用应用模版全局定义
@@ -14,9 +14,8 @@ $appPage['title'] = '体重中心';
 //引用组件
 $appPage['glob']['pack'] = array('messenger','icheck','chart','datetimepicker');
 $appPage['glob']['css'] = array('icheck-skins-flat','messenger-theme-future');
-$appPage['glob']['js'] = array('ftmp-date');
+$appPage['glob']['js'] = array('ftmp-date','menu');
 $appPage['temp']['css'] = array('page');
-$appPage['temp']['js'] = array('menu');
 
 //设定引用脚本和样式
 $appPage['js'] = array('index');

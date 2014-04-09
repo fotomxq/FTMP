@@ -2,7 +2,7 @@
 /**
  * 中心页面
  * @author fotomxq <fotomxq.me>
- * @version 5
+ * @version 6
  * @package web
  */
 
@@ -10,7 +10,7 @@
 require('action-logged.php');
 
 //页面设定
-$pageArr['title'] = 'Center';
+$pageArr['title'] = '中心';
 $pageArr['menu-focus'] = 'center';
 
 //引用头和目录页面

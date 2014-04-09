@@ -53,3 +53,12 @@ code {
   width: 20px;
   max-height: 20px
 }
+
+.row-fixed{
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+
+.container-fixed{
+  padding-bottom:25px !important;
+}

@@ -2,7 +2,7 @@
 /**
  * 页面-菜单部分
  * @author fotomxq <fotomxq.me>
- * @version 4
+ * @version 5
  * @package web
  */
 if(!isset($pageArr)) die();
@@ -30,7 +30,7 @@ if(!isset($pageArr)) die();
             <li<?php if($pageArr['menu-focus'] == 'center'){echo ' class="active"';} ?>><a href="center.php"><span class="glyphicon glyphicon-home"></span> 中心</a></li>
             <li<?php if($pageArr['menu-focus'] == 'user'){echo ' class="active"';} ?>><a href="center-user.php"><span class="glyphicon glyphicon-user"></span> 用户</a></li>
             <?php if($userPowers[$user->powerValues[1]] == true){ ?>
-            <li<?php if($pageArr['menu-focus'] == 'operate'){echo ' class="active"';} ?>><a href="center-operate.php"><span class="glyphicon glyphicon-certificate"></span> 设置</a></li>
+            <li<?php if($pageArr['menu-focus'] == 'operate'){echo ' class="active"';} ?>><a href="center-operate.php"><span class="glyphicon glyphicon-wrench"></span> 设置</a></li>
             <?php } ?>
             <li><a href="action-logout.php"><span class="glyphicon glyphicon-remove-sign"></span> 退出</a></li>
           </ul>

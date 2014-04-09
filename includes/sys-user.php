@@ -3,7 +3,7 @@
 /**
  * 用户处理器
  * @author fotomxq <fotomxq.me>
- * @version 2
+ * @version 4
  * @package sys
  */
 class SysUser {
@@ -30,7 +30,7 @@ class SysUser {
      * 用户表字段组
      * @var array
      */
-    private $fieldsUser = array('id', 'user_nicename', 'user_login', 'user_passwd', 'user_date', 'user_ip', 'user_status');
+    public $fieldsUser = array('id', 'user_nicename', 'user_login', 'user_passwd', 'user_date', 'user_ip', 'user_status');
 
     /**
      * 用户元数据字段组
@@ -196,6 +196,17 @@ class SysUser {
         $descStr = $desc == true ? 'DESC' : 'ASC';
         $sql = 'SELECT `' . implode('`,`', $this->fieldsUser) . '` FROM `' . $this->tableNameUser . '` WHERE ' . $where . ' ORDER BY ' . $sortFields . ' ' . $descStr . ' LIMIT ' . (($page - 1) * $max) . ',' . $max;
         return $this->db->runSQL($sql, $attrs, 3, PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * 获取条件下用户记录数
+     * @param  string $where 条件
+     * @param  array $attrs 条件PDO过滤
+     * @return int        总数
+     */
+    public function viewUserListCount($where='1',$attrs=null){
+        $sql = 'SELECT COUNT(`' . $this->fieldsUser[0] . '`) FROM `' . $this->tableNameUser . '` WHERE ' . $where;
+        return $this->db->runSQL($sql, $attrs, 2, 0);
     }
 
     /**

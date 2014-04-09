@@ -2,7 +2,7 @@
 /**
  * 页面-脚部分
  * @author fotomxq <fotomxq.me>
- * @version 2
+ * @version 3
  * @package web
  */
 if(!isset($pageArr)) die();
@@ -14,8 +14,11 @@ if(!isset($pageArr)) die();
     </div>
     <script src="includes/assets/js/jquery.js"></script>
     <script src="includes/assets/js/bootstrap.js"></script>
+    <script>
+        <?php if($pageArr['menu-content']){ ?>var menuHide = [<?php echo json_encode($pageArr['menu-content']); ?>];<?php } ?>
+    </script>
     <?php if(isset($pageArr['js']) == true){ foreach($pageArr['js'] as $v){ ?>
-    <script href="includes/assets/js/<?php echo $v; ?>.js"></script>
+    <script src="includes/assets/js/<?php echo $v; ?>.js"></script>
     <?php } } ?>
   </body>
 </html>

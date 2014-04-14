@@ -3,8 +3,9 @@
 /**
  * 修改网站设置
  * @author fotomxq <fotomxq.me>
- * @version 2
+ * @version 3
  * @package web
+ * @todo 完成统计部分
  */
 
 //引用登录检测模块
@@ -80,13 +81,21 @@ if(isset($_GET['type']) == true){
             break;
         case 'user-add':
             //添加用户
-            if(isset($_POST['nicename']) == true && isset($_POST['login']) == true && isset($_POST['passwd']) == true){
+            if(isset($_POST['nicename']) == true && isset($_POST['login']) == true && isset($_POST['passwd']) == true && isset($_POST['powers']) == true && isset($_POST['app']) == true){
                 $nicename = $filter->getString($_POST['nicename'],100,0,true,true);
                 $username = $filter->getString($_POST['login'],50,0,true,true);
                 $password = isset($_POST['passwd']) == true ? $_POST['passwd'] : null;
+                $power = $_POST['powers'];
+                $app = $_POST['app'];
                 $addUserID = $user->addUser($nicename,$username,$password);
                 if($addUserID > 0){
-                    $res = 1;
+                    $metaA = $user->setMetaValList($addUserID,$user->powerMetaName,$power);
+                    $metaB = $user->setMetaValList($addUserID,$user->appMetaName,$app);
+                    if($metaA > 0 && $metaB > 0){
+                        $res = 1;
+                    }else{
+                        $res = 2;
+                    }
                 }else{
                     $res = 2;
                 }
@@ -94,11 +103,16 @@ if(isset($_GET['type']) == true){
             break;
         case 'user-edit':
             //修改用户信息
-            if(isset($_POST['id']) == true && isset($_POST['nicename']) == true){
+            if(isset($_POST['id']) == true && isset($_POST['nicename']) == true && isset($_POST['powers']) == true && isset($_POST['app']) == true){
                 $id = (int)$_POST['id'];
                 $nicename = $filter->getString($_POST['nicename'],100,0,true,true);
                 $password = isset($_POST['passwd']) == true ? $_POST['passwd'] : null;
-                if($user->editUser($id,$nicename,$password) == true){
+                if(!$password){
+                    $password = null;
+                }
+                $power = $_POST['powers'];
+                $app = $_POST['app'];
+                if($user->editUser($id,$nicename,$password) == true && $user->setMetaValList($id,$user->powerMetaName,$power) == true && $user->setMetaValList($id,$user->appMetaName,$app) == true){
                     $res = 1;
                 }else{
                     $res = 2;
@@ -145,16 +159,33 @@ if(isset($_GET['type']) == true){
         case 'user-del':
             //删除用户
             if(isset($_POST['id']) == true){
-                $id = (int)$_POST['id'];
-                if($userID != $id){
-                    if($user->delUser($id) == true){
-                        $res = 1;
-                    }else{
-                        $res = 2;
+                if(is_array($_POST['id']) == true){
+                    foreach($_POST['id'] as $v){
+                        $vId = (int)$v;
+                        if($vId != $userID){
+                            if($user->delUser($vId) == true){
+                                $res = 1;
+                            }else{
+                                $res = 2;
+                                break;
+                            }
+                        }else{
+                            $res = 3;
+                            break;
+                        }
                     }
                 }else{
-                    //不能删除自身
-                    $res = 3;
+                    $id = (int)$_POST['id'];
+                    if($userID != $id){
+                        if($user->delUser($id) == true){
+                            $res = 1;
+                        }else{
+                            $res = 2;
+                        }
+                    }else{
+                        //不能删除自身
+                        $res = 3;
+                    }
                 }
             }
             break;

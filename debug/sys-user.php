@@ -13,7 +13,7 @@ $limitTime = (int)$sysConfig->get('USER-LIMIT-TIME');
 $sysUser = new SysUser($db,TABLE_USER,TABLE_USER_META,USER_SESSION_LOGIN_NAME,$limitTime);
 
 //测试创建用户
-$newID = $sysUser->addUser('admin','admin','adminadmin');
+$newID = $sysUser->addUser('admin2','admin3','adminadmin4');
 if($newID) echo '创建了用户ID : '.$newID.'.<br/>';
 
 
@@ -92,7 +92,7 @@ print_r($res);
 echo '<br/><br/>';
 
 //测试用户登录
-
+/*
 if($sysUser->login('1.1.1.1','admin','adminadmin',false) == true){
 	echo '用户成功登录.';
 	echo '<br/><br/>';
@@ -112,4 +112,5 @@ if($res < 1){
 	echo '用户已经登出.';
 	echo '<br/><br/>';
 }
+*/
 ?>

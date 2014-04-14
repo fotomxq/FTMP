@@ -1,8 +1,9 @@
 /**
  * 中心设置页面
  * @author fotomxq <fotomxq.me>
- * @version 1
+ * @version 2
  */
+
 //提交数据封装
 var odata = new Object();
 //当前用户列表数据
@@ -59,6 +60,15 @@ operateUser.run = function(){
         checkboxClass:'icheckbox_flat',
         radioClass: 'iradio_flat'
     });
+    //添加用户按钮
+    $('a[href="#userAdd"]').click(function(){
+        $('#modalUserAdd').modal('show');
+    });
+    //添加用户确认按钮
+    $('#modalUserAddAction').click(function(){
+        $('#modalUserAdd').modal('hide');
+        operateUser.userAdd();
+    });
     //修改用户确认按钮
     $('#modalUserEditAction').click(function(){
         $('#modalUserEdit').modal('hide');
@@ -68,6 +78,15 @@ operateUser.run = function(){
     $('#modalUserDelAction').click(function(){
         $('#modalUserDel').modal('hide');
         operateUser.userDel($('#modalUserDel').data('id'));
+    });
+    //批量删除按钮
+    $('a[href="#userListDelAction"]').click(function(){
+        var idList = new Array();
+        operateUser.tableID.children('tr[selected="selected"]').each(function(i,n){
+            idList.push($(this).children('td:first').html());
+        });
+        $('#modalUserDel').data('id',idList);
+        $('#modalUserDel').modal('show');
     });
     //页码按钮组
     $('#userPageIndex').click(function(){
@@ -127,7 +146,7 @@ operateUser.getUserList = function(){
             //遍历所有数据
             for(var i=0;i<data.length;i++){
                 var isself = '';
-                if(data['id']==operateUser.tableID.attr('user-id')){
+                if(data[i]['id'] == $('#userList').attr('user-id')){
                     isself = ' <span class="label label-info">你自己</span>';
                 }
                 operateUser.tableID.append('<tr><td>'+data[i]['id']+'</td><td>'+data[i]['user_login']+isself+'</td><td>'+data[i]['user_nicename']+'</td><td>'+data[i]['user_date']+'</td><td>'+data[i]['user_ip']+'</td><td>'+operateUser.tableOperateDom+'</td></tr>');
@@ -155,13 +174,18 @@ operateUser.getUserList = function(){
                     $(this).attr('selected','selected');
                     $(this).addClass('active');
                 }
+                if(operateUser.tableID.children('tr[selected="selected"]').length > 0){
+                    $('a[href="#userListDelAction"]').removeClass('disabled');
+                }else{
+                    $('a[href="#userListDelAction"]').addClass('disabled');
+                }
             });
             //查看用户信息
             $('a[href="#userListView"]').click(function(){
                 operateUser.getUserInfo($(this).parent().parent().parent().data('data')['id'],this,function(data){
                     html = '<p>用户ID : '+data['id']+'</p><p>用户名 : '+data['user_login']+'</p>';
-                    html += '<p>权限 : ' + data['infosArr']['power'].join(',') + '</p>';
-                    html += '<p>应用 : ' + data['infosArr']['app'].join(',') + '</p>';
+                    html += '<p>权限 : ' + data['infosArr']['power'].join('|') + '</p>';
+                    html += '<p>应用 : ' + data['infosArr']['app'].join('|') + '</p>';
                     $('#modalUserView').find('div[class="modal-body"]').html(html);
                     $('#modalUserView').data('id',data['id']);
                     $('#modalUserView').modal('show');
@@ -172,6 +196,12 @@ operateUser.getUserList = function(){
                 operateUser.getUserInfo($(this).parent().parent().parent().data('data')['id'],this,function(data){
                     $('#inputModalEditUserNicename').val(data['user_nicename']);
                     $('#inputModalEditUserLogin').val(data['user_login']);
+                    for(var i=0;i<data['infosArr']['power'].length;i++){
+                        $('input[name="modalEditPowers[]"][data-value="'+data['infosArr']['power'][i]+'"]').iCheck('check');
+                    }
+                    for(var i=0;i<data['infosArr']['app'].length;i++){
+                        $('input[name="modalEditApps[]"][data-value="'+data['infosArr']['app'][i]+'"]').iCheck('check');
+                    }
                     $('#modalUserEdit').data('id',data['id']);
                     $('#modalUserEdit').modal('show');
                 });
@@ -191,22 +221,17 @@ operateUser.getUserInfo = function(userID,dom,func){
     }else{
         odata.submit('user-info',{'id':userID},function(data){
             if(data){
-                var contentInfos = new Array();
-                contentInfos['power'] = new Array();
-                contentInfos['app'] = new Array();
                 if(data['infos']){
+                    data['infosArr'] = new Array();
                     for(var i=0;i<data['infos'].length;i++){
-                        switch(data['infos'][i]['meta_name']){
-                            case 'POWER':
-                                contentInfos['power'].push(data['infos'][i]['meta_value']);
-                                break;
-                            case 'APP':
-                                contentInfos['app'].push(data['infos'][i]['meta_value']);
-                                break;
+                        if(data['infos'][i]['meta_name'] == $('#contentUser').attr('data-power-meta-name')){
+                            data['infosArr']['power'] = data['infos'][i]['meta_value'].split('|');
+                        }
+                        if(data['infos'][i]['meta_name'] == $('#contentUser').attr('data-app-meta-name')){
+                            data['infosArr']['app'] = data['infos'][i]['meta_value'].split('|');
                         }
                     }
                 }
-                data['infosArr'] = contentInfos;
                 odata.userInfos['id'+userID] = data;
                 func(data);
             }
@@ -215,19 +240,76 @@ operateUser.getUserInfo = function(userID,dom,func){
 }
 //添加新的用户
 operateUser.userAdd = function(){
-    
+    //获取数据
+    var addPowers = new Array();
+    var addApps = new Array();
+    $('input[name="modalAddPowers[]"]').each(function(i,dom){
+        if($(dom).prop("checked")){
+            addPowers.push($(this).attr('data-value'));
+        }
+    });
+    $('input[name="modalAddApps[]"]').each(function(i,dom){
+        if($(dom).prop("checked")){
+            addApps.push($(this).attr('data-value'));
+        }
+    });
+    //提交数据
+    odata.submit('user-add',{
+        'nicename':$('#inputModalAddUserNicename').val(),
+        'login':$('#inputModalAddUserLogin').val(),
+        'passwd':$('#inputModalAddUserPasswd').val(),
+        'powers':addPowers,
+        'app':addApps
+    },function(data){
+        if(data == '1'){
+            //移除内容
+            $('#inputModalAddUserNicename').val('');
+            $('#inputModalAddUserLogin').val('');
+            $('#inputModalAddUserPasswd').val('');
+            $('input[name="modalAddPowers[]"]').each(function(i,dom){
+                $(dom).iCheck('uncheck');
+            });
+            $('input[name="modalAddApps[]"]').each(function(i,dom){
+                $(dom).iCheck('uncheck');
+            });
+            odata.message('添加成功!','success');
+            operateUser.getUserList();
+        }else{
+            odata.message('添加失败，请重新确认相关选项!','error');
+        }
+    });
 }
 //编辑用户信息
-operateUser.userEditInfo = function(){
-    
-}
-//编辑用户元数据
-operateUser.userEditMeta = function(){
-    
-}
-//删除元数据
-operateUser.userDelMeta = function(){
-    
+operateUser.userEdit = function(){
+    //获取数据
+    var editPowers = new Array();
+    var editApps = new Array();
+    $('input[name="modalEditPowers[]"]').each(function(i,dom){
+        if($(dom).prop("checked")){
+            editPowers.push($(this).attr('data-value'));
+        }
+    });
+    $('input[name="modalEditApps[]"]').each(function(i,dom){
+        if($(dom).prop("checked")){
+            editApps.push($(this).attr('data-value'));
+        }
+    });
+    //提交数据
+    odata.submit('user-edit',{
+        'id':$('#modalUserEdit').data('id'),
+        'nicename':$('#inputModalEditUserNicename').val(),
+        'login':$('#inputModalEditUserLogin').val(),
+        'passwd':$('#inputModalEditUserPasswd').val(),
+        'powers':editPowers,
+        'app':editApps
+    },function(data){
+        if(data == '1'){
+            odata.message('修改成功!','success');
+            odata.userInfos['id'+$('#modalUserEdit').data('id')] = false;
+        }else{
+            odata.message('修改失败!','error');
+        }
+    });
 }
 //删除用户
 operateUser.userDel = function(userID){
@@ -239,6 +321,7 @@ operateUser.userDel = function(userID){
         }else{
             odata.message('不能删除你自己!','error');
         }
+        operateUser.getUserList();
     });
 }
 

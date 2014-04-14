@@ -3,7 +3,7 @@
 /**
  * 用户处理器
  * @author fotomxq <fotomxq.me>
- * @version 4
+ * @version 5
  * @package sys
  */
 class SysUser {
@@ -75,6 +75,19 @@ class SysUser {
      * @var array
      */
     public $powerValues = array('VISITOR', 'ADMIN', 'NORMAL');
+
+    /**
+     * 应用元数据名称
+     * @var string
+     */
+    public $appMetaName = 'APP';
+
+    /**
+     * 应用元数据列
+     * <p>需要在配置文件中指定。</p>
+     * @var array
+     */
+    public $appMetaValues;
 
     /**
      * 初始化
@@ -211,7 +224,7 @@ class SysUser {
 
     /**
      * 查看用户某个元数据
-     * @param  int $userID   用户ID
+     * @param  int $userID   ID
      * @param  string $metaName 元数据名称
      * @return array 数据组，如果为空则返回null
      */
@@ -350,94 +363,49 @@ class SysUser {
      * @return array|boolean 检测结果以数组呈现，或返回false
      */
     public function checkPower($userID, $powers) {
-        $res = $this->viewMeta($userID, $this->powerMetaName);
-        if ($res) {
-            $powerChecks;
-            $powers;
-            foreach ($powers as $v) {
-                $powerChecks[$v] = false;
-            }
-            foreach ($res as $v) {
-                if (isset($powerChecks[$v[$this->fieldsMeta[3]]]) == true) {
-                    $powerChecks[$v[$this->fieldsMeta[3]]] = in_array($v[$this->fieldsMeta[3]], $powers);
-                }
-            }
-            return $powerChecks;
+        $res = $this->getMetaValList($userID, $this->powerMetaName);
+        $resPowers;
+        foreach($powers as $v){
+            $resPowers[$v] = false;
         }
-        return false;
+        if ($res) {
+            foreach($powers as $v){
+                $resPowers[$v] = in_array($v,$res);
+            }
+        }
+        return $resPowers;
     }
 
     /**
-     * 编辑用户权限
+     * 获取元数据列
+     * <p>重组为数据数组。</p>
      * @param  int $userID 用户ID
-     * @param  array $powers 权限组
-     * @return boolean 是否成功
+     * @param  string $metaName 元数据名称
+     * @return array       数据数组
      */
-    public function editPower($userID, $powers) {
-        $res = $this->viewMeta($userID, $this->powerMetaName);
-        if ($res) {
-            //如果已存在权限
-            if ($powers) {
-                //如果赋予权限，则以此排除，或 添加/修改/删除
-                $where = '`' . $this->fieldsMeta[0] . '` = :id';
-                $sets = array($this->fieldsMeta[3] => ':value');
-                $attrs;
-                $countRes = count($res);
-                $countPowers = count($powers);
-                if ($countRes < $countPowers) {
-                    foreach ($powers as $k => $v) {
-                        if (isset($res[$k]) == true) {
-                            $attrs = array(':id' => array($res[$k]['id'], PDO::PARAM_INT), ':value' => array($v, PDO::PARAM_STR));
-                            if (!$this->db->sqlUpdate($this->tableNameMeta, $sets, $where, $attrs))
-                                return false;
-                        }else {
-                            if (!$this->addMeta($userID, $this->powerMetaName, $v))
-                                return false;
-                        }
-                    }
-                    return true;
-                }elseif ($countRes > $countPowers) {
-                    foreach ($res as $k => $v) {
-                        if (isset($powers[$k]) == true) {
-                            $attrs = array(':id' => array($v['id'], PDO::PARAM_INT), ':value' => array($powers[$k], PDO::PARAM_STR));
-                            if (!$this->db->sqlUpdate($this->tableNameMeta, $sets, $where, $attrs))
-                                return false;
-                        }else {
-                            if (!$this->delMeta($v['id']))
-                                return false;
-                        }
-                    }
-                    return true;
-                }else {
-                    foreach ($res as $k => $v) {
-                        $attrs = array(':id' => array($v['id'], PDO::PARAM_INT), ':value' => array($powers[$k], PDO::PARAM_STR));
-                        if (!$this->db->sqlUpdate($this->tableNameMeta, $sets, $where, $attrs))
-                            return false;
-                    }
-                    return true;
-                }
-            }else {
-                //如果没有赋予权限，则清空所有权限
-                $where = '`' . $this->fieldsMeta[1] . '` = :userID and `' . $this->fieldsMeta[2] . '` = :metaName';
-                $attrs = array(':userID' => array($userID, PDO::PARAM_INT), ':metaName' => array($this->powerMetaName, PDO::PARAM_STR));
-                return $this->db->sqlDelete($this->tableNameMeta, $where, $attrs);
-            }
-        } else {
-            //如果未添加权限
-            if ($powers) {
-                //如果赋予权限，则创建
-                foreach ($powers as $v) {
-                    if (!$this->addMeta($userID, $this->powerMetaName, $v)) {
-                        return false;
-                    }
-                }
-                return true;
-            } else {
-                //如果没有赋予权限，则直接返回
-                return true;
-            }
+    public function getMetaValList($userID,$metaName){
+        $res = $this->viewMeta($userID,$metaName);
+        if($res){
+            return explode('|',$res[0][$this->fieldsMeta[3]]);
         }
-        return false;
+        return null;
+    }
+
+    /**
+     * 设定元数据值
+     * @param  int $userID 用户ID
+     * @param  string $metaName 元数据名称
+     * @param array $vals 数据数组
+     * @return boolean|int       是否成功，如果第一次添加则返回元数据ID
+     */
+    public function setMetaValList($userID,$metaName,$vals){
+        $val = implode('|', $vals);
+        $res = $this->viewMeta($userID,$metaName);
+        if($res){
+            return $this->editMeta($res[0][$this->fieldsMeta[0]],$val);
+        }else{
+            return $this->addMeta($userID,$metaName,$val);
+        }
     }
 
     /**

@@ -2,10 +2,11 @@
 /**
  * 平台管理中心
  * @author fotomxq <fotomxq.me>
- * @version 3
+ * @version 4
  * @package web
  * @todo 添加开关JS设定
  * @todo 添加验证码开关设定
+ * @todo 完成统计部分
  */
 //引用登录检测模块
 require('action-logged.php');
@@ -70,7 +71,7 @@ require('page-menu.php');
             </form>
         </div>
     </div>
-    <div id="contentUser">
+    <div id="contentUser" data-power-meta-name="<?php echo $user->powerMetaName; ?>" data-app-meta-name="<?php echo $user->appMetaName; ?>">
         <h2 id="urlUser"><span class="glyphicon glyphicon-user"></span> 用户</h2><hr/>
         <div class="row row-fixed">
             <div class="col-lg-9"></div>
@@ -100,8 +101,8 @@ require('page-menu.php');
         </div>
         <div class="row row-fixed">
             <div class="col-lg-12">
-                <a href="#userAdd" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span> 添加</a>
-                <a href="#userListDel" class="btn btn-warning"><span class="glyphicon glyphicon-trash"></span> 批量删除</a>
+                <a href="#userAdd" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span> 添加用户</a>
+                <a href="#userListDelAction" class="btn btn-warning disabled"><span class="glyphicon glyphicon-trash"></span> 批量删除</a>
                 <div class="btn-group"><button type="button" class="btn btn-default" id="userPageIndex">首页</button><button type="button" class="btn btn-default" id="userPagePrev">上一页</button><button type="button" class="btn btn-default" disabled="disabled" id="#userPageCount">1/1</button><button type="button" class="btn btn-default" id="userPageNext">下一页</button><button type="button" class="btn btn-default" id="userPageEnd">末页</button></div> 
             </div>
         </div>
@@ -127,6 +128,67 @@ require('page-menu.php');
     </div>
   </div>
 </div>
+</div>
+<!-- modal-user-add -->
+<div class="modal fade" id="modalUserAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">添加用户</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label for="inputModalAddUserNicename" class="col-sm-2 control-label">昵称</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputModalAddUserNicename" placeholder="昵称">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputModalAddUserLogin" class="col-sm-2 control-label">用户名</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputModalAddUserLogin" placeholder="用户名">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputModalAddUserPasswd" class="col-sm-2 control-label">密码</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" id="inputModalAddUserPasswd" placeholder="密码">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">权限</label>
+                <div class="col-sm-10">
+                    <div class="form-control-static">
+                        <?php foreach($user->powerValues as $v){ ?>
+                        <label>
+                          <input type="checkbox" name="modalAddPowers[]" data-value="<?php echo $v; ?>"> <?php echo $v; ?>
+                        </label>
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">应用</label>
+                <div class="col-sm-10">
+                    <div class="form-control-static">
+                        <?php foreach($appList as $k=>$v){ ?>
+                        <label>
+                          <input type="checkbox" name="modalAddApps[]" data-value="<?php echo $k; ?>"> <?php echo $v['name']; ?>
+                        </label>
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="modalUserAddAction">添加用户</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- modal-user-edit -->
 <div class="modal fade" id="modalUserEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

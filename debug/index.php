@@ -1,4 +1,23 @@
 <?php
+/**
+ * Debug首页
+ * @author fotomxq <fotomxq.me>
+ * @version 2
+ * @package debug
+ */
+
+//debug列表
+$debugList = array(
+  array('title'=>'文件管理器测试','link'=>'sys-file.php'),
+  array('title'=>'体重处理器测试','link'=>'app-weight.php'),
+  array('title'=>'用户系统测试','link'=>'sys-user.php'),
+  array('title'=>'错误测试','link'=>'core-error.php'),
+  array('title'=>'缓冲器测试','link'=>'core-cache.php'),
+  array('title'=>'配置操作类测试','link'=>'sys-config.php'),
+  array('title'=>'日志系统测试','link'=>'log.php'),
+  array('title'=>'数据库测试','link'=>'db.php'),
+  array('title'=>'IP测试','link'=>'ip.php')
+  );
 ?>
 <!DOCTYPE html>
 <html lang="zh-cn">
@@ -53,8 +72,8 @@
 
     <div class="container">
     	<!-- /提示 -->
-    	<h1>Message</h1>
-    	<p>该页面会列出所有debug处理页面，同时页面代码可用于其他页面输出处理。</p>
+    	<h1>DEBUG</h1>
+    	<p>该页面会列出所有debug处理页面，同时页面代码可用于其他页面输出处理。按照建立顺序倒叙排列。</p>
     	<!-- /Debug列表 -->
     	<table class="table table-striped">
     		<thead>
@@ -64,38 +83,12 @@
     			</tr>
     		</thead>
     		<tbody>
+          <?php foreach($debugList as $v){ ?>
           <tr>
-            <td>体重处理器测试</td>
-            <td><a class="btn btn-default" href="app-weight.php" target="_self">Start</a></td>
+            <td><?php echo $v['title']; ?></td>
+            <td><a class="btn btn-default" href="<?php echo $v['link']; ?>" target="_self">Start</a></td>
           </tr>
-          <tr>
-            <td>用户系统测试</td>
-            <td><a class="btn btn-default" href="sys-user.php" target="_self">Start</a></td>
-          </tr>
-          <tr>
-            <td>错误测试</td>
-            <td><a class="btn btn-default" href="core-error.php" target="_self">Start</a></td>
-          </tr>
-          <tr>
-            <td>缓冲器测试</td>
-            <td><a class="btn btn-default" href="core-cache.php" target="_self">Start</a></td>
-          </tr>
-          <tr>
-            <td>配置操作类测试</td>
-            <td><a class="btn btn-default" href="sys-config.php" target="_self">Start</a></td>
-          </tr>
-    			<tr>
-    				<td>日志系统测试</td>
-    				<td><a class="btn btn-default" href="log.php" target="_self">Start</a></td>
-    			</tr>
-    			<tr>
-    				<td>数据库测试</td>
-    				<td><a class="btn btn-default" href="db.php" target="_self">Start</a></td>
-    			</tr>
-          <tr>
-            <td>IP测试</td>
-            <td><a class="btn btn-default" href="ip.php" target="_self">Start</a></td>
-          </tr>
+          <?php } ?>
     		</tbody>
     	</table>
     </div> <!-- /container -->

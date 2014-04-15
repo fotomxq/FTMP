@@ -81,3 +81,21 @@ CREATE TABLE IF NOT EXISTS `sys_usermeta` (
 INSERT INTO `sys_usermeta` (`id`, `user_id`, `meta_name`, `meta_value`) VALUES
 (1, 1, 'POWER', 'ADMIN|NORMAL'),
 (2, 1, 'APP', 'weight|music');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `sys_file`
+--
+
+CREATE TABLE IF NOT EXISTS `sys_file` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '索引',
+  `file_name` varchar(300) COLLATE utf8_bin NOT NULL COMMENT '原始文件名',
+  `file_src` varchar(300) COLLATE utf8_bin NOT NULL COMMENT '路径',
+  `file_date` datetime NOT NULL COMMENT '上传时间',
+  `file_sha1` varchar(41) COLLATE utf8_bin NOT NULL COMMENT 'SHA1',
+  `file_size` bigint(20) NOT NULL COMMENT '大小kb',
+  `file_type` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '类型',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+

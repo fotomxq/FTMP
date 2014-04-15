@@ -79,5 +79,5 @@ CREATE TABLE IF NOT EXISTS `sys_usermeta` (
 --
 
 INSERT INTO `sys_usermeta` (`id`, `user_id`, `meta_name`, `meta_value`) VALUES
-(1, 1, 'POWER', 'ADMIN'),
-(2, 1, 'POWER', 'NORMAL');
+(1, 1, 'POWER', 'ADMIN|NORMAL'),
+(2, 1, 'APP', 'weight|music');

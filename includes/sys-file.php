@@ -15,12 +15,6 @@ class SysFile{
 	private $db;
 
 	/**
-	 * 缓冲器对象
-	 * @var CoreCache
-	 */
-	private $cache;
-
-	/**
 	 * 文件保存目录
 	 * @var string
 	 */
@@ -33,27 +27,38 @@ class SysFile{
 	private $ds = DIRECTORY_SEPARATOR;
 
 	/**
-	 * 数据表名称
+	 * 文件数据表名称
 	 * @var string
 	 */
 	private $fileTableName;
 
 	/**
-	 * 数据表字段
+	 * 文件表字段
 	 * @var array
 	 */
 	private $fileFields = array('id','file_name','file_src','file_date','file_sha1','file_size','file_type');
 
 	/**
+	 * 文件服务器关系表名称
+	 * @var string
+	 */
+	private $fsTableName;
+
+	/**
+	 * 文件服务器字段
+	 * @var array
+	 */
+	private $fsFields = array('id','file_id','server_id');
+
+	/**
 	 * 初始化
 	 * @param CoreDB 	$db        		数据库对象
-	 * @param CoreCache $cache  		缓冲器对象
 	 * @param string 	$fileDir 		文件保存目录
-	 * @param string 	$fileTableName 	数据表名称
+	 * @param string 	$fileTableName 	文件数据表名称
+	 * @param string 	$fsTableName 	文件服务器关系表名称
 	 */
-	public function __construct(&$db,&$cache,$fileDir,$fileTableName){
+	public function __construct(&$db,$fileDir,$fileTableName,$fsTableName){
 		$this->db = $db;
-		$this->cache = $cache;
 		$this->fileDir = $fileDir;
 		$this->fileTableName = $fileTableName;
 	}
@@ -103,7 +108,7 @@ class SysFile{
 	 * @return int             新的文件ID，如果失败则返回0
 	 */
 	public function move($src){
-		return $this->createFile($src,basename($src));
+		return $this->createFile($src,basename($src),false);
 	}
 
 	/**
@@ -116,8 +121,9 @@ class SysFile{
 		$res = $this->view($id);
 		if($res){
 			//删除文件
-			if(CoreFile::isFile($res[$this->fileFields[2]]) == true){
-				if(CoreFile::deleteFile($res[$this->fileFields[2]]) == true){
+			$fileSrc = $this->fileDir.$this->ds.$res[$this->fileFields[2]];
+			if(CoreFile::isFile($fileSrc)){
+				if(CoreFile::deleteFile($fileSrc)){
 					//删除文件信息
 					$where = '`'.$this->fileFields[0].'` = :id';
 					$attrs = array(':id'=>array($id,PDO::PARAM_INT));
@@ -125,24 +131,60 @@ class SysFile{
 				}
 			}
 		}
+		return false;
 	}
 
 	/**
 	 * 检查重复文件
+	 * <p>如果没有提供要查询的SHA1值，则查询所有重复的文件记录个数和对应的任意ID。</p>
+	 * @param string $sha1 要匹配的SHA1值，如果提供则查询该SHA1出现的文件
+	 * @param int $page 步数，数据过大时分段执行
 	 * @return array 重复文件列，如果没有则返回null
 	 */
-	public function checkRepeat(){
+	public function checkRepeat($sha1=null,$page=null){
+		if($sha1 == null){
+			$sql = 'SELECT `'.$this->fileFields[0].'`,COUNT(*) FROM `'.$this->fileTableName.'` GROUP BY '.$this->fileFields[4].' HAVING COUNT(*) > 1';
+			if($page!=null){
+				$max = 10;
+				$page = (int)$page;
+				$sql .= ' LIMIT '.($page-1)*$max.','.$max;
+			}
+			return $this->db->runSQL($sql,null,3,PDO::FETCH_ASSOC);
+		}else{
+			$where = '`'.$this->fileFields[4].'` = :sha1';
+			$attrs = array(':sha1'=>array($sha1,PDO::PARMA_STR));
+			return $this->db->sqlSelect($this->fileTableName,$this->fileFields,$where,$attrs);
+		}
 		return null;
 	}
 
 	/**
 	 * 检查文件信息匹配度
-	 * <p>检查文件信息和真实文件是否匹配，并存在。</p>
+	 * <p>检查文件信息对应的文件是否存在。</p>
+	 * <p>如果没有提供分步值，也会进行内部分步处理。分步过程中，nofile可能和noinfo不对应，达到某些步后可能会发现其中一个有内容，另外一项已经搜索完成。</p>
+	 * <p>注意在使用前尽量停止任何建立文件的行为，否则潜在会导致异常。</p>
 	 * @param int $page 步数，数据过大时分段执行
 	 * @return array 检查结果，如果没有则返回null
 	 */
 	public function checkInfos($page=null){
-		return null;
+		$arr = array('nofile'=>array(),'noinfo'=>array());
+		$max = 30;
+		if($page==null){
+			$page = 1;
+			while($res = $this->search('1',null,$page,$max)){
+				if($res){
+					foreach($res as $v){
+						$vSrc = $this->fileDir.$this->ds.$v[$this->fileFields[2]];
+						if(!CoreFile::isFile($vSrc)){
+							$arr['nofile'][] = $v;
+						}
+					}
+				}
+				$page++;
+			}
+		}else{
+		}
+		return $arr;
 	}
 
 	/**
@@ -153,6 +195,9 @@ class SysFile{
 	 */
 	public function optimizationFile($arr){
 		return false;
+	}
+
+	public function moveServer($fileID,$serverID,$targetServerID){
 	}
 
 	/**
@@ -168,18 +213,22 @@ class SysFile{
 		$fileSize = $this->getSize($src);
 		$fileType = $this->getTypeMeta($src);
 		$fileSrc = $this->createNewSrc($date,$sha1);
-		if($isUpload == true){
-			if(!CoreFile::moveUpload($src,$fileSrc)){
-				return 0;
+		$fileSrcD = $this->fileDir.$this->ds.$fileSrc;
+		if($fileSrc){
+			if($isUpload == true){
+				if(!CoreFile::moveUpload($src,$fileSrcD)){
+					return 0;
+				}
+			}else{
+				if(!CoreFile::copyFile($src,$fileSrcD)){
+					return 0;
+				}
 			}
-		}else{
-			if(!CoreFile::cutF($src,$fileSrc)){
-				return 0;
-			}
+			$vals = 'NULL,:name,:src,:date,:sha1,:size,:type';
+			$attrs = array(':name'=>array($name,PDO::PARAM_STR),':src'=>array($fileSrc,PDO::PARAM_STR),':date'=>array($date,PDO::PARAM_STR),':sha1'=>array($sha1,PDO::PARAM_STR),':size'=>array($fileSize,PDO::PARAM_INT),':type'=>array($fileType,PDO::PARAM_STR));
+			return $this->db->sqlInsert($this->fileTableName,$this->fileFields,$vals,$attrs);
 		}
-		$vals = 'NULL,:name,:src,:date,:sha1,:size,:type';
-		$attrs = array(':name'=>array($name,PDO::PARAM_STR),':src'=>array($fileSrc,PDO::PARAM_STR),':date'=>array($date,PDO::PARAM_STR),':sha1'=>array($sha1,PDO::PARAM_STR),':size'=>array($fileSize,PDO::PARAM_INT),':type'=>array($fileType,PDO::PARAM_STR));
-		return $this->db->sqlInsert($this->fileTableName,$this->fileFields,$vals,$attrs);
+		return 0;
 	}
 
 	/**
@@ -189,7 +238,11 @@ class SysFile{
 	 * @return string       文件路径
 	 */
 	private function createNewSrc($date,$sha1){
-		return $this->fileDir.$this->ds.substr($date,0,4).substr($date,5,2).$this->ds.substr($date,8,2).$this->ds.$sha1;
+		$dir = substr($date,0,4).substr($date,5,2).$this->ds.substr($date,8,2);
+		if(CoreFile::newDir($dir)){
+			return $dir.$this->ds.$sha1.'_'.rand(1,9999);
+		}
+		return false;
 	}
 
 	/**
@@ -206,7 +259,7 @@ class SysFile{
 	 * @return int      文件大小KB
 	 */
 	private function getSize($src){
-		return file_size($src) / 1024;
+		return filesize($src) / 1024;
 	}
 
 	/**

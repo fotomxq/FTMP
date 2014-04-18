@@ -5,7 +5,7 @@
  * 全局配置文件
  * 
  * @author fotomxq <fotomxq.me>
- * @version 4
+ * @version 5
  * @package web
  */
 //////////////////
@@ -25,6 +25,8 @@ define('DIR_APP', DIR_ROOT . 'app');
 //////////////////
 //上传文件设定
 //////////////////
+//上传文件目录
+define('UPLOAD_DIR',DIR_DATA.DS.'uploads');
 //允许的文件类型
 define('UPLOAD_TYPE', 'jpg,png,gif,jpeg,wmp,zip,rar,7z,pdf,doc,docx,ppt,cvs,xls,txt,wma,wmv,mp3,mp4,avi,mpeg');
 //拒绝的文件类型
@@ -105,6 +107,14 @@ define('COMMENT_TIME_LIMIT', 60);
 define('COMMENT_AUDIT_ON', true);
 
 //////////////////
+//同步设置
+//////////////////
+//保存当前数据库版本版本
+define('SYNC_VERSION_NAME','SYNC-VERSION');
+//自动同步时间，如果为0表明不自动同步
+define('SYNC_TIME',0);
+
+//////////////////
 //其他设定
 //////////////////
 //URL
@@ -135,6 +145,12 @@ define('TABLE_CONFIG', 'sys_config');
 define('TABLE_USER', 'sys_user');
 //用户元表
 define('TABLE_USER_META', 'sys_usermeta');
+//上传文件表
+define('TABLE_FILE', 'sys_file');
+//服务器
+define('TABLE_SERVER','sys_server');
+//文件和服务器关系表
+define('TABLE_FILE_SERVER','sys_file_server');
 
 //////////////////
 //数据库定义

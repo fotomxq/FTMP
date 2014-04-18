@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS `sys_config` (
 INSERT INTO `sys_config` (`id`, `config_name`, `config_value`) VALUES
 (1, 'WEB-TITLE', 'FTM Personal'),
 (2, 'USER-LIMIT-TIME', '1800'),
-(3, 'USER-VCODE-OPEN', '1');
+(3, 'USER-VCODE-OPEN', '1'),
+(4, 'SYNC-VERSION', '1');
 
 -- --------------------------------------------------------
 

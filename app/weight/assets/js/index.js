@@ -169,6 +169,7 @@ chart.selectDay = function() {
     wData.day(chart.dayMax, function(data) {
         if (data) {
             chart.dataServer = data;
+            data = data.reverse();
             for (var i = 0; i < data.length; i++) {
                 chart.data['labels'][i] = data[i]['weight_date'];
                 if (chart.showType == 'weight') {

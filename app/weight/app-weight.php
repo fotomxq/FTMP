@@ -2,7 +2,7 @@
 /**
  * 体重记录类
  * @author fotomxq <fotomxq.me>
- * @version 3
+ * @version 4
  * @package app-weight-lib
  */
 
@@ -77,7 +77,7 @@ class AppWeight{
 	public function viewTop($max=10){
 		$where = '`'.$this->fields[1].'` = :userID';
 		$attrs = array(':userID'=>array($this->userID,PDO::PARAM_INT));
-		return $this->db->sqlSelect($this->tableName,$this->fields,$where,$attrs,1,$max,$this->fields[2],false);
+		return $this->db->sqlSelect($this->tableName,$this->fields,$where,$attrs,1,$max,$this->fields[2],true);
 	}
 
 	/**

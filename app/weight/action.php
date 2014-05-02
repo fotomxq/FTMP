@@ -82,7 +82,7 @@ if (isset($_GET['type']) == true) {
         case 'day':
             if (isset($_GET['max']) == true) {
                 $max = (int) $_GET['max'];
-                $cacheName = 'DAY-' . $max;
+                $cacheName = 'DAY-'.$max;
                 $res;
                 if (isset($appWeightData[$cacheName])) {
                     $res = $appWeightData[$cacheName];

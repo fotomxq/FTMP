@@ -103,7 +103,7 @@ require('page-menu.php');
             <div class="col-lg-12">
                 <a href="#userAdd" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span> 添加用户</a>
                 <a href="#userListDelAction" class="btn btn-warning disabled"><span class="glyphicon glyphicon-trash"></span> 批量删除</a>
-                <div class="btn-group"><button type="button" class="btn btn-default" id="userPageIndex">首页</button><button type="button" class="btn btn-default" id="userPagePrev">上一页</button><button type="button" class="btn btn-default" disabled="disabled" id="#userPageCount">1/1</button><button type="button" class="btn btn-default" id="userPageNext">下一页</button><button type="button" class="btn btn-default" id="userPageEnd">末页</button></div> 
+                <div class="btn-group"><button type="button" class="btn btn-default" id="userPageIndex">首页</button><button type="button" class="btn btn-default" id="userPagePrev">上一页</button><button type="button" class="btn btn-default" disabled="disabled" id="userPageCount">1/1</button><button type="button" class="btn btn-default" id="userPageNext">下一页</button><button type="button" class="btn btn-default" id="userPageEnd">末页</button></div> 
             </div>
         </div>
     </div>

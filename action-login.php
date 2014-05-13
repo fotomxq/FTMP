@@ -3,7 +3,7 @@
 /**
  * 登录操作
  * @author fotomxq <fotomxq.me>
- * @version 2
+ * @version 3
  * @package web
  */
 //引用全局
@@ -18,7 +18,14 @@ if (isset($_POST['email']) == true && isset($_POST['password']) == true) {
     $loginReady = $user->login($ipAddr, $email, $_POST['password'], $remember);
     if ($loginReady == true) {
         $log->add(basename(__FILE__), 'Sign in success.');
-        CoreHeader::toURL('center.php');
+        if(count($appList) > 1){
+            CoreHeader::toURL('center.php');
+        }else{
+            foreach($appList as $k=>$v){
+                CoreHeader::toURL('app/'.$k.'/index.php');
+                die();
+            }
+        }
         die();
     }
 }

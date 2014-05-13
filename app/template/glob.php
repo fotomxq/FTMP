@@ -1,22 +1,19 @@
 <?php
+
 /**
  * 通用模版-全局设定
  * @author fotomxq <fotomxq.me>
- * @version 3
+ * @version 4
  * @package app-template
  */
-//引用登录检测模块
-require(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'glob.php');
-
-//判断是否已经登录
-$userID = $user->logged($ipAddr);
-if($userID < 1){
-	//如果没有登录，跳转到登录页面
-	CoreHeader::toURL(WEB_URL.'/index.php');
-}
+//引用全局设定
+require(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'glob.php');
 
 //定义APP模版引用位置
-define(DIR_APP_TEMPLATE,DIR_APP.DS.'template');
+define(DIR_APP_TEMPLATE, DIR_APP . DS . 'template');
+
+//引用简易模版
+require(DIR_APP_TEMPLATE . DS . 'app-template.php');
 
 /**
  * 定义模版相关变量

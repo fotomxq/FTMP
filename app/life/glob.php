@@ -6,7 +6,13 @@
  * @package web
  */
 //引用应用模版全局定义
-require(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'glob.php');
+require(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'action-logged.php');
+
+//判断用户是否具备访问该应用的权限
+$userAppPowers = $user->checkApp($userID, array('life'));
+if ($userAppPowers['life'] != true) {
+    die('No App Power.');
+}
 
 //设定引用显示名称
 $appPage['title'] = '体重中心';

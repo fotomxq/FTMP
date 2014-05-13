@@ -1,14 +1,13 @@
 <?php
 
 /**
- * 登录检测模块
+ * 应用内判断用户已登录模块
  * @author fotomxq <fotomxq.me>
- * @version 6
- * @package web
- * @todo 获取用户可用的APP列表
+ * @version 1
+ * @package app-template
  */
-//引用全局
-require(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'glob.php');
+//引用全局设定
+require(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'glob.php');
 
 //判断是否已经登录
 $userID = $user->logged($ipAddr);
@@ -20,7 +19,6 @@ if ($userID < 1) {
 
 //获取用户相关信息
 $userInfos = $user->viewUser($userID);
-$userInfos['appList'] = $user->viewMeta($userID, $user->appMetaName);
 
 //获取用户权限判断组
 $userPowers = $user->checkPower($userID, $user->powerValues);

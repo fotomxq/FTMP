@@ -3,7 +3,7 @@
 /**
  * 用户处理器
  * @author fotomxq <fotomxq.me>
- * @version 5
+ * @version 6
  * @package sys
  */
 class SysUser {
@@ -374,6 +374,26 @@ class SysUser {
             }
         }
         return $resPowers;
+    }
+
+    /**
+     * 检查应用权限具备情况
+     * @param  int $userID 用户ID
+     * @param  array $apps 应用组
+     * @return array 检测结果以数组呈现，对应boolean值
+     */
+    public function checkApp($userID, $apps) {
+        $res = $this->getMetaValList($userID, $this->appMetaName);
+        $resApps;
+        foreach($apps as $v){
+            $resApps[$v] = false;
+        }
+        if ($res) {
+            foreach($apps as $v){
+                $resApps[$v] = in_array($v,$res);
+            }
+        }
+        return $resApps;
     }
 
     /**

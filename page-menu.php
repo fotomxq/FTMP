@@ -2,7 +2,7 @@
 /**
  * 页面-菜单部分
  * @author fotomxq <fotomxq.me>
- * @version 5
+ * @version 6
  * @package web
  */
 if(!isset($pageArr)) die();
@@ -27,7 +27,11 @@ if(!isset($pageArr)) die();
           </ul>
           <?php } ?>
           <ul class="nav navbar-nav navbar-right">
+            <?php if(count($appList) > 1){ ?>
             <li<?php if($pageArr['menu-focus'] == 'center'){echo ' class="active"';} ?>><a href="center.php"><span class="glyphicon glyphicon-home"></span> 中心</a></li>
+            <?php }else{ foreach($appList as $k=>$v){ ?>
+            <li><a href="app/<?php echo $k; ?>/index.php"><span class="glyphicon glyphicon-home"></span> <?php echo$v['name']; ?></a></li>
+            <?php } } ?>
             <li<?php if($pageArr['menu-focus'] == 'user'){echo ' class="active"';} ?>><a href="center-user.php"><span class="glyphicon glyphicon-user"></span> 用户</a></li>
             <?php if($userPowers[$user->powerValues[1]] == true){ ?>
             <li<?php if($pageArr['menu-focus'] == 'operate'){echo ' class="active"';} ?>><a href="center-operate.php"><span class="glyphicon glyphicon-wrench"></span> 设置</a></li>

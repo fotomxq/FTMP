@@ -2,14 +2,14 @@
 /**
  * 用户个人信息修改页面
  * @author fotomxq <fotomxq.me>
- * @version 2
+ * @version 3
  * @package web
  */
 //引用登录检测模块
 require('action-logged.php');
 
 //页面设定
-$pageArr['title'] = '用户设置 - '.$userInfos['user_nicename'];
+$pageArr['title'] = '用户设置';
 $pageArr['menu-focus'] = 'user';
 
 //引用头和目录页面

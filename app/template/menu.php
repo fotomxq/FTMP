@@ -2,7 +2,7 @@
 /**
  * 通用模版-Munu
  * @author fotomxq <fotomxq.me>
- * @version 5
+ * @version 6
  * @package app-template
  */
 if(isset($appPage) != true) die();
@@ -26,10 +26,15 @@ if(isset($appPage) != true) die();
             <?php } ?>
           </ul>
           <?php } ?>
-          <ul class="nav navbar-nav navbar-right">
-          	<li><a href="../../center.php"><span class="glyphicon glyphicon-home"></span> 中心</a></li>
-            <li><a href="../../action-logout.php"><span class="glyphicon glyphicon-remove-sign"></span> 退出</a></li>
-          </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <?php if(count($appList) > 1){ ?>
+                <li><a href="../../center.php"><span class="glyphicon glyphicon-home"></span> 中心</a></li>
+                <?php }else{ ?>
+                <li><a href="../../center-user.php.php"><span class="glyphicon glyphicon-user"></span> 用户设定</a></li>
+                <li><a href="../../center-operate.php.php"><span class="glyphicon glyphicon-wrench"></span> 系统设定</a></li>
+                <?php } ?>
+                <li><a href="../../action-logout.php"><span class="glyphicon glyphicon-remove-sign"></span> 退出</a></li>
+            </ul>
         </div>
       </div>
     </div>

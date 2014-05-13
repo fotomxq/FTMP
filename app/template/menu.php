@@ -28,7 +28,7 @@ if(isset($appPage) != true) die();
           <?php } ?>
           <ul class="nav navbar-nav navbar-right">
           	<li><a href="../../center.php"><span class="glyphicon glyphicon-home"></span> 中心</a></li>
-            <li><a href="action-logout.php"><span class="glyphicon glyphicon-remove-sign"></span> 退出</a></li>
+            <li><a href="../../action-logout.php"><span class="glyphicon glyphicon-remove-sign"></span> 退出</a></li>
           </ul>
         </div>
       </div>

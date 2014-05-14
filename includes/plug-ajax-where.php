@@ -11,10 +11,10 @@
 
 /**
  * Ajax-WHERE快速组合插件
- * @since 1
+ * @since 2
  * @param array $fields 对应匹配的字段组，eg: array('id','name',...)
  * @param array $wheres 客户端提交的where数组
- *                                                  eg: array(0=>array(0=>对应的键值 , 1=>匹配标记[=/</>/<=/>=/!=] , 2=>值 , 3=>和上一个条件关系[or/and]),...)
+ *                                                  eg: array(0=>array(0=>对应的键值 , 1=>匹配标记[包含/=/</>/<=/>=/!=/不包含] , 2=>值 , 3=>和上一个条件关系[or/and]),...)
  *                                                  注,在[]括号内的内容对应数字值
  * @return array 生成的where和attrs
  */
@@ -27,7 +27,7 @@ function PlugAjaxWhere($fields, $wheres) {
             $fieldStr = isset($fields[$v[0]]) == true ? $fields[$v[0]] : '';
             if ($fieldStr) {
                 //获取等式
-                $qs = array('=', '<', '>', '<=', '>=', '!=');
+                $qs = array('LIKE','=', '<', '>', '<=', '>=', '!=','!=');
                 $q = isset($qs[$v[1]]) == true ? $qs[$v[1]] : $qs[$v[0]];
                 //判断是否为第一个条件
                 if ($where != '') {
@@ -42,7 +42,12 @@ function PlugAjaxWhere($fields, $wheres) {
                     $where .= '`' . $fieldStr . '` ' . $q . ' :' . $fieldStr;
                 }
                 //过滤组，全部按照STR处理
-                $val = '%' . $v[2] . '%';
+                $val = '';
+                if($q == 0 || $q == 7){
+                    $val = '%' . $v[2] . '%';
+                }else{
+                    $val = $v[2];
+                }
                 $attrs[':' . $fieldStr] = array($val, PDO::PARAM_STR);
             }
         }

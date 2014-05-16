@@ -3,7 +3,7 @@
 /**
  * APP简易模版
  * @author fotomxq <fotomxq.me>
- * @version 1
+ * @version 2
  * @package app-template
  */
 class AppTemplate {
@@ -32,7 +32,7 @@ class AppTemplate {
      * @param string $tableName 数据表名称
      * @param array $fields 字段组
      */
-    public function __construct(&$db, $tableName, $fields) {
+    public function __construct($db, $tableName, $fields) {
         $this->db = $db;
         $this->tableName = $tableName;
         $this->fields = $fields;

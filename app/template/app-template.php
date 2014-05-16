@@ -73,8 +73,7 @@ class AppTemplate {
      */
     public function edit($id, $sets, $attrs) {
         $where = '`' . $this->fields[0] . '` = :id';
-        $attrs = array(':id' => array($id, PDO::PARAM_INT));
-        $attrs = array_merge($attrs, $attrs);
+        $attrs[':id'] = array($id, PDO::PARAM_INT);
         return $this->db->sqlUpdate($this->tableName, $sets, $where, $attrs);
     }
 

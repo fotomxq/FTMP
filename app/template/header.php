@@ -2,7 +2,7 @@
 /**
  * 通用模版-Header
  * @author fotomxq <fotomxq.me>
- * @version 3
+ * @version 4
  * @package app-template
  */
 
@@ -15,6 +15,8 @@ if(isset($appPage['glob']) == true){
   }
   if(array_search('datetimepicker',$appPage['glob']['pack']) !== false){
     array_push($appPage['glob']['js'],'bootstrap-datetimepicker');
+    array_push($appPage['glob']['js'],'bootstrap-datetimepicker.zh-CN');
+    array_push($appPage['glob']['css'],'bootstrap-datetimepicker');
   }
   if(array_search('icheck',$appPage['glob']['pack']) !== false){
     array_push($appPage['glob']['js'],'icheck');

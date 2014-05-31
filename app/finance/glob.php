@@ -15,7 +15,7 @@ if ($userAppPowers['finance'] != true) {
 }
 
 //设定引用显示名称
-$appPage['title'] = '体重中心';
+$appPage['title'] = '帐务中心';
 
 //引用组件
 $appPage['glob']['pack'] = array('messenger','icheck','chart','datetimepicker');
@@ -27,7 +27,11 @@ $appPage['temp']['css'] = array('page');
 $appPage['js'] = array('index');
 
 //设定顶部菜单
-$appPage['menu-left'] = array(array('url'=>'#urlSet','title'=>'<span class="glyphicon glyphicon-pushpin"></span> 设置','active'=>true),array('url'=>'#urlChart','title'=>'<span class="glyphicon glyphicon-stats"></span> 图表'));
+$appPage['menu-left'] = array(
+    array('url'=>'#urlSet','title'=>'<span class="glyphicon glyphicon-pushpin"></span> 记账','active'=>true),
+    array('url'=>'#urlChart','title'=>'<span class="glyphicon glyphicon-stats"></span> 图表'),
+    array('url'=>'#urlSearch','title'=>'<span class="glyphicon glyphicon-list-alt"></span> 查账'),
+    array('url'=>'#urlBudget','title'=>'<span class="glyphicon glyphicon-tasks"></span> 预算'));
 $appPage['menu-content-hide'] = true;
 $appPage['menu-content'] = array(array('#urlSet','#contentSet'),array('#urlChart','#contentChart'));
 ?>

@@ -14,6 +14,9 @@ require(DIR_APP_TEMPLATE . DS . 'header.php');
 require(DIR_APP_TEMPLATE . DS . 'menu.php');
 ?>
 <div class="container marketing container-fixed">
+    <div class="row">
+        
+    </div>
 </div>
 <?php
 //引用底部

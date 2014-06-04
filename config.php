@@ -171,9 +171,9 @@ $dbEncoding = 'UTF8';
 //////////////////
 //APP注册表
 $appList = array(
-    'health' => array('name' => '健康中心', 'des' => '协助体重和健身。', 'table' => array('weight')),
-    'life' => array('name' => '生活中心', 'des' => '一切生活的问题，在这里解决。', 'table' => array('life')),
+    'health' => array('name' => '健康中心', 'des' => '协助体重和健身。', 'table' => array()),
+    'life' => array('name' => '生活中心', 'des' => '一切生活的问题，在这里解决。', 'table' => array('app_life_log')),
     'resources'=>array('name'=>'资源管理器','des'=>'资源管理工具。','table'=>array()),
-    'finance'=>array('name'=>'财务管家','des'=>'家庭财务管理的最终解决方案。','table'=>array())
+    'finance'=>array('name'=>'财务管家','des'=>'家庭财务管理的最终解决方案。','table'=>array('app_finance'))
 );
 ?>

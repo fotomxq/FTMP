@@ -1,10 +1,10 @@
 <?php
 /**
  * IP处理器
+ * <p>废弃.</p>
  * @author fotomxq <fotomxq.me>
  * @version 1
  * @package core
- * @todo 修正IP实际地址无法获取问题
  */
 
 class CoreIP{

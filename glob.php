@@ -31,7 +31,7 @@ date_default_timezone_set('PRC');
 require(DIR_LIB . DS . 'core-db.php');
 $db = new CoreDB($dbDSN, $dbUser, $dbPasswd, $dbPersistent, $dbEncoding);
 if (!$db) {
-    die();
+    CoreHeader::toPage(PAGE_ERRPR+'db');
 }
 
 //过滤器
@@ -39,9 +39,8 @@ require(DIR_LIB . DS . 'core-filter.php');
 $filter = new CoreFilter();
 
 //IP类
-require(DIR_LIB . DS . 'core-ip.php');
-$ip = new CoreIP();
-$ipAddr = $ip->getIP();
+require(DIR_LIB . DS . 'sys-ip.php');
+$sysIP = new SysIP($db,TABLE_IP);
 
 //日志类
 require(DIR_LIB . DS . 'core-log.php');
@@ -50,6 +49,11 @@ $log = new CoreLog(LOG_ON, LOG_DIR, LOG_TYPE, $ipAddr);
 //配置处理器
 require(DIR_LIB . DS . 'sys-config.php');
 $config = new SysConfig($db, TABLE_CONFIG);
+
+//判断IP是否拉黑
+if($sysIP->isBan($sysIP->nowIP)){
+	CoreHeader::toPage(PAGE_ERRPR+'ip-ban');
+}
 
 //获取网站页面通用数据
 $cacheWebDataName = 'WEB-PAGE-DATA';
@@ -61,6 +65,12 @@ if ($webData) {
     $webData['WEB-TITLE'] = $config->get(1);
     $webData['USER-LIMIT-TIME'] = $config->get('USER-LIMIT-TIME');
     $cache->set($cacheWebDataName, json_encode($webData));
+}
+
+//判断是否开启网站维护模式
+$webData['WEB-MAINT-ON'] = $config->get('WEB-MAINT-ON');
+if(DEBUG_ON == false && $webData['WEB-MAINT-ON'] !== '0'){
+	CoreHeader::toPage(PAGE_ERRPR+'maint');
 }
 
 //用户处理器

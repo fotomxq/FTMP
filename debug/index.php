@@ -16,7 +16,8 @@ $debugList = array(
   array('title'=>'配置操作类测试','link'=>'sys-config.php'),
   array('title'=>'日志系统测试','link'=>'log.php'),
   array('title'=>'数据库测试','link'=>'db.php'),
-  array('title'=>'IP测试','link'=>'ip.php')
+  array('title'=>'IP测试','link'=>'ip.php'),
+  array('title'=>'第二代IP处理器测试','link'=>'sys-ip.php')
   );
 ?>
 <!DOCTYPE html>

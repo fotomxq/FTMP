@@ -52,6 +52,12 @@ class SysUser {
     private $sessionLoginName = 'login';
 
     /**
+     * 登录次数计数器session变量名称
+     * @var string
+     */
+    private $sessionLoginNum = 'login-num';
+
+    /**
      * 记录超时时间Session变量名称
      * @var string
      */
@@ -62,6 +68,13 @@ class SysUser {
      * @var int
      */
     private $limitTime = 1800;
+
+    /**
+     * 登录重试次数
+     * 小于和包含该值
+     * @var int
+     */
+    private $limitLoginNum = 5;
 
     /**
      * 权限元数据名称
@@ -104,6 +117,7 @@ class SysUser {
         $this->sessionLoginName = $sessionLoginName;
         $this->limitTime = $limitTime;
         $this->sessionLimitTime = $this->sessionLoginName . '-time';
+        $this->sessionLoginNum = $this->sessionLoginName . '-num';
     }
 
     /**
@@ -127,10 +141,12 @@ class SysUser {
                     $this->saveLoginStatus($res['id']);
                     $status = $forever == true ? 'forever' : 'logged';
                     $this->saveLastTime();
+                    $this->setLoginNum(0);
                     return $this->updateStatus($res['id'], $ip, $status);
                 }
             }
         }
+        $this->setLoginNum('add');
         return false;
     }
 
@@ -485,6 +501,30 @@ class SysUser {
      */
     private function getLastTime() {
         return isset($_SESSION[$this->sessionLimitTime]) == true ? $_SESSION[$this->sessionLimitTime] : 0;
+    }
+
+    /**
+     * 修改登录计数器
+     * @param string 类型，add-添加一位;?-设置为0
+     */
+    private function setLoginNum($type){
+        if($type == 'add'){
+            $_SESSION[$this->sessionLoginNum] = $_SESSION[$this->sessionLoginNum]+1;
+        }else{
+            $_SESSION[$this->sessionLoginNum] = 0;
+        }
+    }
+
+    /**
+     * 判断登录计数器是否超过限制
+     * @return boolean
+     */
+    private function isLoginNum(){
+        if($_SESSION[$this->sessionLoginNum] <= $this->limitLoginNum){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**

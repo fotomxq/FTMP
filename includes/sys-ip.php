@@ -4,6 +4,7 @@
  * @author fotomxq <fotomxq.me>
  * @version 1
  * @package sys
+ * @todo  稍后为互联网获取真实地址加入多种途经获取
  */
 
 class SysIP{
@@ -25,6 +26,10 @@ class SysIP{
 	 */
 	private $fields = array('id','ip_addr','ip_real','ip_ban');
 
+	/**
+	 * 当前IP索引ID
+	 * @var int
+	 */
 	public $nowID = 0;
 
 	/**
@@ -39,6 +44,11 @@ class SysIP{
 		$this->nowID = $this->add($this->getIP());
 	}
 	
+	/**
+	 * 查看ID信息
+	 * @param  int $id 索引
+	 * @return array 数据数组
+	 */
 	public function view($id){
 		$where = '`'.$this->fields[0].'` = :id';
 		$attrs = array(':id'=>array($id,PDO::PARAM_INT));
@@ -81,6 +91,11 @@ class SysIP{
 		return $this->db->sqlSelect($this->tableName,$this->fields,$where,$attrs,$page,$max,$sortField,$desc);
 	}
 
+	/**
+	 * 是否拉黑
+	 * @param  string  $src IP地址
+	 * @return boolean 是否拉黑
+	 */
 	public function isBan($src){
 		$res;
 		if(is_int($src) == true){
@@ -99,6 +114,12 @@ class SysIP{
 		}
 	}
 
+	/**
+	 * 设置拉黑状态
+	 * @param string  $src IP地址
+	 * @param boolean $ban 是否拉黑
+	 * @return boolean 是否成功
+	 */
 	public function setBan($src,$ban=false){
 		$isBan = $this->isBan($src);
 		$where;
@@ -115,6 +136,12 @@ class SysIP{
 		return $this->db->sqlUpdate($this->tableName,$sets,$where,$attrs);
 	}
 
+	/**
+	 * 设置真实地址
+	 * @param int $id 索引
+	 * @param string $real 真实地址
+	 * @return boolean 是否成功
+	 */
 	public function setReal($id,$real){
 		$sets = array($this->fields[2]=>':real');
 		$where = '`'.$this->fields[0].'` = :id';
@@ -122,6 +149,11 @@ class SysIP{
 		return $this->db->sqlUpdate($this->tableName,$sets,$where,$attrs);
 	}
 
+	/**
+	 * 添加新的地址
+	 * @param string $ipAddr IP地址
+	 * @return int 新索引
+	 */
 	private function add($ipAddr){
 		$where = '`'.$this->fields[1].'` = :addr';
 		$attrs = array(':addr'=>array($ipAddr,PDO::PARAM_STR));

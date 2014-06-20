@@ -6,7 +6,6 @@
  * 
  * @author fotomxq <fotomxq.me>
  * @version 6
- * @package web
  */
 //////////////////
 //路径定义

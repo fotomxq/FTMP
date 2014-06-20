@@ -48,7 +48,8 @@ class CoreFilter {
     /**
      * 检查字符串
      * @param string $str 字符串
-     * @param int $length 长度
+     * @param int $min 最短
+     * @param int $max 最长
      * @return boolean 是否通过
      */
     public function isString($str, $min, $max) {

@@ -74,12 +74,6 @@ define('TABLE_CONFIG', 'sys_config');
 define('TABLE_USER', 'sys_user');
 //用户元表
 define('TABLE_USER_META', 'sys_usermeta');
-//上传文件表
-define('TABLE_FILE', 'sys_file');
-//服务器
-define('TABLE_SERVER','sys_server');
-//文件和服务器关系表
-define('TABLE_FILE_SERVER','sys_file_server');
 //IP数据表
 define('TABLE_IP','sys_ip');
 

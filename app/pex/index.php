@@ -15,13 +15,11 @@ require('header.php');
 require('menu.php');
 ?>
 <div class="pex-content">
-    <div class="row row-first"></div>
-    <div class="row">
+    <div class="row pex-tag">
         <a href="#"><span class="label label-default">标签A</span></a>
         <a href="#"><span class="label label-default">标签B</span></a>
         <a href="#"><span class="label label-info">标签C</span></a>
     </div>
-    <hr>
     <div class="pex-content-list">
         <div class="row">
             <div class="col-lg-4">

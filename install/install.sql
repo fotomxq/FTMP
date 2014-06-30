@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2014-06-20 05:32:05
+-- 生成日期: 2014-06-30 10:59:57
 -- 服务器版本: 5.6.14
 -- PHP 版本: 5.5.6
 
@@ -58,14 +58,16 @@ CREATE TABLE IF NOT EXISTS `sys_ip` (
   `ip_real` varchar(300) COLLATE utf8_bin NOT NULL COMMENT '真实地址',
   `ip_ban` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否禁止访问',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
 
 --
 -- 转存表中的数据 `sys_ip`
 --
 
 INSERT INTO `sys_ip` (`id`, `ip_addr`, `ip_real`, `ip_ban`) VALUES
-(1, '::1', 'localhost', 0);
+(1, '::1', 'localhost', 0),
+(2, '127.0.0.1', '', 0),
+(3, '192.168.1.123', '', 0);
 
 -- --------------------------------------------------------
 
@@ -79,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
   `user_login` varchar(50) COLLATE utf8_bin NOT NULL COMMENT '登录用户名',
   `user_passwd` varchar(41) COLLATE utf8_bin NOT NULL COMMENT '登录密码',
   `user_date` datetime NOT NULL COMMENT '用户创建时间',
-  `user_ip` varchar(39) COLLATE utf8_bin NOT NULL COMMENT '当前登录IP',
+  `user_ip` bigint(20) NOT NULL COMMENT '当前登录IP ID',
   `user_status` tinyint(4) NOT NULL COMMENT '当前登录状态',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
@@ -89,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
 --
 
 INSERT INTO `sys_user` (`id`, `user_nicename`, `user_login`, `user_passwd`, `user_date`, `user_ip`, `user_status`) VALUES
-(1, 'admin', 'admin@admin.com', 'dd94709528bb1c83d08f3088d4043f4742891f4f', '2014-03-28 17:16:30', '::1', 0);
+(1, 'admin', 'admin@admin.com', 'dd94709528bb1c83d08f3088d4043f4742891f4f', '2014-03-28 17:16:30', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -110,5 +112,5 @@ CREATE TABLE IF NOT EXISTS `sys_usermeta` (
 --
 
 INSERT INTO `sys_usermeta` (`id`, `user_id`, `meta_name`, `meta_value`) VALUES
-(1, 1, 'POWER', 'ADMIN|NORMAL'),
-(2, 1, 'APP', 'health');
+(1, 1, 'POWER', 'NORMAL|ADMIN'),
+(2, 1, 'APP', 'center|pex');

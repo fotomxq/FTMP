@@ -6,21 +6,15 @@
  * @version 1
  */
 
-//引用模版全局
-//暂时引用总全局，注意替换掉"/"字符，加入判断定义DS语句
-require('../../glob.php');
-
-/**
- * 这部分内容是临时内容
- * 全部都是模版全局定义具备的
- * 定义开始 :
- */
-
-/**
- * 定义结束
- */
-
 //应用名称
 $appName = 'pex';
 
+//引用模版全局
+require('../template/glob.php');
+
+//设定页面引用
+$pageIncludes = array('app'=>array('css'=>array('pex.css'),'js'=>array('pex.js')));
+
+//设定页面参数
+$appPages = array('title'=>'PEX');
 ?>

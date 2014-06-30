@@ -24,6 +24,11 @@ $apps = array('center');
 //获取用户所有可用应用
 $checkApps = $user->checkApp($userID,$apps);
 
+//隐藏PEX跳转处理
+if($_GET['pex']){
+	CoreHeader::toURL('../pex/index.php');
+}
+
 //引用头模版
 require(DIR_APP_TEMPALTE.DS.'header.php');
 ?>

@@ -3,7 +3,7 @@
  * 登录动作
  * @authors fotomxq <fotomxq.me>
  * @date    2014-06-20 11:51:03
- * @version 1
+ * @version 2
  */
 
 //引入全局
@@ -24,11 +24,11 @@ if($_POST['email'] && $_POST['password']){
 	}
 }
 
-//失败，跳转回到首页
-if($loginBool === true){
-	CoreHeader::toPage(DIR_APP.DS.'center'.DS.'index.php');
+//成功或失败,跳转回到首页
+if($loginBool == true){
+	CoreHeader::toURL('app'.DS.'center'.DS.'index.php');
 }else{
-	CoreHeader::toPage('index.php');
+	CoreHeader::toURL('index.php');
 }
 
 ?>

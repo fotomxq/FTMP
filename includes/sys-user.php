@@ -431,7 +431,7 @@ class SysUser {
      * 设定元数据值
      * @param  int $userID 用户ID
      * @param  string $metaName 元数据名称
-     * @param array $vals 数据数组
+     * @param  array $vals 数据数组
      * @return boolean|int       是否成功，如果第一次添加则返回元数据ID
      */
     public function setMetaValList($userID,$metaName,$vals){

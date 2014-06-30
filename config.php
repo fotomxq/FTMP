@@ -5,13 +5,15 @@
  * 全局配置文件
  * 
  * @author fotomxq <fotomxq.me>
- * @version 6
+ * @version 7
  */
 //////////////////
 //路径定义
 //////////////////
 //路径分隔符
-define('DS', DIRECTORY_SEPARATOR);
+if(defined('DS') == false){
+	define('DS', DIRECTORY_SEPARATOR);
+}
 //绝对路径
 define('DIR_ROOT', dirname(__FILE__) . DS);
 //用户数据
@@ -26,6 +28,8 @@ define('UPLOAD_DIR',DIR_DATA.DS.'uploads');
 define('LOG_DIR', DIR_DATA . DS . 'logs');
 //缓冲目录
 define('CACHE_DIR', DIR_DATA . DS . 'cache');
+//应用模版目录
+define('DIR_APP_TEMPALTE', DIR_APP.DS.'template');
 
 //////////////////
 //日志系统

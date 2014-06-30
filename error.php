@@ -3,15 +3,16 @@
  * 错误页面
  * 
  * @author fotomxq <fotomxq.me>
- * @version 1
- * @package web
+ * @version 2
  */
 //错误对应提示
 $errors = array(
   0=>'发生未知错误，给您造成的不便深表歉意。',
   'db'=>'无法连接到数据库。',
   'ip-ban'=>'IP被禁止访问，可能是您当前IP曾做出违规操作，如有异议请联系管理员。',
-  'maint'=>'系统正在维护中...');
+  'maint'=>'系统正在维护中...',
+  'app-power'=>'您没有权限访问该应用。',
+  'no-login'=>'您还没有登录，请先返回首页登录。');
 //错误类型
 $errorStr = '';
 if(isset($_GET['t']) == true){
@@ -45,6 +46,7 @@ if(isset($_GET['t']) == true){
     <div class="container">
       <h1>错误</h1>
       <p><?php echo $errorStr; ?></p>
+      <p><a href="index.php" target="_self">点击这里返回首页</a></p>
     </div><!-- /.container -->
 
     <script src="includes/assets/js/jquery.js"></script>

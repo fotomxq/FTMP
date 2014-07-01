@@ -17,51 +17,24 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- 表的结构 `app_pex_file`
---
-
-CREATE TABLE IF NOT EXISTS `app_pex_file` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '索引',
-  `file_title` varchar(300) COLLATE utf8_bin NOT NULL COMMENT '标题',
-  `file_name` varchar(300) COLLATE utf8_bin NOT NULL COMMENT '文件名',
-  `file_src` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '文件路径',
-  `file_size` bigint(20) NOT NULL COMMENT '文件大小',
-  `file_type` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '文件类型MIME',
-  `file_sha1` varchar(41) COLLATE utf8_bin NOT NULL COMMENT '摘要值',
-  `file_upload_time` datetime NOT NULL COMMENT '上传时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- 表的结构 `app_pex_folder`
---
-
-CREATE TABLE IF NOT EXISTS `app_pex_folder` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '索引',
-  `folder_name` varchar(300) COLLATE utf8_bin NOT NULL COMMENT '名称',
-  `folder_parent` bigint(20) NOT NULL COMMENT '上一级Id',
-  `folder_create_time` datetime NOT NULL COMMENT '创建时间',
-  `folder_visit_time` datetime NOT NULL COMMENT '最后一次访问时间',
-  `folder_size` bigint(20) NOT NULL COMMENT '文件夹大小',
-  `folder_folder_count` bigint(20) NOT NULL COMMENT '包含文件夹数量',
-  `folder_file_count` bigint(20) NOT NULL COMMENT '包含文件数量',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
 -- 表的结构 `app_pex_fx`
 --
 
 CREATE TABLE IF NOT EXISTS `app_pex_fx` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '索引',
-  `file_id` bigint(20) NOT NULL COMMENT '文件Id',
-  `folder_id` bigint(20) NOT NULL COMMENT '文件夹Id',
+  `fx_title` bigint(20) NOT NULL COMMENT '标题',
+  `fx_name` varchar(300) COLLATE utf8_bin NOT NULL COMMENT '名称',
+  `fx_parent` bigint(20) NOT NULL COMMENT '上级Id',
+  `fx_size` bigint(20) NOT NULL COMMENT '大小',
+  `fx_type` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '类型',
+  `fx_sha1` varchar(41) COLLATE utf8_bin NOT NULL COMMENT 'Sha1',
+  `fx_src` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '路径',
+  `fx_create_time` datetime NOT NULL COMMENT '创建时间',
+  `fx_visit_time` datetime NOT NULL COMMENT '访问时间',
+  `fx_content` text COLLATE utf8_bin COMMENT '描述',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+
 
 -- --------------------------------------------------------
 

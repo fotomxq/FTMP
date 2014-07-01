@@ -48,7 +48,7 @@ class AppPex {
      * 文件和标签关系数据表字段
      * @var array
      */
-    private $txFields = array('id', 'file_id', 'tag_id');
+    private $txFields = array('id', 'fx_id', 'tag_id');
 
     /**
      * 文件和标签关系表类型
@@ -129,8 +129,46 @@ class AppPex {
         return null;
     }
 
+    /**
+     * 转移新的文件
+     * @param string $src 文件路径
+     * @param string $title 标题
+     * @param string $parent 上一级Id
+     * @param string $content 描述内容
+     * @return int 文件Id
+     */
     public function transferFile($src, $title, $parent, $content) {
-        
+        if (is_file($src) == true) {
+            //获取文件基本信息
+            $fileName = basename($src);
+            $fileSize = filesize($src);
+            $fileType = pathinfo($src, PATHINFO_EXTENSION);
+            $fileSha1 = sha1_file($src);
+            $ds = DIRECTORY_SEPARATOR;
+            //生成目录路径
+            //获取时间
+            $dateY = date('Y');
+            $dateM = date('m');
+            $dateD = date('d');
+            $dateH = date('H');
+            $dateI = date('i');
+            $dateS = date('s');
+            $time = $dateY . '-' . $dateM . '-' . $dateD . ' ' . $dateH . ':' . $dateI . ':' . $dateS;
+            //生成目录
+            $newDir = $dir . $ds . $dateY . $ds . $dateM . $ds . $dateD;
+            if (mkdir($newDir, 0777, true) != true) {
+                return 0;
+            }
+            //生成文件路径
+            $newSrc = $newDir . $ds . $dateY . $dateM . $dateD . $dateH . $dateI . $dateS . '_' . $fileSha1 . '.' . $fileType;
+            //转移文件
+            if(rename($src,$newSrc) != true){
+                return 0;
+            }
+            //创建文件数据
+            return $this->addFx($title, $fileName, $parent, $fileSize, $fileType, $fileSha1, $time, $content);
+        }
+        return false;
     }
 
     /**
@@ -144,9 +182,65 @@ class AppPex {
         return $this->db->sqlSelect($this->fxTableName, $this->fxFields, $where, $attrs);
     }
 
+    /**
+     * 获取合并后的字段
+     * @param int $key 键位值
+     * @return string 字段
+     */
+    public function getFxField($key) {
+        return $this->fxTableName . '.' . $this->fxFields[$key];
+    }
+
+    /**
+     * 查询FX列
+     * @param string $where 条件,注意条件必须设定归属表,使用getFxField获取字段
+     * @param array $attrs 筛选过滤
+     * @param array $tags 标签组,eg:array(1,4,6)
+     * @param int $page 页数
+     * @param int $max 页长
+     * @param int $sort 排序字段键位值
+     * @param boolean $desc 是否倒叙
+     * @return array 数据数组
+     */
     public function viewList($where = '', $attrs = null, $tags = null, $page = 1, $max = 10, $sort = 0, $desc = false) {
-        $sortField = isset($this->folderFields[$sort]) == true ? $this->folderFields[$sort] : $this->folderFields[0];
-        return $this->db->sqlSelect($this->fxTableName, $this->fxFields, $where, $attrs, $page, $max, $sortField, $desc);
+        $sortField = isset($this->folderFields[$sort]) == true ? $this->getFxField($sort) : $this->getFxField(0);
+        $descStr = $desc === true ? 'DESC' : 'ASC';
+        $whereTag = '';
+        if ($tags) {
+            foreach ($tags as $v) {
+                $whereTag .= $this->getTxField(2) . ' = :tagID or ';
+            }
+            $whereTag = substr($whereTag, 0, -4);
+        }
+        $sql = 'SELECT ' . $this->fxTableName . '.* FROM `' . $this->fxTableName . '`,`' . $this->txTableName . '` WHERE ' . $where . ' and ' . $this->getTxField(1) . ' = ' . $this->getFxField(0) . ' and (' . $whereTag . ') ORDER BY ' . $sortField . ' ' . $descStr . ' LIMIT ' . (($page - 1) * $max) . ',' . $max;
+        return $this->db->runSQL($sql, $attrs, 3, PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * 修改Fx信息
+     * @param int $id ID
+     * @param string $title 标题
+     * @param string $name 名称
+     * @param string $content 描述内容
+     * @return boolean 是否成功
+     */
+    public function editFx($id, $title, $name, $content) {
+        $sets = array($this->fxFields[1] => ':title', $this->fxFields[2] => ':name', $this->fxFields[10] => ':content');
+        $where = '`' . $this->fxFields[0] . '` = :id';
+        $attrs = array(':title' => array($title, PDO::PARAM_STR), ':name' => array($name, PDO::PARAM_STR), ':content' => array($content, PDO::PARAM_STR), ':id' => array($id, PDO::PARAM_INT));
+        return $this->db->sqlUpdate($this->fxTableName, $sets, $where, $attrs);
+    }
+
+    /**
+     * 更新访问时间
+     * @param int $id ID
+     * @return boolean 是否成功
+     */
+    public function updateFxTime($id) {
+        $sets = array($this->fxFields[9] => ':time');
+        $where = '`' . $this->fxFields[0] . '` = :id';
+        $attrs = array(':time' => array(date('Y-m-d H:i:s'), PDO::PARAM_STR), ':id' => array($id, PDO::PARAM_INT));
+        return $this->db->sqlUpdate($this->fxTableName, $sets, $where, $attrs);
     }
 
     /**
@@ -187,6 +281,17 @@ class AppPex {
         $where = '`' . $this->fxFields[0] . '` = :id';
         $attrs = array(':id' => array($id, PDO::PARAM_INT));
         return $this->db->sqlDelete($this->fxTableName, $where, $attrs);
+    }
+
+    /**
+     * 查看标签列
+     * @param string $type 标签类型
+     * @return array 数据数组
+     */
+    public function viewTag($type) {
+        $where = '`' . $this->tagFields[3] . '` = :type';
+        $attrs = array(':type' => array($type, PDO::PARAM_STR));
+        return $this->db->sqlSelect($this->tagTableName, $this->tagFields, $where, $attrs, 1, 9999);
     }
 
     /**
@@ -292,6 +397,15 @@ class AppPex {
      */
     private function getSrc($src) {
         return $this->dataFolderFileSrc . DS . $src;
+    }
+
+    /**
+     * 获取TX字段
+     * @param int $key 键位值
+     * @return string 字段
+     */
+    private function getTxField($key) {
+        return $this->txTableName . '.' . $this->txFields[$key];
     }
 
 }

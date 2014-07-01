@@ -17,4 +17,8 @@ $pageIncludes = array('app'=>array('css'=>array('pex.css'),'js'=>array('pex.js')
 
 //设定页面参数
 $appPages = array('title'=>'PEX');
+
+//定义PEX应用全局设定
+//数据目录
+define('APP_PEX_DIR',DIR_DATA.DS.'pex');
 ?>

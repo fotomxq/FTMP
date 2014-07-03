@@ -28,6 +28,8 @@ upload.transferFile = function(key){
 
 //资源处理器
 var resource = new Object;
+//当前所属类型
+resource.type = 'photo';
 //编辑资源信息
 resource.edit = function(){
     
@@ -51,7 +53,6 @@ tag.getAll = function(){
 }
 //添加标签
 tag.add = function(){
-    
 }
 //编辑标签
 tag.edit = function(){
@@ -70,7 +71,36 @@ tag.delTx = function(){
     
 }
 
+//菜单栏
+var menu = new Object;
+//初始化菜单栏
+menu.start = function(){
+    $('#menu li').click(function(){
+        var href = $(this).children('a').attr('href');
+        $('#menu li').removeClass('active');
+        switch(href){
+            case '#folder-movie':
+                resource.type = 'movie';
+                $('#menu li:eq(2)').toggleClass('active');
+                break;
+            case '#folder-cartoon':
+                resource.type = 'cartoon';
+                $('#menu li:eq(3)').toggleClass('active');
+                break;
+            case '#folder-txt':
+                resource.type = 'txt';
+                $('#menu li:eq(4)').toggleClass('active');
+                break;
+            default:
+                resource.type = 'photo';
+                $('#menu li:eq(1)').toggleClass('active');
+                break;
+        }
+    });
+}
+
 //初始化
 $(function(){
     upload.transferList();
+    menu.start();
 });

@@ -113,4 +113,4 @@ CREATE TABLE IF NOT EXISTS `sys_usermeta` (
 
 INSERT INTO `sys_usermeta` (`id`, `user_id`, `meta_name`, `meta_value`) VALUES
 (1, 1, 'POWER', 'NORMAL|ADMIN'),
-(2, 1, 'APP', 'center|pex');
+(2, 1, 'APP', 'center|health|life|resources|finance|pex');

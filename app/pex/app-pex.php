@@ -4,7 +4,7 @@
  * PEX处理器
  * @authors fotomxq <fotomxq.me>
  * @date    2014-06-29 10:02:50
- * @version 1
+ * @version 2
  */
 class AppPex {
 
@@ -202,7 +202,7 @@ class AppPex {
      * @param boolean $desc 是否倒叙
      * @return array 数据数组
      */
-    public function viewList($where = '', $attrs = null, $tags = null, $page = 1, $max = 10, $sort = 0, $desc = false) {
+    public function viewList($where = '1', $attrs = null, $tags = null, $page = 1, $max = 10, $sort = 0, $desc = false) {
         $sortField = isset($this->folderFields[$sort]) == true ? $this->getFxField($sort) : $this->getFxField(0);
         $descStr = $desc === true ? 'DESC' : 'ASC';
         $whereTag = '';
@@ -214,6 +214,15 @@ class AppPex {
         }
         $sql = 'SELECT ' . $this->fxTableName . '.* FROM `' . $this->fxTableName . '`,`' . $this->txTableName . '` WHERE ' . $where . ' and ' . $this->getTxField(1) . ' = ' . $this->getFxField(0) . ' and (' . $whereTag . ') ORDER BY ' . $sortField . ' ' . $descStr . ' LIMIT ' . (($page - 1) * $max) . ',' . $max;
         return $this->db->runSQL($sql, $attrs, 3, PDO::FETCH_ASSOC);
+    }
+    
+    public function addFolder($title,$parent,$content){
+        $name = $title;
+        $size = 0;
+        $type = 'folder';
+        $sha1 = sha1('folder');
+        $time = date('Y-m-d H:i:s');
+        return $this->addFx($title, $name, $parent, $size, $type, $sha1, $time, $content);
     }
 
     /**

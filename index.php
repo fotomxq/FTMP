@@ -3,9 +3,7 @@
  * 网站首页
  * 
  * @author fotomxq <fotomxq.me>
- * @version 2
- * @package web
- * @todo 添加验证码
+ * @version 3
  */
 
 //引入全局
@@ -14,7 +12,7 @@ require('glob.php');
 //判断是否已经登录
 $userID = $user->logged($ipAddr);
 if($userID > 0){
-  CoreHeader::toURL('center.php');
+  CoreHeader::toURL('app/center/index.php');
 }
 ?>
 <!DOCTYPE html>

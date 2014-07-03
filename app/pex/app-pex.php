@@ -116,12 +116,12 @@ class AppPex {
      * @return array 数据数组
      */
     public function transferList($page = 1, $max = 10) {
-        $list = CoreFIle::searchDir($this->dataFolderTransferSrc);
+        $list = CoreFIle::searchDir($this->dataFolderTransferSrc . DS . '*.*');
         if ($list) {
             $res;
             for ($i = $page - 1; $i < $max; $i++) {
                 if (isset($list[$i]) == true) {
-                    $res[] = $list[$i];
+                    $res[] = basename($list[$i]);
                 }
             }
             return $res;
@@ -155,7 +155,7 @@ class AppPex {
             $dateS = date('s');
             $time = $dateY . '-' . $dateM . '-' . $dateD . ' ' . $dateH . ':' . $dateI . ':' . $dateS;
             //生成目录
-            $newDir = $dir . $ds . $dateY . $ds . $dateM . $ds . $dateD;
+            $newDir = $this->dataFolderFileSrc . $ds . $dateY . $ds . $dateM . $ds . $dateD;
             if (mkdir($newDir, 0777, true) != true) {
                 return 0;
             }

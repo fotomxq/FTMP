@@ -52,7 +52,8 @@ require('header.php');
         </div>
     </div>
 </div>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- 发布资源框架 -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -60,7 +61,8 @@ require('header.php');
         <h4 class="modal-title" id="myModalLabel">发布新的资源</h4>
       </div>
       <div class="modal-body">
-        ...
+          <div class="row"><h4>等待转移</h4></div>
+          <div class="row" id="transferList"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

@@ -4,7 +4,7 @@
  * 动作整合
  * @authors fotomxq <fotomxq.me>
  * @date    2014-06-30 11:51:18
- * @version 1
+ * @version 2
  */
 //引用全局
 require('glob.php');
@@ -37,7 +37,7 @@ if (isset($_GET['action']) == true) {
             break;
         case 'folder-add':
             //添加目录
-            if(isset($_POST['title']) == true && isset($_POST['parent']) == true && isset($_POST['content']) == true){
+            if (isset($_POST['title']) == true && isset($_POST['parent']) == true && isset($_POST['content']) == true) {
                 $title = $_POST['title'];
                 $parent = (int) $_POST['parent'];
                 $content = $_POST['content'];
@@ -47,7 +47,7 @@ if (isset($_GET['action']) == true) {
             break;
         case 'fx-view':
             //查看FX详情
-            if(isset($_POST['id']) == true){
+            if (isset($_POST['id']) == true) {
                 $id = (int) $_POST['id'];
                 $res = $pex->view($id);
                 CoreHeader::toJson($res);
@@ -55,7 +55,7 @@ if (isset($_GET['action']) == true) {
             break;
         case 'fx-list':
             //获取FX列
-            if(isset($_POST['parent']) == true && isset($_POST['page']) == true && isset($_POST['max']) == true && isset($_POST['sort']) == true && isset($_POST['desc']) == true){
+            if (isset($_POST['parent']) == true && isset($_POST['page']) == true && isset($_POST['max']) == true && isset($_POST['sort']) == true && isset($_POST['desc']) == true) {
                 $parent = (int) $_POST['parent'];
                 $page = $_POST['page'] > 0 ? (int) $_POST['page'] : 1;
                 $max = $_POST['max'] > 0 ? (int) $_POST['max'] : 10;
@@ -70,7 +70,7 @@ if (isset($_GET['action']) == true) {
             break;
         case 'fx-edit':
             //编辑FX信息
-            if(isset($_POST['id']) == true && isset($_POST['title']) == true && isset($_POST['name']) == true && isset($_POST['content']) == true){
+            if (isset($_POST['id']) == true && isset($_POST['title']) == true && isset($_POST['name']) == true && isset($_POST['content']) == true) {
                 $id = (int) $_POST['id'];
                 $title = $_POST['title'];
                 $name = (int) $_POST['name'];
@@ -81,7 +81,7 @@ if (isset($_GET['action']) == true) {
             break;
         case 'fx-cut':
             //剪切FX
-            if(isset($_POST['id']) == true && isset($_POST['parent']) == true){
+            if (isset($_POST['id']) == true && isset($_POST['parent']) == true) {
                 $id = (int) $_POST['id'];
                 $parent = (int) $_POST['parent'];
                 $res = $pex->cutFile($id, $parent);
@@ -90,7 +90,7 @@ if (isset($_GET['action']) == true) {
             break;
         case 'fx-update-time':
             //更新FX访问时间
-            if(isset($_POST['id']) == true){
+            if (isset($_POST['id']) == true) {
                 $id = (int) $_POST['id'];
                 $res = $pex->updateFxTime($id);
                 CoreHeader::toJson($res);
@@ -98,23 +98,25 @@ if (isset($_GET['action']) == true) {
             break;
         case 'fx-del':
             //删除FX
-            if(isset($_POST['id']) == true){
+            if (isset($_POST['id']) == true) {
                 $id = (int) $_POST['id'];
                 $res = $pex->delFx($id);
                 CoreHeader::toJson($res);
             }
             break;
         case 'tag-list':
-            //获取类型下所有标签
-            if(isset($_POST['type']) == true){
-                $type = $_POST['type'];
-                $res = $pex->viewTag($type);
-                CoreHeader::toJson($res);
+            //获取所有类型的所有标签
+            $res;
+            if ($pex->pexType) {
+                foreach ($pex->pexType as $v) {
+                    $res[$v['key']] = $pex->viewTag($v['key']);
+                }
             }
+            CoreHeader::toJson($res);
             break;
         case 'tag-add':
             //添加新的标签
-            if(isset($_POST['name']) == true && isset($_POST['type']) == true){
+            if (isset($_POST['name']) == true && isset($_POST['type']) == true) {
                 $name = $_POST['name'];
                 $type = $_POST['type'];
                 $newID = $pex->addTag($name, $type);
@@ -123,7 +125,7 @@ if (isset($_GET['action']) == true) {
             break;
         case 'tag-edit':
             //编辑标签名称
-            if(isset($_POST['id']) == true && isset($_POST['name']) == true){
+            if (isset($_POST['id']) == true && isset($_POST['name']) == true) {
                 $id = (int) $_POST['id'];
                 $name = $_POST['name'];
                 $res = $pex->editTag($id, $name);
@@ -132,7 +134,7 @@ if (isset($_GET['action']) == true) {
             break;
         case 'tag-tx-add':
             //添加标签关系
-            if(isset($_POST['fileID']) == true && isset($_POST['tagID']) == true && isset($_POST['type']) == true){
+            if (isset($_POST['fileID']) == true && isset($_POST['tagID']) == true && isset($_POST['type']) == true) {
                 $fileID = (int) $_POST['fileID'];
                 $tagID = (int) $_POST['tagID'];
                 $type = $_POST['type'] == 'file' ? 'file' : 'folder';
@@ -142,7 +144,7 @@ if (isset($_GET['action']) == true) {
             break;
         case 'tag-tx-del':
             //删除标签关系
-            if(isset($_POST['txID']) == true){
+            if (isset($_POST['txID']) == true) {
                 $txID = (int) $_POST['txID'];
                 $res = $pex->delTx($txID);
                 CoreHeader::toJson($res);
@@ -150,9 +152,23 @@ if (isset($_GET['action']) == true) {
             break;
         case 'tag-del':
             //删除标签
-            if(isset($_POST['tagID']) == true){
+            if (isset($_POST['tagID']) == true) {
                 $tagID = (int) $_POST['tagID'];
                 $res = $pex->delTag($tagID);
+                CoreHeader::toJson($res);
+            }
+            break;
+        case 'tag-set':
+            //修改标签，自动判断添加、修改、删除操作
+            if (isset($_POST['tags']) == true) {
+                $tagRes;
+                $res = false;
+                $tags = $_POST['tags'];
+                foreach ($pex->pexType as $v) {
+                    if (!$pex->setTag($tags[$v['key']], $v['key'])) {
+                        CoreHeader::toJson($res);
+                    }
+                }
                 CoreHeader::toJson($res);
             }
             break;

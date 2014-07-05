@@ -36,7 +36,7 @@ class AppPex {
      * 标签数据表字段
      * @var array
      */
-    private $tagFields = array('id', 'tag_name', 'tag_type', 'tx_type');
+    private $tagFields = array('id', 'tag_name', 'tag_type');
 
     /**
      * 文件数据表字段
@@ -162,7 +162,7 @@ class AppPex {
             //生成文件路径
             $newSrc = $newDir . $ds . $dateY . $dateM . $dateD . $dateH . $dateI . $dateS . '_' . $fileSha1 . '.' . $fileType;
             //转移文件
-            if(rename($src,$newSrc) != true){
+            if (rename($src, $newSrc) != true) {
                 return 0;
             }
             //创建文件数据
@@ -215,8 +215,8 @@ class AppPex {
         $sql = 'SELECT ' . $this->fxTableName . '.* FROM `' . $this->fxTableName . '`,`' . $this->txTableName . '` WHERE ' . $where . ' and ' . $this->getTxField(1) . ' = ' . $this->getFxField(0) . ' and (' . $whereTag . ') ORDER BY ' . $sortField . ' ' . $descStr . ' LIMIT ' . (($page - 1) * $max) . ',' . $max;
         return $this->db->runSQL($sql, $attrs, 3, PDO::FETCH_ASSOC);
     }
-    
-    public function addFolder($title,$parent,$content){
+
+    public function addFolder($title, $parent, $content) {
         $name = $title;
         $size = 0;
         $type = 'folder';
@@ -380,16 +380,63 @@ class AppPex {
         }
         return false;
     }
-    
+
     /**
      * 删除某类型下的所有标签
      * @param string $type 类型
      * @return boolean 是否成功
      */
     public function delTagType($type) {
-        $where = '`' . $this->tagFields[3] . '` = :type';
+        $where = '`' . $this->tagFields[2] . '` = :type';
         $attrs = array(':type' => array($type, PDO::PARAM_STR));
         return $this->db->sqlDelete($this->tagTableName, $where, $attrs);
+    }
+
+    /**
+     * 设定类型下的标签组
+     * @param array $newTags 新的标签组
+     * @param string $type 类型
+     * @return boolean 是否成功
+     */
+    public function setTag($newTags, $type) {
+        if ($newTags) {
+            $nowTagsRes = $this->viewTag($type);
+            if ($nowTagsRes) {
+                $nowTags;
+                foreach ($nowTagsRes as $v) {
+                    $nowTags[] = $v[$this->tagFields[1]];
+                }
+                $diffMore = array_diff($newTags, $nowTags);
+                $diffLess = array_diff($nowTags, $newTags);
+                if ($diffMore) {
+                    foreach ($diffMore as $v) {
+                        $where = '`' . $this->tagFields[1] . '` = :name and `' . $this->tagFields[2] . '` = :type';
+                        $attrs = array(':name' => array($v, PDO::PARAM_STR), ':type' => array($type, PDO::PARAM_STR));
+                        if (!$this->db->sqlDelete($this->tagTableName, $where, $attrs)) {
+                            return false;
+                        }
+                    }
+                }
+                if ($diffLess) {
+                    foreach ($diffLess as $v) {
+                        if (!$this->addTag($v, $type)) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            } else {
+                foreach ($newTags as $v) {
+                    if (!$this->addTag($v, $type)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        } else {
+            return $this->delTagType($type);
+        }
+        return false;
     }
 
     /**

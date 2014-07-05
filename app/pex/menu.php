@@ -12,6 +12,6 @@
   <li><a href="#folder-movie">影片</a></li>
   <li><a href="#folder-cartoon">漫画</a></li>
   <li><a href="#folder-txt">文本</a></li>
-  <li><a href="#set">设置</a></li>
+  <li><a href="#set" data-toggle="modal" data-target="#setModal">设置</a></li>
   <li><a href="../center/index.php" target="_self">中心</a></li>
 </ul>

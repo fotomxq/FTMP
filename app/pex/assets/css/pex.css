@@ -12,13 +12,8 @@ body {
   padding-left: 15px;
 }
 
-/* Custom page header */
-.header {
-  border-bottom: 1px solid #e5e5e5;
-}
 /* Make the masthead heading the same height as the navigation */
 .header h3 {
-  padding-bottom: 19px;
   margin-top: 0;
   margin-bottom: 0;
   line-height: 40px;
@@ -78,10 +73,10 @@ body {
   }
 }
 
-/* 首行修正 */
+/* 首行修正 
 .pex-content .row{
     margin-top: 30px;
-}
+}*/
 .pex-content-list .row{
     margin-top: 30px;
 }

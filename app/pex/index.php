@@ -8,19 +8,27 @@
 
 //引用全局
 require('glob.php');
+
+//引用PEX处理器
+require('app-pex.php');
+
+//创建对象
+$pex = new AppPex($db, APP_PEX_DIR);
+
+//引用头文件
 require('header.php');
 ?>
 <div class="pex-content">
     <div class="row">
+        <ol class="breadcrumb">
+            <li class="active"><a href="#">照片</a></li>
+        </ol>
     </div>
     <div class="row">
-        <div class="col-xs-10">
+        <div class="col-xs-12">
             <a href="#tag" value=""><span class="label label-default">标签A</span></a>
             <a href="#tag" value=""><span class="label label-info">标签C</span></a>
             <a href="#tag-clear"><span class="label label-warning">清空已选</span></a>
-        </div>
-        <div class="col-xs-2">
-            <a href="#folder-return" class="btn btn-default">返回上级</a>
         </div>
     </div>
     <div class="pex-content-list">
@@ -58,15 +66,105 @@ require('header.php');
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
-        <h4 class="modal-title" id="myModalLabel">发布新的资源</h4>
+        <h4 class="modal-title" id="uploadModalLabel">发布新的资源</h4>
+      </div>
+        <div class="modal-body">
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">等待转移</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static" id="transferList"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">已选文件</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static" id="transferSetList"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">归档标题</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static" id="transferTitle"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">分类类型</label>
+                    <div class="col-sm-10">
+                        <?php if($pex->pexType){ foreach($pex->pexType as $v){ ?>
+                        <label class="radio-inline">
+                            <input type="radio" name="transferTypeOptions" id="inlineRadio1" value="<?php echo $v['key']; ?>"> <?php echo $v['title']; ?>
+                        </label>
+                        <?php } } ?>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">标签</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static" id="transferTag"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">描述</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="transferContent" rows="3"></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="uploadOkButton" class="btn btn-primary">发布</button>
+        <button type="button" id="uploadSelectAllButton" class="btn btn-info">全选文件</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 设置界面 -->
+<div class="modal fade" id="setModal" tabindex="-1" role="dialog" aria-labelledby="setModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+        <h4 class="modal-title" id="setModalLabel">设置</h4>
       </div>
       <div class="modal-body">
-          <div class="row"><h4>等待转移</h4></div>
-          <div class="row" id="transferList"></div>
+            <form class="form-horizontal" role="form">
+                <div class="row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        <p>注意，所有标签用“|”隔开。</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">照片标签</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="setTagPhoto" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">影片标签</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="setTagMovie" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">漫画标签</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="setTagCartoon" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">文本标签</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="setTagTxt" rows="3"></textarea>
+                    </div>
+                </div>
+            </form>
       </div>
       <div class="modal-footer">
+        <button type="button" id="setSaveButton" class="btn btn-primary">保存</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        <button type="button" class="btn btn-primary">发布</button>
       </div>
     </div>
   </div>

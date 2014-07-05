@@ -5,32 +5,35 @@
  * @date    2014-06-26 17:47:04
  * @version 1
  */
-
 //引用全局
 require('glob.php');
 
 //设定页面引用
-$pageIncludes = array('app'=>array('css'=>array('index.css')));
+$pageIncludes = array('app' => array('css' => array('index.css')));
 
 //设定页面参数
-$appPages = array('title'=>'中心');
+$appPages = array('title' => '中心');
 
 //用户是否为管理员
-$checkPowers = $user->checkPower($userID,array('ADMIN'));
+$checkPowers = $user->checkPower($userID, array('ADMIN'));
 
 //所有应用名称及所在目录
 $apps = array('center');
 
 //获取用户所有可用应用
-$checkApps = $user->checkApp($userID,$apps);
+$checkApps = $user->checkApp($userID, $apps);
 
 //隐藏PEX跳转处理
-if($_GET['pex']){
-	CoreHeader::toURL('../pex/index.php');
+$pexConfigPasswd = $config->get(14);
+if (isset($_GET['pex']) == true) {
+    $pexPasswdSha1 = sha1($_GET['pex']);
+    if ($pexPasswdSha1 == $pexConfigPasswd) {
+        CoreHeader::toURL('../pex/index.php');
+    }
 }
 
 //引用头模版
-require(DIR_APP_TEMPALTE.DS.'header.php');
+require(DIR_APP_TEMPALTE . DS . 'header.php');
 ?>
 <div class="site-wrapper">
   <div class="site-wrapper-inner">

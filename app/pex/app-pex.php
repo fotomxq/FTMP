@@ -298,7 +298,7 @@ class AppPex {
      * @return array 数据数组
      */
     public function viewTag($type) {
-        $where = '`' . $this->tagFields[3] . '` = :type';
+        $where = '`' . $this->tagFields[2] . '` = :type';
         $attrs = array(':type' => array($type, PDO::PARAM_STR));
         return $this->db->sqlSelect($this->tagTableName, $this->tagFields, $where, $attrs, 1, 9999);
     }
@@ -410,25 +410,31 @@ class AppPex {
                 $diffLess = array_diff($nowTags, $newTags);
                 if ($diffMore) {
                     foreach ($diffMore as $v) {
-                        $where = '`' . $this->tagFields[1] . '` = :name and `' . $this->tagFields[2] . '` = :type';
-                        $attrs = array(':name' => array($v, PDO::PARAM_STR), ':type' => array($type, PDO::PARAM_STR));
-                        if (!$this->db->sqlDelete($this->tagTableName, $where, $attrs)) {
-                            return false;
+                        if ($v) {
+                            if (!$this->addTag($v, $type)) {
+                                return false;
+                            }
                         }
                     }
                 }
                 if ($diffLess) {
                     foreach ($diffLess as $v) {
-                        if (!$this->addTag($v, $type)) {
-                            return false;
+                        if ($v) {
+                            $where = '`' . $this->tagFields[1] . '` = :name and `' . $this->tagFields[2] . '` = :type';
+                            $attrs = array(':name' => array($v, PDO::PARAM_STR), ':type' => array($type, PDO::PARAM_STR));
+                            if (!$this->db->sqlDelete($this->tagTableName, $where, $attrs)) {
+                                return false;
+                            }
                         }
                     }
                 }
                 return true;
             } else {
                 foreach ($newTags as $v) {
-                    if (!$this->addTag($v, $type)) {
-                        return false;
+                    if ($v) {
+                        if (!$this->addTag($v, $type)) {
+                            return false;
+                        }
                     }
                 }
                 return true;

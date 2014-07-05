@@ -165,7 +165,8 @@ if (isset($_GET['action']) == true) {
                 $res = false;
                 $tags = $_POST['tags'];
                 foreach ($pex->pexType as $v) {
-                    if (!$pex->setTag($tags[$v['key']], $v['key'])) {
+                    $vList = explode('|', $tags[$v['key']]);
+                    if (!$pex->setTag($vList, $v['key'])) {
                         CoreHeader::toJson($res);
                     }
                 }

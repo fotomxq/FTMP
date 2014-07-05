@@ -1,6 +1,6 @@
 //通用服务器交互
 function actionServer(type,data,func){
-    $.post('action.php?action='+type,data,func);
+    $.post('action.php?action='+type,data,func,'json');
 }
 
 //发布新文件类
@@ -43,24 +43,27 @@ resource.del = function(){
 var tag = new Object;
 //当前查看类别
 tag.tagType = 'photo';
+//所有标签
+tag.data;
 //查看类别下所有标签
 tag.getAll = function(){
-    actionServer('tag-list',{
-        
-    },function(data){
-        
+    actionServer('tag-list',{},function(data){
+        tag.data = data;
     });
 }
-//添加标签
-tag.add = function(){
-}
-//编辑标签
-tag.edit = function(){
-    
-}
-//删除标签
-tag.del = function(){
-    
+//修改标签
+tag.set = function(){
+    var tags = {
+        'photo':$('#setTagPhoto').val(),
+        'movie':$('#setTagMovie').val(),
+        'cartoon':$('#setTagCartoon').val(),
+        'txt':$('#setTagTxt').val()
+    };
+    actionServer('tag-set',{
+        tags:tags
+    },function(data){
+        tag.getAll();
+    });
 }
 //和文件关联标签
 tag.addTx = function(){
@@ -99,8 +102,25 @@ menu.start = function(){
     });
 }
 
+//设置界面类
+var set = new Object;
+//初始化
+set.start = function(){
+    //设置确认按钮
+    $('#setSaveButton').click(function(){
+        tag.set();
+        $('#setModal').modal('hide');
+    });
+}
+
 //初始化
 $(function(){
+    //刷新等待转移文件列
     upload.transferList();
+    //初始化菜单栏
     menu.start();
+    //初始化设置界面
+    set.start();
+    //获取所有标签
+    tag.getAll();
 });

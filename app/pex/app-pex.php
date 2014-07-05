@@ -4,7 +4,7 @@
  * PEX处理器
  * @authors fotomxq <fotomxq.me>
  * @date    2014-06-29 10:02:50
- * @version 2
+ * @version 3
  */
 class AppPex {
 
@@ -48,7 +48,7 @@ class AppPex {
      * 文件和标签关系数据表字段
      * @var array
      */
-    private $txFields = array('id', 'fx_id', 'tag_id');
+    private $txFields = array('id', 'fx_id', 'tag_id', 'tx_type');
 
     /**
      * 文件和标签关系表类型
@@ -61,7 +61,7 @@ class AppPex {
      * key-键值,用于tag表等类型标记 ; folder-对应文件夹ID ; title-名称
      * @var array 
      */
-    private $pexType = array(
+    public $pexType = array(
         'photo' => array('key' => 'photo', 'folder' => 1, 'title' => '照片', 'type' => array('jpg', 'png', 'gif')),
         'movie' => array('key' => 'movie', 'folder' => 2, 'title' => '影片', 'type' => array('mp4')),
         'cartoon' => array('key' => 'cartoon', 'folder' => 3, 'title' => '漫画', 'cartoon' => array('jpg', 'png')),
@@ -379,6 +379,17 @@ class AppPex {
             return $this->db->sqlDelete($this->tagTableName, $where, $attrs);
         }
         return false;
+    }
+    
+    /**
+     * 删除某类型下的所有标签
+     * @param string $type 类型
+     * @return boolean 是否成功
+     */
+    public function delTagType($type) {
+        $where = '`' . $this->tagFields[3] . '` = :type';
+        $attrs = array(':type' => array($type, PDO::PARAM_STR));
+        return $this->db->sqlDelete($this->tagTableName, $where, $attrs);
     }
 
     /**

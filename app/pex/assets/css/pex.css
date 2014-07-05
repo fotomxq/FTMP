@@ -80,3 +80,6 @@ body {
 .pex-content-list .row{
     margin-top: 30px;
 }
+#tagList a,#transferTag a{
+    margin-right: 5px;
+}

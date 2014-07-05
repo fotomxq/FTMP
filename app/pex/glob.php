@@ -13,7 +13,10 @@ $appName = 'pex';
 require('../template/glob.php');
 
 //设定页面引用
-$pageIncludes = array('app'=>array('css'=>array('pex.css'),'js'=>array('pex.js')));
+$pageIncludes = array(
+    'app'=>array('css'=>array('pex.css'),'js'=>array('pex.js')),
+    'glob'=>array('css'=>array('messenger-theme-flat.css','icheck-skins-flat.css'),'js'=>array('messenger.js','icheck.js'))
+    );
 
 //设定页面参数
 $appPages = array('title'=>'PEX');

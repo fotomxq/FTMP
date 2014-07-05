@@ -25,9 +25,7 @@ require('header.php');
         </ol>
     </div>
     <div class="row">
-        <div class="col-xs-12">
-            <a href="#tag" value=""><span class="label label-default">标签A</span></a>
-            <a href="#tag" value=""><span class="label label-info">标签C</span></a>
+        <div class="col-xs-12" id="tagList">
             <a href="#tag-clear"><span class="label label-warning">清空已选</span></a>
         </div>
     </div>
@@ -61,8 +59,8 @@ require('header.php');
     </div>
 </div>
 <!-- 发布资源框架 -->
-<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<div class="modal fade bs-example-modal-lg" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
@@ -71,29 +69,25 @@ require('header.php');
         <div class="modal-body">
             <form class="form-horizontal" role="form">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">等待转移</label>
+                    <label class="col-sm-2 control-label">转移文件</label>
                     <div class="col-sm-10">
-                        <p class="form-control-static" id="transferList"></p>
+                        <p class="form-control-static" id="transferList">
+                            <a href="#upload-file-tag-clear"><span class="label label-warning">清空已选</span></a>
+                        </p>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">已选文件</label>
+                    <label class="col-sm-2 control-label">标题</label>
                     <div class="col-sm-10">
-                        <p class="form-control-static" id="transferSetList"></p>
+                         <input type="text" class="form-control" id="transferTitle">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">归档标题</label>
-                    <div class="col-sm-10">
-                        <p class="form-control-static" id="transferTitle"></p>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">分类类型</label>
+                    <label class="col-sm-2 control-label">类型</label>
                     <div class="col-sm-10">
                         <?php if($pex->pexType){ foreach($pex->pexType as $v){ ?>
                         <label class="radio-inline">
-                            <input type="radio" name="transferTypeOptions" id="inlineRadio1" value="<?php echo $v['key']; ?>"> <?php echo $v['title']; ?>
+                            <input type="radio" name="transferTypeOptions" value="<?php echo $v['key']; ?>"> <?php echo $v['title']; ?>
                         </label>
                         <?php } } ?>
                     </div>

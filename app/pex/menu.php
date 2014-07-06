@@ -3,7 +3,7 @@
  * 菜单页面
  * @authors fotomxq <fotomxq.me>
  * @date    2014-06-28 23:04:30
- * @version 2
+ * @version 3
  */
 ?>
 <ul class="nav nav-pills pull-right" id="menu">
@@ -22,8 +22,10 @@
           <li><a href="#mode-phone">手机模式</a></li>
           <li class="divider"></li>
           <li><a href="#clear-cache">清理缓冲</a></li>
-          <li class="divider"></li>
           <li><a href="#rotate-img">旋转当前目录图片</a></li>
+          <li class="divider"></li>
+          <li><a href="#operate-fx-edit">编辑所选</a></li>
+          <li><a href="#operate-fx-del">删除所选</a></li>
       </ul>
   </li>
   <li><a href="#set" data-toggle="modal" data-target="#setModal">设置</a></li>

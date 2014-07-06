@@ -156,6 +156,8 @@ resource.mode = 'operate';
 resource.openId = 0;
 //当前操作目录
 resource.dir = 1;
+//当前选择的资源
+resource.selectArr = new Array();
 //初始化
 resource.start = function() {
     //打开文件事件
@@ -176,6 +178,30 @@ resource.start = function() {
     $('a[href="#mode-phone"]').click(function() {
         resource.selectMode('phone');
         sendMsg('info','进入手机模式');
+    });
+    //编辑资源确认按钮
+    $('#editButton').click(function(){
+        var tags = new Array();
+        actionServer('fx-edit', {
+            'id': $('#editFileModal').attr('data-id'),
+            'title':$('#editTitle').val(),
+            'content':$('#editContent').val(),
+            'tags':tags
+        }, function(data) {
+            if (data == true) {
+                sendMsg('success','修改资源成功!');
+            }
+        });
+    });
+    //删除资源按钮
+    $('#delButton').click(function() {
+        actionServer('fx-del', {
+            'id': resource.selectArr
+        }, function(data) {
+            if (data == true) {
+                sendMsg('success','删除资源成功!');
+            }
+        });
     });
 }
 //刷新资源
@@ -302,13 +328,32 @@ resource.addDir = function(title, value, active) {
         resource.selectDir($(this).parent('li').attr('value'));
     });
 }
+//更新所选项
+resource.selectUpdate = function() {
+    resource.selectArr = new Array();
+    if ($('a[href="#resource"][select="true"]')) {
+        $('a[href="#resource"][select="true"]').each(function(k, v) {
+            resource.selectArr.push($(this).attr('data-id'));
+            html += $(this).attr('data-id') + ',';
+        });
+    }
+}
 //编辑资源信息
-resource.edit = function() {
-
+resource.edit = function(id) {
+    
+    $('#editFileModal').attr('data-id',id);
+    $('#editFileModal').modal('show');
 }
 //删除资源
-resource.del = function() {
-
+resource.del = function(id) {
+    var html = '';
+    for (var i = 0; i < resource.selectArr.length; i++) {
+        html += resource.selectArr[i] + ',';
+    }
+    if (delArr) {
+        $('#delFileContent').html('您确定要删除ID : ' + html + '文件吗？');
+    }
+    $('#delFileModal').modal('show');
 }
 
 //标签处理器
@@ -469,6 +514,22 @@ menu.start = function() {
             sendMsg('info','旋转成功!');
         });
     });
+    //编辑目录
+    $('a[href="#operate-dir-edit"]').click(function() {
+        if (resource.dir > 4) {
+            resource.edit(resource.dir);
+        } else {
+            sendMsg('error', '您无法编辑顶级目录!');
+        }
+    });
+    //删除目录
+    $('a[href="#operate-dir-del"]').click(function() {
+        if (resource.dir > 4) {
+            resource.del(resource.dir);
+        } else {
+            sendMsg('error', '您无法删除顶级目录!');
+        }
+    });
 }
 
 //设置界面类
@@ -499,7 +560,7 @@ $(function() {
     tag.start();
     //设定提示框架
     Messenger.options = {
-        'extraClasses': 'messenger-fixed messenger-on-bottom messenger-on-right',
+        'extraClasses': 'messenger-fixed messenger-on-bottom',
         'theme': 'flat'
     }
     //初始化资源

@@ -263,14 +263,13 @@ class AppPex {
      * 修改Fx信息
      * @param int $id ID
      * @param string $title 标题
-     * @param string $name 名称
      * @param string $content 描述内容
      * @return boolean 是否成功
      */
-    public function editFx($id, $title, $name, $content) {
-        $sets = array($this->fxFields[1] => ':title', $this->fxFields[2] => ':name', $this->fxFields[10] => ':content');
+    public function editFx($id, $title, $content) {
+        $sets = array($this->fxFields[1] => ':title', $this->fxFields[10] => ':content');
         $where = '`' . $this->fxFields[0] . '` = :id';
-        $attrs = array(':title' => array($title, PDO::PARAM_STR), ':name' => array($name, PDO::PARAM_STR), ':content' => array($content, PDO::PARAM_STR), ':id' => array($id, PDO::PARAM_INT));
+        $attrs = array(':title' => array($title, PDO::PARAM_STR), ':content' => array($content, PDO::PARAM_STR), ':id' => array($id, PDO::PARAM_INT));
         return $this->db->sqlUpdate($this->fxTableName, $sets, $where, $attrs);
     }
 
@@ -351,6 +350,19 @@ class AppPex {
             return $this->db->sqlInsert($this->tagTableName, $this->tagFields, $value, $attrs);
         }
         return 0;
+    }
+    
+    public function viewTx($id){
+        
+    }
+    
+    public function setTx($id,$tags){
+        if($tags){
+            foreach($tags as $v){
+                
+            }
+        }
+        return false;
     }
 
     /**

@@ -115,12 +115,21 @@ if (isset($_GET['action']) == true) {
             break;
         case 'fx-edit':
             //编辑FX信息
-            if (isset($_POST['id']) == true && isset($_POST['title']) == true && isset($_POST['name']) == true && isset($_POST['content']) == true) {
+            if (isset($_POST['id']) == true && isset($_POST['title']) == true && isset($_POST['content']) == true) {
                 $id = (int) $_POST['id'];
                 $title = $_POST['title'];
-                $name = (int) $_POST['name'];
                 $content = $_POST['content'];
-                $res = $pex->editFx($id, $where, $name, $content);
+                $tags = isset($_POST['tags']) == true ? $_POST['tags'] : null;
+                //创建标签关系
+                if ($tags) {
+                    foreach ($tags as $tagV) {
+                        if (!$pex->addTx($parent, $tagV, 1)) {
+                            $res = false;
+                            CoreHeader::toJson($res);
+                        }
+                    }
+                }
+                $res = $pex->editFx($id, $where, $content);
                 CoreHeader::toJson($res);
             }
             break;
@@ -144,9 +153,15 @@ if (isset($_GET['action']) == true) {
         case 'fx-del':
             //删除FX
             if (isset($_POST['id']) == true) {
-                $id = (int) $_POST['id'];
-                $res = $pex->delFx($id);
-                CoreHeader::toJson($res);
+                $id = $_POST['id'];
+                if ($id) {
+                    foreach ($id as $v) {
+                        if (!$pex->delFx($v)) {
+                            CoreHeader::toJson(false);
+                        }
+                    }
+                    CoreHeader::toJson(true);
+                }
             }
             break;
         case 'tag-list':

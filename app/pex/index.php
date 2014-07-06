@@ -152,6 +152,8 @@ require('header.php');
     <div class="modal-content">
       <div class="modal-body" id="openFileView"></div>
       <div class="modal-footer">
+        <button type="button" id="openFileEdit" class="btn btn-primary">修改</button>
+        <button type="button" id="openFileDel" class="btn btn-danger">删除</button>
         <button type="button" id="openFilePrevButton" class="btn btn-info">前一个</button>
         <button type="button" id="openFileNextButton" class="btn btn-info">后一个</button>
         <button type="button" id="openFileButton" class="btn btn-primary">打开</button>

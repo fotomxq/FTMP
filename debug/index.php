@@ -2,8 +2,7 @@
 /**
  * Debug首页
  * @author fotomxq <fotomxq.me>
- * @version 2
- * @package debug
+ * @version 3
  */
 
 //debug列表
@@ -17,7 +16,8 @@ $debugList = array(
   array('title'=>'日志系统测试','link'=>'log.php'),
   array('title'=>'数据库测试','link'=>'db.php'),
   array('title'=>'IP测试','link'=>'ip.php'),
-  array('title'=>'第二代IP处理器测试','link'=>'sys-ip.php')
+  array('title'=>'第二代IP处理器测试','link'=>'sys-ip.php'),
+  array('title'=>'图片旋转测试','link'=>'plug-img-rotate.php')
   );
 ?>
 <!DOCTYPE html>

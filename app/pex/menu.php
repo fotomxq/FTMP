@@ -22,6 +22,8 @@
           <li><a href="#mode-phone">手机模式</a></li>
           <li class="divider"></li>
           <li><a href="#clear-cache">清理缓冲</a></li>
+          <li class="divider"></li>
+          <li><a href="#rotate-img">旋转当前目录图片</a></li>
       </ul>
   </li>
   <li><a href="#set" data-toggle="modal" data-target="#setModal">设置</a></li>

@@ -224,6 +224,25 @@ if (isset($_GET['action']) == true) {
             $res = $pexCache->clearImg();
             CoreHeader::toJson($res);
             break;
+        case 'rotate-img':
+            //旋转当前目录下所有图片
+            if (isset($_POST['dir']) == true) {
+                $dir = (int) $_POST['dir'];
+                require(DIR_LIB . DS . 'plug-img-rotate.php');
+                $resList = $pex->viewList($dir, null, 1, 9999, 0, false);
+                if ($resList) {
+                    foreach ($resList as $v) {
+                        $src = APP_PEX_DIR . DS . 'file' . DS . $v['fx_src'];
+                        if (is_file($src) == true) {
+                            PlugImgRotate($src, 270);
+                        }
+                    }
+                    $pexCache = new CoreCache(CACHE_ON, CACHE_LIMIT_TIME, APP_PEX_DIR . DS . 'cache');
+                    $res = $pexCache->clearImg();
+                }
+                CoreHeader::toJson(true);
+            }
+            break;
     }
 }
 ?>

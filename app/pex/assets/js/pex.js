@@ -237,6 +237,7 @@ resource.selectMode = function(mode) {
 //查看资源
 resource.open = function(id) {
     resource.openId = id;
+    $('#openFileView').html('<img src="img.php?id='+resource.openId+'" style="max-width:800px;max-height:800px;">');
     $('#openFileModal').modal('show');
 }
 //进入下一页资源
@@ -458,6 +459,14 @@ menu.start = function() {
     $('a[href="#clear-cache"]').click(function(){
         actionServer('cache-clear',{},function(data){
             sendMsg('info','清理缓冲成功!');
+        });
+    });
+    //旋转所有图片
+    $('a[href="#rotate-img"]').click(function(){
+        actionServer('rotate-img',{
+            'dir':resource.dir
+        },function(data){
+            sendMsg('info','旋转成功!');
         });
     });
 }

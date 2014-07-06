@@ -142,7 +142,7 @@ class AppPex {
             //获取文件基本信息
             $fileName = $this->getBasename($src);
             $fileSize = filesize($src);
-            $fileType = pathinfo($src, PATHINFO_EXTENSION);
+            $fileType = strtolower(pathinfo($src, PATHINFO_EXTENSION));
             $fileSha1 = sha1_file($src);
             $ds = DIRECTORY_SEPARATOR;
             //生成目录路径

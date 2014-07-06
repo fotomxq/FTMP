@@ -5,7 +5,7 @@
  * 所有非特殊页面必须引用的页面，包含必备的配置和库引用。
  * 
  * @author fotomxq <fotomxq.me>
- * @version 4
+ * @version 5
  * @package web
  */
 //引用配置文件
@@ -16,6 +16,9 @@ require(DIR_LIB . DS . 'core-error.php');
 
 //头信息处理器
 require(DIR_LIB . DS . 'core-header.php');
+
+//缓冲器需要的函数
+require(DIR_LIB . DS . 'plug-img-scale.php');
 
 //缓冲器
 require(DIR_LIB . DS . 'core-cache.php');

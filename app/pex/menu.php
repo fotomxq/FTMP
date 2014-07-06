@@ -20,6 +20,8 @@
           <li><a href="#mode-operate">操作模式</a></li>
           <li><a href="#mode-view">预览模式</a></li>
           <li><a href="#mode-phone">手机模式</a></li>
+          <li class="divider"></li>
+          <li><a href="#clear-cache">清理缓冲</a></li>
       </ul>
   </li>
   <li><a href="#set" data-toggle="modal" data-target="#setModal">设置</a></li>

@@ -17,13 +17,14 @@ class CoreHeader {
 
     /**
      * 输出图像
+     * <p>JPG类型</p>
      * @param string $src 文件路径
      * @param string $type 类型
      */
     static public function showImg($src, $type) {
         CoreHeader::toImg($type);
-        $img = imagecreatefrompng($src);
-        imagepng($img);
+        $img = imagecreatefromjpeg($src);
+        imagejpeg($img);
         imagedestroy($img);
     }
 

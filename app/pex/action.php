@@ -4,7 +4,7 @@
  * 动作整合
  * @authors fotomxq <fotomxq.me>
  * @date    2014-06-30 11:51:18
- * @version 2
+ * @version 3
  */
 //引用全局
 require('glob.php');
@@ -217,6 +217,12 @@ if (isset($_GET['action']) == true) {
                 }
                 CoreHeader::toJson($res);
             }
+            break;
+        case 'cache-clear':
+            //清理缓冲
+            $pexCache = new CoreCache(CACHE_ON, CACHE_LIMIT_TIME, APP_PEX_DIR . DS . 'cache');
+            $res = $pexCache->clearImg();
+            CoreHeader::toJson($res);
             break;
     }
 }

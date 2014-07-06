@@ -5,7 +5,7 @@
  * 缓冲相关变量或值。
  * 
  * @author fotomxq <fotomxq.me>
- * @version 3
+ * @version 4
  */
 class CoreCache {
 
@@ -84,11 +84,11 @@ class CoreCache {
 
     /**
      * 缓冲缩略图
-     * <p>如果存在则输出，否则生成再输出。</p>
+     * <p>如果存在则输出，否则生成再输出。最终输出jpg文件。</p>
      * @param  string $src 文件路径
      * @param  int $w 宽度
      * @param  int $h 高度
-     * @return string	缩略图缓冲文件路径
+     * @return string 缩略图缓冲文件路径
      */
     public function img($src, $w, $h) {
         if (!is_file($src)) {
@@ -97,18 +97,63 @@ class CoreCache {
         $fileSha1 = sha1_file($src);
         $fileType = pathinfo($src, PATHINFO_EXTENSION);
         //生成缓冲文件路径
-        $img;
-        switch ($fileType) {
-            case 'jpg':
-                $img = imagecreatefromjpeg($src);
-                break;
-            case 'png':
-                $img = imagecreatefrompng($src);
-                break;
+        $dir = $this->cacheDir . DS . $w . $h;
+        if (!is_dir($dir)) {
+            if (!mkdir($dir, 0777, true)) {
+                return '';
+            }
         }
-        if ($img) {
-            $newImg = PlugImgScale($img, $w, $h);
+        $cacheSrc = $dir . DS . $fileSha1 . '.jpg';
+        if (is_file($cacheSrc)) {
+            return $cacheSrc;
+        } else {
+            //压缩图片
+            $img = null;
+            switch ($fileType) {
+                case 'jpg':
+                    $img = @imagecreatefromjpeg($src);
+                    break;
+                case 'png':
+                    $img = @imagecreatefrompng($src);
+                    break;
+            }
+            if ($img) {
+                $newImg = PlugImgScale($img, $w, $h);
+                imagedestroy($img);
+                if ($newImg) {
+                    //保存图片
+                    if (imagejpeg($newImg, $cacheSrc, 100)) {
+                        imagedestroy($newImg);
+                        return $cacheSrc;
+                    }
+                }
+            }
         }
+        return '';
+    }
+
+    /**
+     * 清理图片缓冲
+     * @return boolean 是否成功
+     */
+    public function clearImg() {
+        $src = $this->cacheDir . $this->ds . '*';
+        $fileList = glob($src);
+        if ($fileList) {
+            foreach ($fileList as $v) {
+                if (is_dir($v)) {
+                    if (!CoreFile::deleteDir($v)) {
+                        return false;
+                    }
+                }
+                if (is_file($v)) {
+                    if (!unlink($v)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**

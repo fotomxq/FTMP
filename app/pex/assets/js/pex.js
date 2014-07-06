@@ -192,9 +192,11 @@ resource.ref = function() {
         if (data) {
             for (var i = 0; i < data.length; i++) {
                 if (resource.mode == 'phone') {
-                    $('#resourceList').append('<div class="col-xs-12"><a href="#resource" data-id="' + data[i]['id'] + '" data-type="' + data[i]['fx_type'] + '" data-title="' + data[i]['fx_title'] + '" data-select="false"><img src="img.php?id=' + data[i]['id'] + '" style="width: 300px; height: 300px;"></a></div>');
+                    $('#resourceList').append('<div class="col-xs-12"><a href="#resource" data-id="' + data[i]['id'] + '" data-type="' + data[i]['fx_type'] + '" data-title="' + data[i]['fx_title'] + '" data-select="false"><img src="img.php?id=' + data[i]['id'] + '" style="max-width: 300px; max-height: 300px;"></a></div>');
+                } else if (resource.mode == 'view') {
+                    $('#resourceList').append('<div class="col-xs-6"><a href="#resource" data-id="' + data[i]['id'] + '" data-type="' + data[i]['fx_type'] + '" data-title="' + data[i]['fx_title'] + '" data-select="false"><img src="img.php?id=' + data[i]['id'] + '" style="max-width: 400px; max-height: 400px;"></a></div>');
                 } else {
-                    $('#resourceList').append('<div class="col-xs-3"><a href="#resource" data-id="' + data[i]['id'] + '" data-type="' + data[i]['fx_type'] + '" data-title="' + data[i]['fx_title'] + '" data-select="false"><img src="img.php?id=' + data[i]['id'] + '" style="width: 140px; height: 140px;"><h4>' + data[i]['fx_title'] + '</h4></a></div>');
+                    $('#resourceList').append('<div class="col-xs-3"><a href="#resource" data-id="' + data[i]['id'] + '" data-type="' + data[i]['fx_type'] + '" data-title="' + data[i]['fx_title'] + '" data-select="false"><img src="img.php?id=' + data[i]['id'] + '" style="max-width: 140px; max-height: 140px;"><h4>' + data[i]['fx_title'] + '</h4></a></div>');
                 }
             }
             resource.selectMode(resource.mode);
@@ -451,6 +453,12 @@ menu.start = function() {
             default:
                 break;
         }
+    });
+    //清理缓冲
+    $('a[href="#clear-cache"]').click(function(){
+        actionServer('cache-clear',{},function(data){
+            sendMsg('info','清理缓冲成功!');
+        });
     });
 }
 

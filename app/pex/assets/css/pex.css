@@ -80,6 +80,11 @@ body {
 .pex-content-list .row{
     margin-top: 30px;
 }
-#tagList a,#transferTag a{
+#tagList a,#transferTag a,#transferList a{
     margin-right: 5px;
+    margin-top: 5px;
+    float:left;
+}
+.messenger-fixed{
+    position: absolute;
 }

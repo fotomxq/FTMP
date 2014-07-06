@@ -30,10 +30,57 @@ if (isset($_GET['action']) == true) {
             break;
         case 'transfer-add':
             //发布转移文件
-            if (isset($_POST['title']) == true && isset($_POST['parent']) == true && isset($_POST['content']) == true && isset($_POST['tag']) == true) {
-                
+            if (isset($_POST['title']) == true && isset($_POST['parent']) == true && isset($_POST['mode-type']) == true && isset($_POST['mode-dir']) == true && isset($_POST['content']) == true && isset($_POST['tags']) == true && isset($_POST['files']) == true) {
+                $res = false;
+                $title = $_POST['title'];
+                $parent = (int) $_POST['parent'];
+                $content = $_POST['content'];
+                $tags = $_POST['tags'];
+                $files = $_POST['files'];
+                $modeDir = $_POST['mode-dir'];
+                $modeType = $_POST['mode-type'];
+                //构建文件夹
+                if ($modeDir == true) {
+                    $parent = $pex->pexType[$modeType]['folder'];
+                    $parent = $pex->addFolder($title, $parent, $content);
+                    if ($parent < 1) {
+                        $res = false;
+                        CoreHeader::toJson($res);
+                    }
+                    //创建标签关系
+                    if ($tags) {
+                        foreach ($tags as $tagV) {
+                            if (!$pex->addTx($parent, $tagV, 1)) {
+                                $res = false;
+                                CoreHeader::toJson($res);
+                            }
+                        }
+                    }
+                }
+                //创建文件
+                if ($files) {
+                    foreach ($files as $v) {
+                        $src = APP_PEX_DIR . DS . 'transfer' . DS . $v;
+                        $resFile = $pex->transferFile($src, $title, $parent, $content);
+                        if ($resFile > 0) {
+                            //创建标签关系
+                            if ($tags) {
+                                foreach ($tags as $tagV) {
+                                    if (!$pex->addTx($resFile, $tagV, 0)) {
+                                        $res = false;
+                                        CoreHeader::toJson($res);
+                                    }
+                                }
+                            }
+                        } else {
+                            $res = false;
+                            CoreHeader::toJson($res);
+                        }
+                    }
+                    $res = true;
+                }
+                CoreHeader::toJson($res);
             }
-            $isGroup = isset($_POST['group']) == true ? true : false;
             break;
         case 'folder-add':
             //添加目录
@@ -61,10 +108,8 @@ if (isset($_GET['action']) == true) {
                 $max = $_POST['max'] > 0 ? (int) $_POST['max'] : 10;
                 $sort = (int) $_POST['sort'];
                 $desc = $_POST['desc'] == true ? true : false;
-                $where = '1';
-                $attrs = null;
-                $tags = null;
-                $res = $pex->viewList($where, $attrs, $tags, $page, $max, $sort, $desc);
+                $tags = isset($_POST['tags']) == true ? $_POST['tags'] : null;
+                $res = $pex->viewList($parent, $tags, $page, $max, $sort, $desc);
                 CoreHeader::toJson($res);
             }
             break;

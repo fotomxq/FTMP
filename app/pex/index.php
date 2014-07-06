@@ -20,8 +20,8 @@ require('header.php');
 ?>
 <div class="pex-content">
     <div class="row">
-        <ol class="breadcrumb">
-            <li class="active"><a href="#">照片</a></li>
+        <ol class="breadcrumb" id="dirSelect">
+            <li class="active"><a href="#dir">照片</a></li>
         </ol>
     </div>
     <div class="row">
@@ -30,32 +30,7 @@ require('header.php');
         </div>
     </div>
     <div class="pex-content-list">
-        <div class="row">
-            <div class="col-xs-3">
-                <a href="#">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
-                    <h4>文件X</h4>
-                </a>
-            </div>
-            <div class="col-xs-3">
-                <a href="#">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
-                    <h4>文件X</h4>
-                </a>
-            </div>
-            <div class="col-xs-3">
-                <a href="#">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
-                    <h4>文件X</h4>
-                </a>
-            </div>
-            <div class="col-xs-3">
-                <a href="#">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
-                    <h4>文件X</h4>
-                </a>
-            </div>
-        </div>
+        <div class="row" id="resourceList"></div>
     </div>
 </div>
 <!-- 发布资源框架 -->
@@ -99,6 +74,14 @@ require('header.php');
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-sm-2 control-label">模式</label>
+                    <div class="col-sm-10">
+                        <label class="radio-inline">
+                            <input type="checkbox" name="transferModeDir" value="1"> 自动建立文件夹，否则发布到当前所属文件夹下
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-sm-2 control-label">描述</label>
                     <div class="col-sm-10">
                         <textarea class="form-control" id="transferContent" rows="3"></textarea>
@@ -108,8 +91,8 @@ require('header.php');
         </div>
         <div class="modal-footer">
             <button type="button" id="uploadOkButton" class="btn btn-primary">发布</button>
-        <button type="button" id="uploadSelectAllButton" class="btn btn-info">全选文件</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" id="uploadSelectAllButton" class="btn btn-info">全选文件</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
       </div>
     </div>
   </div>
@@ -158,6 +141,20 @@ require('header.php');
       </div>
       <div class="modal-footer">
         <button type="button" id="setSaveButton" class="btn btn-primary">保存</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 打开文件界面 -->
+<div class="modal fade bs-example-modal-lg" id="openFileModal" tabindex="-1" role="dialog" aria-labelledby="openFileModalLabel" aria-hidden="true" data-id="">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body" id="openFileView"></div>
+      <div class="modal-footer">
+        <button type="button" id="openFilePrevButton" class="btn btn-info">前一个</button>
+        <button type="button" id="openFileNextButton" class="btn btn-info">后一个</button>
+        <button type="button" id="openFileButton" class="btn btn-primary">打开</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
       </div>
     </div>

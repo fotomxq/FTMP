@@ -3,8 +3,7 @@
 /**
  * header头信息操作类
  * @author fotomxq <fotomxq.me>
- * @version 3
- * @package core
+ * @version 4
  */
 class CoreHeader {
 
@@ -14,6 +13,18 @@ class CoreHeader {
      */
     static public function toImg($type = 'png') {
         header('Content-type: image/' . $type . ';charset=utf-8');
+    }
+
+    /**
+     * 输出图像
+     * @param string $src 文件路径
+     * @param string $type 类型
+     */
+    static public function showImg($src, $type) {
+        CoreHeader::toImg($type);
+        $img = imagecreatefrompng($src);
+        imagepng($img);
+        imagedestroy($img);
     }
 
     /**
@@ -71,7 +82,7 @@ class CoreHeader {
      * 输出HTML
      * @param  string $data HTML内容
      */
-    static public function outHTML($data){
+    static public function outHTML($data) {
         CoreHeader::noCache();
         CoreHeader::toPage();
         die($data);

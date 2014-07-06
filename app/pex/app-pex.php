@@ -116,12 +116,12 @@ class AppPex {
      * @return array 数据数组
      */
     public function transferList($page = 1, $max = 10) {
-        $list = CoreFIle::searchDir($this->dataFolderTransferSrc . DS . '*.*');
+        $list = CoreFIle::searchDir($this->dataFolderTransferSrc . DS . '*');
         if ($list) {
             $res;
             for ($i = $page - 1; $i < $max; $i++) {
                 if (isset($list[$i]) == true) {
-                    $res[] = basename($list[$i]);
+                    $res[] = iconv("GB2312", "UTF-8//IGNORE", $this->getBasename($list[$i]));
                 }
             }
             return $res;
@@ -140,7 +140,7 @@ class AppPex {
     public function transferFile($src, $title, $parent, $content) {
         if (is_file($src) == true) {
             //获取文件基本信息
-            $fileName = basename($src);
+            $fileName = $this->getBasename($src);
             $fileSize = filesize($src);
             $fileType = pathinfo($src, PATHINFO_EXTENSION);
             $fileSha1 = sha1_file($src);
@@ -156,17 +156,20 @@ class AppPex {
             $time = $dateY . '-' . $dateM . '-' . $dateD . ' ' . $dateH . ':' . $dateI . ':' . $dateS;
             //生成目录
             $newDir = $this->dataFolderFileSrc . $ds . $dateY . $ds . $dateM . $ds . $dateD;
-            if (mkdir($newDir, 0777, true) != true) {
-                return 0;
+            if(!is_dir($newDir)) {
+                if (mkdir($newDir, 0777, true) != true) {
+                    return 0;
+                }
             }
             //生成文件路径
+            $saveSrc = $dateY . $ds . $dateM . $ds . $dateD . DS . $dateY . $dateM . $dateD . $dateH . $dateI . $dateS . '_' . $fileSha1 . '.' . $fileType;
             $newSrc = $newDir . $ds . $dateY . $dateM . $dateD . $dateH . $dateI . $dateS . '_' . $fileSha1 . '.' . $fileType;
             //转移文件
             if (rename($src, $newSrc) != true) {
                 return 0;
             }
             //创建文件数据
-            return $this->addFx($title, $fileName, $parent, $fileSize, $fileType, $fileSha1, $time, $content);
+            return $this->addFx($title, $fileName, $parent, $fileSize, $fileType, $fileSha1, $saveSrc, $time, $content);
         }
         return false;
     }
@@ -181,6 +184,27 @@ class AppPex {
         $attrs = array(':id' => array($id, PDO::PARAM_INT));
         return $this->db->sqlSelect($this->fxTableName, $this->fxFields, $where, $attrs);
     }
+    
+    /**
+     * 不通过Src获取文件路径
+     * @param int $id ID
+     * @return string 路径
+     */
+    public function getFileSrc($id) {
+        $res = $this->view($id);
+        if ($res) {
+            $type = $res['fx_type'] == 'folder' ? 'jpg' : $res['fx_type'];
+            $dateY = substr($res['fx_create_time'], 0, 4);
+            $dateM = substr($res['fx_create_time'], 5, 2);
+            $dateD = substr($res['fx_create_time'], 8, 2);
+            $dateH = substr($res['fx_create_time'], 11, 2);
+            $dateI = substr($res['fx_create_time'], 14, 2);
+            $dateS = substr($res['fx_create_time'], 17, 2);
+            $src = $this->dataFolderFileSrc . DS . $dateY . DS . $dateM . DS . $dateD . DS . $dateY . $dateM . $dateD . $dateH . $dateI . $dateS . '_' . $res['fx_sha1'] . '.' . $type;
+            return $src;
+        }
+        return '';
+    }
 
     /**
      * 获取合并后的字段
@@ -193,8 +217,7 @@ class AppPex {
 
     /**
      * 查询FX列
-     * @param string $where 条件,注意条件必须设定归属表,使用getFxField获取字段
-     * @param array $attrs 筛选过滤
+     * @param string $parent 上一级Id 
      * @param array $tags 标签组,eg:array(1,4,6)
      * @param int $page 页数
      * @param int $max 页长
@@ -202,27 +225,38 @@ class AppPex {
      * @param boolean $desc 是否倒叙
      * @return array 数据数组
      */
-    public function viewList($where = '1', $attrs = null, $tags = null, $page = 1, $max = 10, $sort = 0, $desc = false) {
+    public function viewList($parent = 0, $tags = null, $page = 1, $max = 10, $sort = 0, $desc = false) {
+        $where = '`' . $this->fxFields[3] . '` = :parent';
+        $attrs = array(':parent' => array($parent, PDO::PARAM_INT));
         $sortField = isset($this->folderFields[$sort]) == true ? $this->getFxField($sort) : $this->getFxField(0);
         $descStr = $desc === true ? 'DESC' : 'ASC';
-        $whereTag = '';
+        $whereTag = '1';
         if ($tags) {
-            foreach ($tags as $v) {
-                $whereTag .= $this->getTxField(2) . ' = :tagID or ';
+            $whereTag = '';
+            foreach ($tags as $k => $v) {
+                $aK = ':tagID' . $k;
+                $whereTag .= $this->getTxField(2) . ' = ' . $aK . ' or ';
+                $attrs[$aK] = array($v, PDO::PARAM_INT);
             }
             $whereTag = substr($whereTag, 0, -4);
         }
-        $sql = 'SELECT ' . $this->fxTableName . '.* FROM `' . $this->fxTableName . '`,`' . $this->txTableName . '` WHERE ' . $where . ' and ' . $this->getTxField(1) . ' = ' . $this->getFxField(0) . ' and (' . $whereTag . ') ORDER BY ' . $sortField . ' ' . $descStr . ' LIMIT ' . (($page - 1) * $max) . ',' . $max;
+        $sql = 'SELECT ' . $this->fxTableName . '.* FROM `' . $this->fxTableName . '`,`' . $this->txTableName . '` WHERE ' . $where . ' and ' . $this->getTxField(1) . ' = ' . $this->getFxField(0) . ' and (' . $whereTag . ') GROUP BY ' . $sortField . ' ' . $descStr . ' LIMIT ' . (($page - 1) * $max) . ',' . $max;
         return $this->db->runSQL($sql, $attrs, 3, PDO::FETCH_ASSOC);
     }
 
+    /**
+     * 创建文件夹
+     * @param string $title 标题
+     * @param int $parent 上一级Id
+     * @param string $content 描述
+     * @return int 新的Id
+     */
     public function addFolder($title, $parent, $content) {
-        $name = $title;
         $size = 0;
         $type = 'folder';
         $sha1 = sha1('folder');
         $time = date('Y-m-d H:i:s');
-        return $this->addFx($title, $name, $parent, $size, $type, $sha1, $time, $content);
+        return $this->addFx($title, $title, $parent, $size, $type, $sha1, '', $time, $content);
     }
 
     /**
@@ -453,13 +487,23 @@ class AppPex {
      * @param int $size 大小
      * @param string $type 类型
      * @param string $sha1 SHA1
+     * @param string $src 路径
      * @param string $time 时间
      * @param string $content 内容
      * @return int 新的ID
      */
-    private function addFx($title, $name, $parent, $size, $type, $sha1, $time, $content) {
-        $value = 'NULL,:title,:name,:parent,:size,:type,:sha1,:time,NOW(),:content';
-        $attrs = array(':title' => array($title, PDO::PARAM_STR), ':name' => array($name, PDO::PARAM_STR), ':parent' => array($parent, PDO::PARAM_INT), ':size' => array($size, PDO::PARAM_INT), ':type' => array($type, PDP::PARAM_STR), ':sha1' => array($sha1, PDO::PARAM_STR), ':time' => array($time, PDO::PARAM_STR), ':content' => array($content, PDO::PARAM_STR));
+    private function addFx($title, $name, $parent, $size, $type, $sha1, $src, $time, $content) {
+        $value = 'NULL,:title,:name,:parent,:size,:type,:sha1,:src,:time,NOW(),:content';
+        $attrs = array(
+            ':title' => array($title, PDO::PARAM_STR),
+            ':name' => array($name, PDO::PARAM_STR),
+            ':parent' => array($parent, PDO::PARAM_INT),
+            ':size' => array($size, PDO::PARAM_INT),
+            ':type' => array($type, PDO::PARAM_STR),
+            ':sha1' => array($sha1, PDO::PARAM_STR),
+            ':src' => array($src, PDO::PARAM_STR),
+            ':time' => array($time, PDO::PARAM_STR),
+            ':content' => array($content, PDO::PARAM_STR));
         return $this->db->sqlInsert($this->fxTableName, $this->fxFields, $value, $attrs);
     }
 
@@ -479,6 +523,15 @@ class AppPex {
      */
     private function getTxField($key) {
         return $this->txTableName . '.' . $this->txFields[$key];
+    }
+    
+    /**
+     * 获取文件基本名称
+     * @param string $src 路径
+     * @return string 文件名
+     */
+    private function getBasename($src) {
+        return preg_replace('/^.+[\\\\\\/]/', '', $src);
     }
 
 }

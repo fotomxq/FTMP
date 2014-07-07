@@ -296,6 +296,7 @@ resource.selectMode = function(mode) {
             }
         });
     }
+    resource.clear();
 }
 //查看资源
 resource.open = function(id) {
@@ -348,7 +349,7 @@ resource.selectDir = function(dir) {
     if (dir > 4) {
         resource.addDir(appendTitle, resource.dir, false);
         resource.dir = dir;
-        resource.addDir($('a[href="#resource"][data-id="'+dir+'"]').attr('data-title'), resource.dir, true);
+        resource.addDir($('a[href="#resource"][data-id="' + dir + '"]').attr('data-title'), resource.dir, true);
     } else {
         resource.addDir(appendTitle, resource.dir, true);
     }
@@ -362,8 +363,10 @@ resource.addDir = function(title, value, active) {
     }
     $('#dirSelect').append('<li ' + activeHtml + ' value="' + value + '"><a href="#dir">' + title + '</a></li>');
     $('a[href="#dir"]').unbind();
-    $('a[href="#dir"]').bind('click',function(){
-        resource.selectDir($(this).parent('li').attr('value'));
+    $('a[href="#dir"]').bind('click', function() {
+        if (!$(this).parent('li').hasClass('active')) {
+            resource.selectDir($(this).parent('li').attr('value'));
+        }
     });
 }
 //更新所选项

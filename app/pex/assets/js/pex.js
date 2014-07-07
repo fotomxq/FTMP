@@ -207,6 +207,38 @@ resource.start = function() {
             }
         });
     });
+    //浏览资源框-编辑资源
+    $('#openFileEdit').click(function(){
+        $('#openFileModal').modal('hide');
+        resource.edit($('#openFileModal').attr('data-id'));
+    });
+    //浏览资源框-删除资源
+    $('#openFileDel').click(function(){
+        $('#openFileModal').modal('hide');
+        var arr = new Array();
+        arr.push($('#openFileModal').attr('data-id'));
+        resource.del(arr);
+    });
+    //上一个资源
+    $('#openFilePrevButton').click(function() {
+        //$('#openFileModal').modal('hide');
+        var prev = $('a[href="#resource"][data-id="' + $('#openFileModal').attr('data-id') + '"]').prev();
+        if (prev) {
+            resource.open(prev.attr('data-id'));
+        } else {
+            sendMsg('info', '没有上一个了!');
+        }
+    });
+    //下一个资源
+    $('#openFileNextButton').click(function() {
+        //$('#openFileModal').modal('hide');
+        var next = $('a[href="#resource"][data-id="' + $('#openFileModal').attr('data-id') + '"]').next();
+        if (next) {
+            resource.open(next.attr('data-id'));
+        } else {
+            sendMsg('info', '没有下一个了!');
+        }
+    });
 }
 //刷新资源
 resource.ref = function() {
@@ -223,11 +255,11 @@ resource.ref = function() {
             for (var i = 0; i < data.length; i++) {
                 var dataHtml = 'data-id="' + data[i]['id'] + '" data-type="' + data[i]['fx_type'] + '" data-title="' + data[i]['fx_title'] + '" data-select="false" data-content="' + data[i]['fx_content'] + '"';
                 if (resource.mode == 'phone') {
-                    $('#resourceList').append('<div class="col-xs-12"><a href="#resource" '+dataHtml+'><img src="img.php?id=' + data[i]['id'] + '" style="max-width: 300px; max-height: 300px;"></a></div>');
+                    $('#resourceList').append('<div class="col-xs-12"><a href="#resource" '+dataHtml+'><img src="img.php?id=' + data[i]['id'] + '&size=300" style="max-width: 300px;"></a></div>');
                 } else if (resource.mode == 'view') {
-                    $('#resourceList').append('<div class="col-xs-6"><a href="#resource" '+dataHtml+'><img src="img.php?id=' + data[i]['id'] + '" style="max-width: 400px; max-height: 400px;"></a></div>');
+                    $('#resourceList').append('<div class="col-xs-6"><a href="#resource" '+dataHtml+'><img src="img.php?id=' + data[i]['id'] + '&size=400" style="max-width: 400px;"></a></div>');
                 } else {
-                    $('#resourceList').append('<div class="col-xs-3"><a href="#resource" '+dataHtml+'><img src="img.php?id=' + data[i]['id'] + '" style="max-width: 140px; max-height: 140px;"><h4>' + data[i]['fx_title'] + '</h4></a></div>');
+                    $('#resourceList').append('<div class="col-xs-3"><a href="#resource" '+dataHtml+'><img src="img.php?id=' + data[i]['id'] + '&size=140" style="max-width: 140px; max-height: 140px;"><h4>' + data[i]['fx_title'] + '</h4></a></div>');
                 }
             }
             resource.selectMode(resource.mode);
@@ -268,7 +300,8 @@ resource.selectMode = function(mode) {
 //查看资源
 resource.open = function(id) {
     resource.openId = id;
-    $('#openFileView').html('<img src="img.php?id='+resource.openId+'" style="max-width:800px;max-height:800px;">');
+    $('#openFileView').html('<img src="img.php?id='+resource.openId+'&size=800" style="max-width:800px;">');
+    $('#openFileModal').attr('data-id',id);
     $('#openFileModal').modal('show');
 }
 //进入下一页资源
@@ -373,8 +406,8 @@ resource.edit = function(id) {
 //删除资源
 resource.del = function(id) {
     var html = '';
-    for (var i = 0; i < resource.selectArr.length; i++) {
-        html += resource.selectArr[i] + ',';
+    for (var i = 0; i < id.length; i++) {
+        html += id[i] + ',';
     }
     if (html) {
         $('#delFileContent').html('您确定要删除ID : ' + html + '文件吗？');
@@ -481,14 +514,6 @@ tag.ref = function() {
         tag.select();
         resource.clear();
     });
-}
-//和文件关联标签
-tag.addTx = function() {
-
-}
-//取消关联
-tag.delTx = function() {
-
 }
 
 //菜单栏

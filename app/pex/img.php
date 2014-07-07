@@ -4,7 +4,7 @@
  * 查看图片
  * @authors fotomxq <fotomxq.me>
  * @date    2014-07-06 14:52:00
- * @version 1
+ * @version 2
  */
 //引用全局
 require('glob.php');
@@ -21,7 +21,7 @@ if (isset($_GET['id']) == true) {
     //获取图片大小
     $size = isset($_GET['size']) == true ? $_GET['size'] : 600;
     $sizeW = $size;
-    $sizeH = $size;
+    $sizeH = 1500;
     //获取数据
     $res = $pex->view($id);
     if ($res) {

@@ -88,3 +88,6 @@ body {
 .messenger-fixed{
     position: absolute;
 }
+#openFileView{
+    text-align: center;
+}

@@ -213,7 +213,7 @@ resource.start = function() {
         resource.edit($('#openFileModal').attr('data-id'));
     });
     //浏览资源框-删除资源
-    $('#openFileDel').click(function(){
+    $('#openFileDel').click(function() {
         $('#openFileModal').modal('hide');
         var arr = new Array();
         arr.push($('#openFileModal').attr('data-id'));
@@ -222,8 +222,8 @@ resource.start = function() {
     //上一个资源
     $('#openFilePrevButton').click(function() {
         //$('#openFileModal').modal('hide');
-        var prev = $('a[href="#resource"][data-id="' + $('#openFileModal').attr('data-id') + '"]').prev();
-        if (prev) {
+        var prev = $('a[href="#resource"][data-id="' + $('#openFileModal').attr('data-id') + '"]').parent().prev().children();
+        if (prev.attr('data-id')) {
             resource.open(prev.attr('data-id'));
         } else {
             sendMsg('info', '没有上一个了!');
@@ -232,8 +232,8 @@ resource.start = function() {
     //下一个资源
     $('#openFileNextButton').click(function() {
         //$('#openFileModal').modal('hide');
-        var next = $('a[href="#resource"][data-id="' + $('#openFileModal').attr('data-id') + '"]').next();
-        if (next) {
+        var next = $('a[href="#resource"][data-id="' + $('#openFileModal').attr('data-id') + '"]').parent().next().children();
+        if (next.attr('data-id')) {
             resource.open(next.attr('data-id'));
         } else {
             sendMsg('info', '没有下一个了!');

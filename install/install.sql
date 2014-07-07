@@ -61,15 +61,6 @@ CREATE TABLE IF NOT EXISTS `sys_ip` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
 
---
--- 转存表中的数据 `sys_ip`
---
-
-INSERT INTO `sys_ip` (`id`, `ip_addr`, `ip_real`, `ip_ban`) VALUES
-(1, '::1', 'localhost', 0),
-(2, '127.0.0.1', '', 0),
-(3, '192.168.1.123', '', 0);
-
 -- --------------------------------------------------------
 
 --

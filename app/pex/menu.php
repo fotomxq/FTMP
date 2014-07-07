@@ -26,6 +26,8 @@
           <li class="divider"></li>
           <li><a href="#operate-fx-edit">编辑所选</a></li>
           <li><a href="#operate-fx-del">删除所选</a></li>
+          <li class="divider"></li>
+          <li><a href="#resource-more">加载更多</a></li>
       </ul>
   </li>
   <li><a href="#set" data-toggle="modal" data-target="#setModal">设置</a></li>

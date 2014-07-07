@@ -158,6 +158,8 @@ resource.openId = 0;
 resource.dir = 1;
 //当前选择的资源
 resource.selectArr = new Array();
+//当前页资源数
+resource.nowPageNum = 0;
 //初始化
 resource.start = function() {
     //打开文件事件
@@ -247,6 +249,17 @@ resource.start = function() {
             sendMsg('info', '没有下一个了!');
         }
     });
+    //初始化刷新资源
+    var contentHeight = $('.container').height();
+    var documentHeight = $(document).height();
+    var resourceNextReady = true;
+    while(resourceNextReady == true && documentHeight >= contentHeight+200){
+        resource.nextPage();
+        if(resource.nowPageNum < resource.max){
+            resourceNextReady = false;
+        }
+    }
+    //监控滚动条
 }
 //刷新资源
 resource.ref = function() {
@@ -260,6 +273,7 @@ resource.ref = function() {
         'desc': resource.desc
     }, function(data) {
         if (data) {
+            resource.nowPageNum = data.length;
             for (var i = 0; i < data.length; i++) {
                 var dataHtml = 'data-id="' + data[i]['id'] + '" data-type="' + data[i]['fx_type'] + '" data-title="' + data[i]['fx_title'] + '" data-select="false" data-content="' + data[i]['fx_content'] + '"';
                 if (resource.mode == 'phone') {
@@ -634,6 +648,10 @@ menu.start = function() {
         } else {
             sendMsg('error', '请选择文件或文件夹!');
         }
+    });
+    //强制加载更多
+    $('a[href="#resource-more"]').click(function(){
+        resource.nextPage();
     });
 }
 

@@ -284,6 +284,9 @@ resource.ref = function() {
                     $('#resourceList').append('<div class="col-xs-3"><a href="#resource" '+dataHtml+'><img src="img.php?id=' + data[i]['id'] + '&size=140" style="max-width: 140px; max-height: 140px;"><h4>' + data[i]['fx_title'] + '</h4></a></div>');
                 }
             }
+            if (resource.mode == 'operate') {
+                $('#resourceList > .col-xs-3').css('height','198px');
+            }
             resource.selectMode(resource.mode);
         }
     });

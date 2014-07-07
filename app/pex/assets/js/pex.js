@@ -167,31 +167,39 @@ resource.start = function() {
     //进入操作模式
     $('a[href="#mode-operate"]').click(function() {
         resource.selectMode('operate');
+        resource.clear();
         sendMsg('info','进入操作模式');
     });
     //进入预览模式
     $('a[href="#mode-view"]').click(function() {
         resource.selectMode('view');
+        resource.clear();
         sendMsg('info','进入预览模式');
     });
     //进入手机模式
     $('a[href="#mode-phone"]').click(function() {
         resource.selectMode('phone');
-        sendMsg('info','进入手机模式');
+        resource.clear();
+        sendMsg('info', '进入手机模式');
     });
     //编辑资源确认按钮
-    $('#editButton').click(function(){
+    $('#editButton').click(function() {
         var tags = new Array();
+        if ($('a[href="#tagSelect"]')) {
+            $('a[href="#tagSelect"]').each(function(k, v) {
+                tags.push($(this).attr('value'));
+            });
+        }
         actionServer('fx-edit', {
             'id': $('#editFileModal').attr('data-id'),
-            'title':$('#editTitle').val(),
-            'content':$('#editContent').val(),
-            'tags':tags
+            'title': $('#editTitle').val(),
+            'content': $('#editContent').val(),
+            'tags': tags
         }, function(data) {
             if (data == true) {
                 $('#editFileModal').modal('hide');
                 resource.clear();
-                sendMsg('success','修改资源成功!');
+                sendMsg('success', '修改资源成功!');
             }
         });
     });
@@ -296,7 +304,6 @@ resource.selectMode = function(mode) {
             }
         });
     }
-    resource.clear();
 }
 //查看资源
 resource.open = function(id) {
@@ -390,19 +397,56 @@ resource.edit = function(id) {
             } else {
                 $('#editType').html('文件类型 : ' + $('a[href="#resource"][data-id="' + id + '"]').attr('data-type'));
             }
-            if(data){
-                var tagHtml = '';
-                for (var i = 0; i < data.length; i++) {
-                    tagHtml += data[i]['tag_name'];
-                    if (i < data.length - 1) {
-                        tagHtml += '|';
+            if (tag.data[tag.tagType]) {
+                //已选
+                var tagMore = new Array();
+                //未选
+                var tagLess = new Array();
+                if (data) {
+                    //计算标签差集
+                    for (var i = 0; i < tag.data[tag.tagType].length; i++) {
+                        var o = false;
+                        for (var j = 0; j < data.length; j++) {
+                            if (tag.data[tag.tagType][i]['tag_name'] == data[j]['tag_name']) {
+                                tagMore.push(tag.data[tag.tagType][i]);
+                                o = true;
+                            }
+                        }
+                        if (!o) {
+                            tagLess.push(tag.data[tag.tagType][i]);
+                        }
                     }
+                } else {
+                    tagMore = tag.data[tag.tagType];
                 }
-                $('#editTag').val(tagHtml);
+                $('#editTagReady').html('');
+                for (var i = 0; i < tagLess.length; i++) {
+                    resource.editTagSelect('ready', tagLess[i]['id'], tagLess[i]['tag_name']);
+                }
+                $('#editTagSelect').html('');
+                for (var i = 0; i < tagMore.length; i++) {
+                    resource.editTagSelect('select', tagMore[i]['id'], tagMore[i]['tag_name']);
+                }
             }
             $('#editContent').val($('a[href="#resource"][data-id="' + id + '"]').attr('data-content'));
             $('#editFileModal').attr('data-id', id);
             $('#editFileModal').modal('show');
+        });
+    }
+}
+//编辑资源-选择标签
+resource.editTagSelect = function(type, id, name) {
+    if (type == 'ready') {
+        $('#editTagReady').append('<a href="#tagReady" value="' + id + '"><span class="label label-default">' + name + '</span></a>');
+        $('#editTagReady a:last').click(function() {
+            resource.editTagSelect('select', $(this).attr('value'), $(this).children('span').html());
+            $(this).remove();
+        });
+    } else {
+        $('#editTagSelect').append('<a href="#tagSelect" value="' + id + '"><span class="label label-default">' + name + '</span></a>');
+        $('#editTagSelect a:last').click(function() {
+            resource.editTagSelect('ready', $(this).attr('value'), $(this).children('span').html());
+            $(this).remove();
         });
     }
 }

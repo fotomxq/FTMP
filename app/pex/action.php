@@ -123,9 +123,9 @@ if (isset($_GET['action']) == true) {
                 }
                 $title = $_POST['title'];
                 $content = $_POST['content'];
-                $tags = isset($_POST['tags']) == true ? explode('|', $_POST['tags']) : null;
-                $type = $res['fx_type'];
-                if ($type == 'folder') {
+                $tags = isset($_POST['tags']) == true ? $_POST['tags'] : null;
+                $type = 0;
+                if ($res['fx_type'] == 'folder') {
                     $type = 1;
                 } else {
                     $type = 0;

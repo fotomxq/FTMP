@@ -399,7 +399,7 @@ class AppPex {
      * @return boolean
      */
     public function setTx($id, $tags, $type) {
-        $type = isset($this->txType[$type]) == true ? $this->txType[$type] : $this->txType[0];
+        $type = $type == 1 ? 1 : 0;
         $nowTagRes = $this->viewTx($id);
         if ($nowTagRes) {
             $nowTags;
@@ -438,7 +438,7 @@ class AppPex {
      * 添加新的标签和文件关系
      * @param int $fID 文件ID
      * @param int $tagID 标签ID
-     * @param int $type 类型,file或folder
+     * @param int $type 类型,file或folder对应0和1
      * @return int 新的ID
      */
     public function addTx($fID, $tagID, $type) {

@@ -185,9 +185,15 @@ require('header.php');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">标签</label>
+                    <label class="col-sm-2 control-label">可选标签</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="editTag">
+                        <p class="form-control-static" id="editTagReady"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">已选标签</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static" id="editTagSelect"></p>
                     </div>
                 </div>
                 <div class="form-group">

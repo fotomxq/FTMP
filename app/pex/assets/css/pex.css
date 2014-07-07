@@ -85,6 +85,10 @@ body {
     margin-top: 5px;
     float:left;
 }
+#editTagReady a,#editTagSelect a{
+    margin-right: 5px;
+    float:left;
+}
 .messenger-fixed{
     position: absolute;
 }

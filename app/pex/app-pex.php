@@ -97,6 +97,12 @@ class AppPex {
      * @var string
      */
     private $dataFolderTransferSrc;
+    
+    /**
+     * 垃圾箱目录
+     * @var string 
+     */
+    private $dataFolderTrashSrc;
 
     /**
      * 初始化
@@ -110,6 +116,7 @@ class AppPex {
         $this->dataFolderFileSrc = $dataFolderSrc . DS . 'file';
         $this->dataFolderCacheImgsSrc = $dataFolderSrc . DS . 'imgs';
         $this->dataFolderTransferSrc = $dataFolderSrc . DS . 'transfer';
+        $this->dataFolderTrashSrc = $dataFolderSrc . DS . 'trash';
         $this->log = $log;
     }
 
@@ -312,19 +319,32 @@ class AppPex {
      * @return boolean 是否成功
      */
     public function delFx($id) {
+        //获取本ID信息
+        $res = $this->view($id);
+        if (!$res) {
+            return false;
+        }
+        //获取子ID
         $where = '`' . $this->fxFields[3] . '` = :parent';
         $attrs = array(':parent' => array($id, PDO::PARAM_INT));
-        $res = $this->db->sqlSelect($res, $fields, $where, $attrs, 1, 2);
+        $resList = $this->db->sqlSelect($this->fxTableName, $this->fxFields, $where, $attrs, 1, 50);
         //遍历分支ID
-        if ($res) {
-            if ($this->delFx($res['id']) != true) {
-                return false;
+        $step = 1;
+        while ($resList) {
+            foreach ($resList as $v) {
+                if ($this->delFx($v['id']) != true) {
+                    return false;
+                }
             }
+            $step += 1;
+            $resList = $this->db->sqlSelect($this->fxTableName, $this->fxFields, $where, $attrs, 1, 50);
         }
         //删除本ID
         //如果是文件，先尝试删除文件
         if ($res[$this->fxFields[5]] != 'folder') {
-            if (CoreFile::deleteFile($this->getSrc($res[$this->fxFields[7]])) != true) {
+            $src = $this->getSrc($res[$this->fxFields[7]]);
+            $trashSrc = $this->dataFolderTrashSrc . DS . $res[$this->fxFields[2]];
+            if (CoreFile::cutF($src, $trashSrc) != true) {
                 return false;
             }
         }
@@ -360,15 +380,56 @@ class AppPex {
         return 0;
     }
 
+    /**
+     * 查看文件对应的标签关系列
+     * @param int $id 文件ID
+     * @return array 数据数组
+     */
     public function viewTx($id) {
-        
+        $sql = 'SELECT ' . $this->txTableName . '.*,' . $this->tagTableName . '.' . $this->tagFields[1] . ' FROM ' . $this->tagTableName . ',' . $this->txTableName . ' WHERE ' . $this->txTableName . '.' . $this->txFields[1] . ' = :id AND ' . $this->txTableName . '.' . $this->txFields[2] . ' = ' . $this->tagTableName . '.' . $this->tagFields[0] . ' GROUP BY ' . $this->txTableName . '.' . $this->txFields[0];
+        $attrs = array(':id' => array($id, PDO::PARAM_STR));
+        return $this->db->runSQL($sql, $attrs, 3, PDO::FETCH_ASSOC);
     }
 
-    public function setTx($id, $tags) {
-        if ($tags) {
-            foreach ($tags as $v) {
-                
+    /**
+     * 设置标签关系
+     * @param int $id 文件ID
+     * @param array $tags 标签组,eg:array(1,3,5)
+     * @param string $type 类型，file或folder对应0和1
+     * @return boolean
+     */
+    public function setTx($id, $tags, $type) {
+        $type = isset($this->txType[$type]) == true ? $this->txType[$type] : $this->txType[0];
+        $nowTagRes = $this->viewTx($id);
+        if ($nowTagRes) {
+            $nowTags;
+            foreach ($nowTagRes as $v) {
+                $nowTags[] = $v[$this->txFields[2]];
             }
+            $diffMore = array_diff($tags, $nowTags);
+            $diffLess = array_diff($nowTags, $tags);
+            if ($diffMore) {
+                foreach ($diffMore as $v) {
+                    if (!$this->addTx($id, $v, $type)) {
+                        return false;
+                    }
+                }
+            }
+            if ($diffLess) {
+                foreach ($diffLess as $v) {
+                    if (!$this->delTxTag($id, $v)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } else {
+            foreach ($tags as $v) {
+                if (!$this->addTx($id, $v, $type)) {
+                    return false;
+                }
+            }
+            return true;
         }
         return false;
     }
@@ -416,6 +477,18 @@ class AppPex {
     public function delTx($id) {
         $where = '`' . $this->txFields[0] . '` = :id';
         $attrs = array(':id' => array($id, PDO::PARAM_INT));
+        return $this->db->sqlDelete($this->txTableName, $where, $attrs);
+    }
+
+    /**
+     * 根据文件ID和标签ID删除标签关系
+     * @param int $fileID 文件ID
+     * @param int $tagID 标签ID
+     * @return boolean 是否成功
+     */
+    private function delTxTag($fileID, $tagID) {
+        $where = '`' . $this->txFields[1] . '` = :fileID and `' . $this->txFields[2] . '` = :tagID';
+        $attrs = array(':fileID' => array($fileID, PDO::PARAM_INT), ':tagID' => array($tagID, PDO::PARAM_INT));
         return $this->db->sqlDelete($this->txTableName, $where, $attrs);
     }
 

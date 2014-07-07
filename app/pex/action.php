@@ -50,12 +50,10 @@ if (isset($_GET['action']) == true) {
                     }
                     //创建标签关系
                     if ($tags) {
-                        foreach ($tags as $tagV) {
-                            if (!$pex->addTx($parent, $tagV, 1)) {
-                                $res = false;
-                                $log->add('app~pex~action.php~transfer-list~2', 'add tag-fx faild.');
-                                CoreHeader::toJson($res);
-                            }
+                        if (!$pex->setTx($parent, $tags, 1)) {
+                            $res = false;
+                            $log->add('app~pex~action.php~transfer-list~2', 'add tag-fx faild.');
+                            CoreHeader::toJson($res);
                         }
                     }
                 }
@@ -67,12 +65,10 @@ if (isset($_GET['action']) == true) {
                         if ($resFile > 0) {
                             //创建标签关系
                             if ($tags) {
-                                foreach ($tags as $tagV) {
-                                    if (!$pex->addTx($resFile, $tagV, 0)) {
-                                        $res = false;
-                                        $log->add('app~pex~action.php~transfer-list~3', 'add tag-fx faild.');
-                                        CoreHeader::toJson($res);
-                                    }
+                                if (!$pex->setTx($resFile, $tags, 0)) {
+                                    $res = false;
+                                    $log->add('app~pex~action.php~transfer-list~3', 'add tag-fx faild.');
+                                    CoreHeader::toJson($res);
                                 }
                             }
                         } else {
@@ -121,19 +117,26 @@ if (isset($_GET['action']) == true) {
             //编辑FX信息
             if (isset($_POST['id']) == true && isset($_POST['title']) == true && isset($_POST['content']) == true) {
                 $id = (int) $_POST['id'];
+                $res = $pex->view($id);
+                if (!$res) {
+                    CoreHeader::toJson(false);
+                }
                 $title = $_POST['title'];
                 $content = $_POST['content'];
-                $tags = isset($_POST['tags']) == true ? $_POST['tags'] : null;
+                $tags = isset($_POST['tags']) == true ? explode('|', $_POST['tags']) : null;
+                $type = $res['fx_type'];
+                if ($type == 'folder') {
+                    $type = 1;
+                } else {
+                    $type = 0;
+                }
                 //创建标签关系
                 if ($tags) {
-                    foreach ($tags as $tagV) {
-                        if (!$pex->addTx($parent, $tagV, 1)) {
-                            $res = false;
-                            CoreHeader::toJson($res);
-                        }
+                    if (!$pex->setTx($id, $tags, $type)) {
+                        CoreHeader::toJson(false);
                     }
                 }
-                $res = $pex->editFx($id, $where, $content);
+                $res = $pex->editFx($id, $title, $content);
                 CoreHeader::toJson($res);
             }
             break;
@@ -177,6 +180,14 @@ if (isset($_GET['action']) == true) {
                 }
             }
             CoreHeader::toJson($res);
+            break;
+        case 'tx-list':
+            //获取某文件的所有标签
+            if (isset($_POST['id']) == true) {
+                $id = (int) $_POST['id'];
+                $res = $pex->viewTx($id);
+                CoreHeader::toJson($res);
+            }
             break;
         case 'tag-add':
             //添加新的标签

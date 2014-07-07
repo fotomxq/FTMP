@@ -189,6 +189,8 @@ resource.start = function() {
             'tags':tags
         }, function(data) {
             if (data == true) {
+                $('#editFileModal').modal('hide');
+                resource.clear();
                 sendMsg('success','修改资源成功!');
             }
         });
@@ -199,6 +201,8 @@ resource.start = function() {
             'id': resource.selectArr
         }, function(data) {
             if (data == true) {
+                $('#delFileModal').modal('hide');
+                resource.clear();
                 sendMsg('success','删除资源成功!');
             }
         });
@@ -217,12 +221,13 @@ resource.ref = function() {
     }, function(data) {
         if (data) {
             for (var i = 0; i < data.length; i++) {
+                var dataHtml = 'data-id="' + data[i]['id'] + '" data-type="' + data[i]['fx_type'] + '" data-title="' + data[i]['fx_title'] + '" data-select="false" data-content="' + data[i]['fx_content'] + '"';
                 if (resource.mode == 'phone') {
-                    $('#resourceList').append('<div class="col-xs-12"><a href="#resource" data-id="' + data[i]['id'] + '" data-type="' + data[i]['fx_type'] + '" data-title="' + data[i]['fx_title'] + '" data-select="false"><img src="img.php?id=' + data[i]['id'] + '" style="max-width: 300px; max-height: 300px;"></a></div>');
+                    $('#resourceList').append('<div class="col-xs-12"><a href="#resource" '+dataHtml+'><img src="img.php?id=' + data[i]['id'] + '" style="max-width: 300px; max-height: 300px;"></a></div>');
                 } else if (resource.mode == 'view') {
-                    $('#resourceList').append('<div class="col-xs-6"><a href="#resource" data-id="' + data[i]['id'] + '" data-type="' + data[i]['fx_type'] + '" data-title="' + data[i]['fx_title'] + '" data-select="false"><img src="img.php?id=' + data[i]['id'] + '" style="max-width: 400px; max-height: 400px;"></a></div>');
+                    $('#resourceList').append('<div class="col-xs-6"><a href="#resource" '+dataHtml+'><img src="img.php?id=' + data[i]['id'] + '" style="max-width: 400px; max-height: 400px;"></a></div>');
                 } else {
-                    $('#resourceList').append('<div class="col-xs-3"><a href="#resource" data-id="' + data[i]['id'] + '" data-type="' + data[i]['fx_type'] + '" data-title="' + data[i]['fx_title'] + '" data-select="false"><img src="img.php?id=' + data[i]['id'] + '" style="max-width: 140px; max-height: 140px;"><h4>' + data[i]['fx_title'] + '</h4></a></div>');
+                    $('#resourceList').append('<div class="col-xs-3"><a href="#resource" '+dataHtml+'><img src="img.php?id=' + data[i]['id'] + '" style="max-width: 140px; max-height: 140px;"><h4>' + data[i]['fx_title'] + '</h4></a></div>');
                 }
             }
             resource.selectMode(resource.mode);
@@ -331,18 +336,39 @@ resource.addDir = function(title, value, active) {
 //更新所选项
 resource.selectUpdate = function() {
     resource.selectArr = new Array();
-    if ($('a[href="#resource"][select="true"]')) {
-        $('a[href="#resource"][select="true"]').each(function(k, v) {
+    if ($('a[href="#resource"][data-select="true"]')) {
+        $('a[href="#resource"][data-select="true"]').each(function(k, v) {
             resource.selectArr.push($(this).attr('data-id'));
-            html += $(this).attr('data-id') + ',';
         });
     }
 }
 //编辑资源信息
 resource.edit = function(id) {
-    
-    $('#editFileModal').attr('data-id',id);
-    $('#editFileModal').modal('show');
+    if ($('a[href="#resource"][data-id="' + id + '"]')) {
+        actionServer('tx-list', {
+            'id': id
+        }, function(data) {
+            $('#editTitle').val($('a[href="#resource"][data-id="' + id + '"]').attr('data-title'));
+            if ($('a[href="#resource"][data-id="' + id + '"]').attr('data-type') == 'folder') {
+                $('#editType').html('文件夹');
+            } else {
+                $('#editType').html('文件类型 : ' + $('a[href="#resource"][data-id="' + id + '"]').attr('data-type'));
+            }
+            if(data){
+                var tagHtml = '';
+                for (var i = 0; i < data.length; i++) {
+                    tagHtml += data[i]['tag_name'];
+                    if (i < data.length - 1) {
+                        tagHtml += '|';
+                    }
+                }
+                $('#editTag').val(tagHtml);
+            }
+            $('#editContent').val($('a[href="#resource"][data-id="' + id + '"]').attr('data-content'));
+            $('#editFileModal').attr('data-id', id);
+            $('#editFileModal').modal('show');
+        });
+    }
 }
 //删除资源
 resource.del = function(id) {
@@ -350,7 +376,7 @@ resource.del = function(id) {
     for (var i = 0; i < resource.selectArr.length; i++) {
         html += resource.selectArr[i] + ',';
     }
-    if (delArr) {
+    if (html) {
         $('#delFileContent').html('您确定要删除ID : ' + html + '文件吗？');
     }
     $('#delFileModal').modal('show');
@@ -469,6 +495,7 @@ tag.delTx = function() {
 var menu = new Object;
 //初始化菜单栏
 menu.start = function() {
+    //选择类型
     $('#menu li').click(function() {
         var href = $(this).children('a').attr('href');
         switch (href) {
@@ -500,6 +527,10 @@ menu.start = function() {
                 break;
         }
     });
+    //单击Logo事件
+    $('#logo').click(function(){
+        window.location.href = 'index.php';
+    });
     //清理缓冲
     $('a[href="#clear-cache"]').click(function(){
         actionServer('cache-clear',{},function(data){
@@ -514,20 +545,22 @@ menu.start = function() {
             sendMsg('info','旋转成功!');
         });
     });
-    //编辑目录
-    $('a[href="#operate-dir-edit"]').click(function() {
-        if (resource.dir > 4) {
-            resource.edit(resource.dir);
+    //编辑FX
+    $('a[href="#operate-fx-edit"]').click(function() {
+        resource.selectUpdate();
+        if (resource.selectArr.length > 0) {
+            resource.edit(resource.selectArr[resource.selectArr.length-1]);
         } else {
-            sendMsg('error', '您无法编辑顶级目录!');
+            sendMsg('error', '请选择文件或文件夹!');
         }
     });
-    //删除目录
-    $('a[href="#operate-dir-del"]').click(function() {
-        if (resource.dir > 4) {
-            resource.del(resource.dir);
+    //删除FX
+    $('a[href="#operate-fx-del"]').click(function() {
+        resource.selectUpdate();
+        if (resource.selectArr.length > 0) {
+            resource.del(resource.selectArr);
         } else {
-            sendMsg('error', '您无法删除顶级目录!');
+            sendMsg('error', '请选择文件或文件夹!');
         }
     });
 }

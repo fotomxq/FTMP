@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `app_pex_fx` (
   `fx_size` bigint(20) NOT NULL COMMENT '大小',
   `fx_type` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '类型',
   `fx_sha1` varchar(41) COLLATE utf8_bin NOT NULL COMMENT 'Sha1',
-  `fx_src` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '路径',
+  `fx_src` varchar(300) COLLATE utf8_bin NOT NULL COMMENT '路径',
   `fx_create_time` datetime NOT NULL COMMENT '创建时间',
   `fx_visit_time` datetime NOT NULL COMMENT '访问时间',
   `fx_content` text COLLATE utf8_bin COMMENT '描述',

@@ -4,7 +4,7 @@
  * 动作整合
  * @authors fotomxq <fotomxq.me>
  * @date    2014-06-30 11:51:18
- * @version 3
+ * @version 4
  */
 //引用全局
 require('glob.php');
@@ -13,7 +13,7 @@ require('glob.php');
 require('app-pex.php');
 
 //创建对象
-$pex = new AppPex($db, APP_PEX_DIR);
+$pex = new AppPex($db, APP_PEX_DIR, $log);
 
 //判断动作类型
 if (isset($_GET['action']) == true) {
@@ -45,6 +45,7 @@ if (isset($_GET['action']) == true) {
                     $parent = $pex->addFolder($title, $parent, $content);
                     if ($parent < 1) {
                         $res = false;
+                        $log->add('app~pex~action.php~transfer-list~1', 'add folder faild.');
                         CoreHeader::toJson($res);
                     }
                     //创建标签关系
@@ -52,6 +53,7 @@ if (isset($_GET['action']) == true) {
                         foreach ($tags as $tagV) {
                             if (!$pex->addTx($parent, $tagV, 1)) {
                                 $res = false;
+                                $log->add('app~pex~action.php~transfer-list~2', 'add tag-fx faild.');
                                 CoreHeader::toJson($res);
                             }
                         }
@@ -68,12 +70,14 @@ if (isset($_GET['action']) == true) {
                                 foreach ($tags as $tagV) {
                                     if (!$pex->addTx($resFile, $tagV, 0)) {
                                         $res = false;
+                                        $log->add('app~pex~action.php~transfer-list~3', 'add tag-fx faild.');
                                         CoreHeader::toJson($res);
                                     }
                                 }
                             }
                         } else {
                             $res = false;
+                            $log->add('app~pex~action.php~transfer-list~4', 'add fx faild.');
                             CoreHeader::toJson($res);
                         }
                     }

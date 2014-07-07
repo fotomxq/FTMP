@@ -48,13 +48,19 @@ class AppPex {
      * 文件和标签关系数据表字段
      * @var array
      */
-    private $txFields = array('id', 'fx_id', 'tag_id', 'tx_type');
+    private $txFields = array('id', 'file_id', 'tag_id', 'tx_type');
 
     /**
      * 文件和标签关系表类型
      * @var array 
      */
     private $txType = array('file', 'folder');
+
+    /**
+     * 日志对象
+     * @var CoreLog 
+     */
+    private $log;
 
     /**
      * 类型
@@ -96,13 +102,15 @@ class AppPex {
      * 初始化
      * @param CoreDB $db            数据库对象
      * @param string $dataFolderSrc 文件数据目录路径
+     * @param CoreLog $log 日志对象
      */
-    public function __construct(&$db, $dataFolderSrc) {
+    public function __construct(&$db, $dataFolderSrc, &$log) {
         $this->db = $db;
         $this->dataFolderSrc = $dataFolderSrc;
         $this->dataFolderFileSrc = $dataFolderSrc . DS . 'file';
         $this->dataFolderCacheImgsSrc = $dataFolderSrc . DS . 'imgs';
         $this->dataFolderTransferSrc = $dataFolderSrc . DS . 'transfer';
+        $this->log = $log;
     }
 
     public function uploadFile($files) {
@@ -156,7 +164,7 @@ class AppPex {
             $time = $dateY . '-' . $dateM . '-' . $dateD . ' ' . $dateH . ':' . $dateI . ':' . $dateS;
             //生成目录
             $newDir = $this->dataFolderFileSrc . $ds . $dateY . $ds . $dateM . $ds . $dateD;
-            if(!is_dir($newDir)) {
+            if (!is_dir($newDir)) {
                 if (mkdir($newDir, 0777, true) != true) {
                     return 0;
                 }
@@ -184,7 +192,7 @@ class AppPex {
         $attrs = array(':id' => array($id, PDO::PARAM_INT));
         return $this->db->sqlSelect($this->fxTableName, $this->fxFields, $where, $attrs);
     }
-    
+
     /**
      * 不通过Src获取文件路径
      * @param int $id ID
@@ -351,14 +359,14 @@ class AppPex {
         }
         return 0;
     }
-    
-    public function viewTx($id){
+
+    public function viewTx($id) {
         
     }
-    
-    public function setTx($id,$tags){
-        if($tags){
-            foreach($tags as $v){
+
+    public function setTx($id, $tags) {
+        if ($tags) {
+            foreach ($tags as $v) {
                 
             }
         }
@@ -374,7 +382,7 @@ class AppPex {
      */
     public function addTx($fID, $tagID, $type) {
         $type = isset($this->txType[$type]) == true ? $this->txType[$type] : $this->txType[0];
-        $where = '`' . $this->txFields[1] . '` = :fID and `' . $this->txFields[2] . '` = :tagID and `' . $this->txFields[3] . '` = :type';
+        $where = '`' . $this->txFields[1] . '` = :fileID and `' . $this->txFields[2] . '` = :tagID and `' . $this->txFields[3] . '` = :type';
         $attrs = array(':fileID' => array($fID, PDO::PARAM_INT), ':tagID' => array($tagID, PDO::PARAM_INT), ':type' => array($type, PDO::PARAM_STR));
         $res = $this->db->sqlSelect($this->tagTableName, $this->tagFields, $where, $attrs);
         if ($res) {
@@ -536,7 +544,7 @@ class AppPex {
     private function getTxField($key) {
         return $this->txTableName . '.' . $this->txFields[$key];
     }
-    
+
     /**
      * 获取文件基本名称
      * @param string $src 路径
@@ -544,6 +552,15 @@ class AppPex {
      */
     private function getBasename($src) {
         return preg_replace('/^.+[\\\\\\/]/', '', $src);
+    }
+
+    /**
+     * 添加日志
+     * @param string $local 位置标记
+     * @param string $msg 消息
+     */
+    private function addLog($local, $msg) {
+        $this->log->add($local, $msg);
     }
 
 }

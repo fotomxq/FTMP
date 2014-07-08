@@ -26,6 +26,7 @@
           <li class="divider"></li>
           <li><a href="#operate-fx-edit">编辑所选</a></li>
           <li><a href="#operate-fx-del">删除所选</a></li>
+          <li><a href="#operate-fx-join">合并文件夹</a></li>
           <li class="divider"></li>
           <li><a href="#resource-more">加载更多</a></li>
       </ul>

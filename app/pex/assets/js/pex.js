@@ -4,7 +4,7 @@ function actionServer(type, data, func) {
 }
 //发送消息
 function sendMsg(type, message) {
-    if (resource.mode != 'phone') {
+    if (resource.mode !== 'phone') {
         Messenger().post({
             message: message,
             type: type
@@ -163,20 +163,20 @@ resource.nowPageNum = 0;
 //初始化
 resource.start = function() {
     //打开文件事件
-    $('#openFileButton').click(function(){
-        window.open('file.php?id='+resource.openId);
+    $('#openFileButton').click(function() {
+        window.open('file.php?id=' + resource.openId);
     });
     //进入操作模式
     $('a[href="#mode-operate"]').click(function() {
         resource.selectMode('operate');
         resource.clear();
-        sendMsg('info','进入操作模式');
+        sendMsg('info', '进入操作模式');
     });
     //进入预览模式
     $('a[href="#mode-view"]').click(function() {
         resource.selectMode('view');
         resource.clear();
-        sendMsg('info','进入预览模式');
+        sendMsg('info', '进入预览模式');
     });
     //进入手机模式
     $('a[href="#mode-phone"]').click(function() {
@@ -213,12 +213,12 @@ resource.start = function() {
             if (data == true) {
                 $('#delFileModal').modal('hide');
                 resource.clear();
-                sendMsg('success','删除资源成功!');
+                sendMsg('success', '删除资源成功!');
             }
         });
     });
     //浏览资源框-编辑资源
-    $('#openFileEdit').click(function(){
+    $('#openFileEdit').click(function() {
         $('#openFileModal').modal('hide');
         resource.edit($('#openFileModal').attr('data-id'));
     });
@@ -253,9 +253,9 @@ resource.start = function() {
     var contentHeight = $('.container').height();
     var documentHeight = $(document).height();
     var resourceNextReady = true;
-    while(resourceNextReady == true && documentHeight >= contentHeight+200){
+    while (resourceNextReady == true && documentHeight >= contentHeight + 200) {
         resource.nextPage();
-        if(resource.nowPageNum < resource.max){
+        if (resource.nowPageNum < resource.max) {
             resourceNextReady = false;
         }
     }
@@ -276,16 +276,24 @@ resource.ref = function() {
             resource.nowPageNum = data.length;
             for (var i = 0; i < data.length; i++) {
                 var dataHtml = 'data-id="' + data[i]['id'] + '" data-type="' + data[i]['fx_type'] + '" data-title="' + data[i]['fx_title'] + '" data-select="false" data-content="' + data[i]['fx_content'] + '"';
-                if (resource.mode == 'phone') {
-                    $('#resourceList').append('<div class="col-xs-12"><a href="#resource" '+dataHtml+'><img src="img.php?id=' + data[i]['id'] + '&size=300" style="max-width: 300px;"></a></div>');
-                } else if (resource.mode == 'view') {
-                    $('#resourceList').append('<div class="col-xs-6"><a href="#resource" '+dataHtml+'><img src="img.php?id=' + data[i]['id'] + '&size=400" style="max-width: 400px;"></a></div>');
+                if (resource.mode === 'phone') {
+                    if (data[i]['fx_type'] === 'folder') {
+                        $('#resourceList').append('<div class="col-xs-12"><a href="#resource" ' + dataHtml + '>' + data[i]['fx_title'] + '</a></div>');
+                    } else {
+                        $('#resourceList').append('<div class="col-xs-12"><a href="#resource" ' + dataHtml + '><img src="img.php?id=' + data[i]['id'] + '&size=300" style="max-width: 300px;"></a></div>');
+                    }
+                } else if (resource.mode === 'view') {
+                    if (data[i]['fx_type'] === 'folder') {
+                        $('#resourceList').append('<div class="col-xs-6"><a href="#resource" ' + dataHtml + '>' + data[i]['fx_title'] + '</a></div>');
+                    } else {
+                        $('#resourceList').append('<div class="col-xs-6"><a href="#resource" ' + dataHtml + '><img src="img.php?id=' + data[i]['id'] + '&size=400" style="max-width: 400px;"></a></div>');
+                    }
                 } else {
-                    $('#resourceList').append('<div class="col-xs-3"><a href="#resource" '+dataHtml+'><img src="img.php?id=' + data[i]['id'] + '&size=140" style="max-width: 140px; max-height: 140px;"><h4>' + data[i]['fx_title'] + '</h4></a></div>');
+                    $('#resourceList').append('<div class="col-xs-3"><a href="#resource" ' + dataHtml + '><img src="img.php?id=' + data[i]['id'] + '&size=140" style="max-width: 140px; max-height: 140px;"><h4>' + data[i]['fx_title'] + '</h4></a></div>');
                 }
             }
             if (resource.mode == 'operate') {
-                $('#resourceList > .col-xs-3').css('height','198px');
+                $('#resourceList > .col-xs-3').css('height', '198px');
             }
             resource.selectMode(resource.mode);
         }
@@ -325,13 +333,13 @@ resource.selectMode = function(mode) {
 //查看资源
 resource.open = function(id) {
     resource.openId = id;
-    $('#openFileView').html('<img src="img.php?id='+resource.openId+'&size=800" style="max-width:800px;">');
-    $('#openFileModal').attr('data-id',id);
+    $('#openFileView').html('<img src="img.php?id=' + resource.openId + '&size=800" style="max-width:800px;">');
+    $('#openFileModal').attr('data-id', id);
     $('#openFileModal').modal('show');
 }
 //进入下一页资源
 resource.nextPage = function() {
-    resource.page = resource.page+1;
+    resource.page = resource.page + 1;
     resource.ref();
 }
 //清空资源显示
@@ -401,6 +409,10 @@ resource.selectUpdate = function() {
             resource.selectArr.push($(this).attr('data-id'));
         });
     }
+}
+//合并文件夹
+resource.folderJoin = function() {
+
 }
 //编辑资源信息
 resource.edit = function(id) {
@@ -617,28 +629,28 @@ menu.start = function() {
         }
     });
     //单击Logo事件
-    $('#logo').click(function(){
+    $('#logo').click(function() {
         window.location.href = 'index.php';
     });
     //清理缓冲
-    $('a[href="#clear-cache"]').click(function(){
-        actionServer('cache-clear',{},function(data){
-            sendMsg('info','清理缓冲成功!');
+    $('a[href="#clear-cache"]').click(function() {
+        actionServer('cache-clear', {}, function(data) {
+            sendMsg('info', '清理缓冲成功!');
         });
     });
     //旋转所有图片
-    $('a[href="#rotate-img"]').click(function(){
-        actionServer('rotate-img',{
-            'dir':resource.dir
-        },function(data){
-            sendMsg('info','旋转成功!');
+    $('a[href="#rotate-img"]').click(function() {
+        actionServer('rotate-img', {
+            'dir': resource.dir
+        }, function(data) {
+            sendMsg('info', '旋转成功!');
         });
     });
     //编辑FX
     $('a[href="#operate-fx-edit"]').click(function() {
         resource.selectUpdate();
         if (resource.selectArr.length > 0) {
-            resource.edit(resource.selectArr[resource.selectArr.length-1]);
+            resource.edit(resource.selectArr[resource.selectArr.length - 1]);
         } else {
             sendMsg('error', '请选择文件或文件夹!');
         }
@@ -653,8 +665,17 @@ menu.start = function() {
         }
     });
     //强制加载更多
-    $('a[href="#resource-more"]').click(function(){
+    $('a[href="#resource-more"]').click(function() {
         resource.nextPage();
+    });
+    //合并文件夹
+    $('a[href="#operate-fx-join"]').click(function() {
+        resource.selectUpdate();
+        if (resource.selectArr.length > 0) {
+            resource.folderJoin(resource.selectArr);
+        } else {
+            sendMsg('error', '请选择文件或文件夹!');
+        }
     });
 }
 

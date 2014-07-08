@@ -345,7 +345,8 @@ class AppPex {
             $src = $this->getSrc($res[$this->fxFields[7]]);
             $trashSrc = $this->dataFolderTrashSrc . DS . $res[$this->fxFields[2]];
             if (CoreFile::cutF($src, $trashSrc) != true) {
-                return false;
+                //如果失败则忽略文件
+                //return false;
             }
         }
         $where = '`' . $this->fxFields[0] . '` = :id';

@@ -167,6 +167,8 @@ resource.selectArr = new Array();
 resource.nowPageNum = 0;
 //剪切文件夹列
 resource.selectCutArr = new Array();
+//是否具备更多内容
+resource.more = false;
 //初始化
 resource.start = function() {
     //打开文件事件
@@ -286,29 +288,55 @@ resource.ref = function() {
         if (data) {
             resource.nowPageNum = data.length;
             for (var i = 0; i < data.length; i++) {
-                var dataHtml = 'data-id="' + data[i]['id'] + '" data-type="' + data[i]['fx_type'] + '" data-title="' + data[i]['fx_title'] + '" data-select="false" data-content="' + data[i]['fx_content'] + '"';
+                //判断是否为图片文件
+                var isImg = 'only-text';
+                if(data[i]['fx_type'] === 'jpg' || data[i]['fx_type'] === 'png' || data[i]['fx_type'] === 'gif'){
+                    isImg = 'only-img';
+                }
+                //根据模式插入数据
                 if (resource.mode === 'phone') {
-                    if (data[i]['fx_type'] === 'folder') {
-                        $('#resourceList').append('<div class="col-xs-12"><a href="#resource" ' + dataHtml + '>' + data[i]['fx_title'] + '</a></div>');
-                    } else {
-                        $('#resourceList').append('<div class="col-xs-12"><a href="#resource" ' + dataHtml + '><img src="img.php?id=' + data[i]['id'] + '&size=300" style="max-width: 300px;"></a></div>');
-                    }
+                    resource.insertRes(12, data[i]['id'], data[i]['fx_title'], data[i]['fx_type'], data[i]['fx_content'], 300, isImg);
                 } else if (resource.mode === 'view') {
-                    if (data[i]['fx_type'] === 'folder') {
-                        $('#resourceList').append('<div class="col-xs-6"><a href="#resource" ' + dataHtml + '>' + data[i]['fx_title'] + '</a></div>');
-                    } else {
-                        $('#resourceList').append('<div class="col-xs-6"><a href="#resource" ' + dataHtml + '><img src="img.php?id=' + data[i]['id'] + '&size=400" style="max-width: 400px;"></a></div>');
-                    }
+                    resource.insertRes(6, data[i]['id'], data[i]['fx_title'], data[i]['fx_type'], data[i]['fx_content'], 400, isImg);
                 } else {
-                    $('#resourceList').append('<div class="col-xs-3"><a href="#resource" ' + dataHtml + '><img src="img.php?id=' + data[i]['id'] + '&size=140" style="max-width: 140px; max-height: 140px;"><h4>' + data[i]['fx_title'] + '</h4></a></div>');
+                    resource.insertRes(3, data[i]['id'], data[i]['fx_title'], data[i]['fx_type'], data[i]['fx_content'], 140, 'both');
                 }
             }
-            if (resource.mode == 'operate') {
+            //判断并插入更多按钮
+            if (data.length === resource.max) {
+                resource.more = true;
+            }
+            if (resource.more === true) {
+                if (isImg === 'only-text') {
+                    $('#resourceList').append('<div class="col-xs-3"><a href="#resource-more">---加载更多---</a></div>');
+                } else {
+                    $('#resourceList').append('<div class="col-xs-3"><a href="#resource-more"><img src="assets/imgs/more.png" style="max-width: 140px;"></a></div>');
+                }
+                $('a[href="#resource-more"]').click(function() {
+                    resource.nextPage();
+                });
+            }
+            //操作模式下，限制高度防止错行
+            if (resource.mode === 'operate') {
                 $('#resourceList > .col-xs-3').css('height', '198px');
             }
+            //选择模式
             resource.selectMode(resource.mode);
         }
     });
+}
+//插入资源div
+//showType = only-img|only-text|both
+resource.insertRes = function(classColNum, id, title, type, content, imgSize, showType) {
+    var titleHtml = '';
+    if (showType === 'only-img') {
+        titleHtml = '<img src="img.php?id=' + id + '&size=' + imgSize + '" style="max-width: ' + imgSize + 'px;">';
+    } else if (showType === 'only-text') {
+        titleHtml = '<h5>[' + type + ']' + title + '</h5>';
+    } else {
+        titleHtml = '<img src="img.php?id=' + id + '&size=' + imgSize + '" style="max-width: 140px; max-height: 140px;"><h4>' + title + '</h4>';
+    }
+    $('#resourceList').append('<div class="col-xs-' + classColNum + '"><a href="#resource" ' + 'data-id="' + id + '" data-type="' + type + '" data-title="' + title + '" data-select="false" data-content="' + content + '">' + titleHtml + '</a></div>');
 }
 //切换显示模式
 resource.selectMode = function(mode) {
@@ -316,7 +344,7 @@ resource.selectMode = function(mode) {
     $('a[href="#resource"]').unbind();
     if (resource.mode == 'operate') {
         $('a[href="#resource"]').bind('click', function() {
-            if ($(this).attr('data-select') == 'true') {
+            if ($(this).attr('data-select') === 'true') {
                 $(this).attr('data-select', 'false');
                 $(this).parent('div').css('background-color', '');
             } else {
@@ -351,6 +379,9 @@ resource.open = function(id) {
 //进入下一页资源
 resource.nextPage = function() {
     resource.page = resource.page + 1;
+    if($('a[href="#resource-more"]')){
+        $('a[href="#resource-more"]').parent().remove();
+    }
     resource.ref();
 }
 //清空资源显示

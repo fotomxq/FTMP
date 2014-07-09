@@ -89,9 +89,6 @@ body {
     margin-right: 5px;
     float:left;
 }
-.messenger-fixed{
-    position: absolute;
-}
 #openFileView{
     text-align: center;
 }

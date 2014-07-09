@@ -355,6 +355,30 @@ class AppPex {
     }
 
     /**
+     * 合并文件夹
+     * @param int $srcID 源文件夹ID
+     * @param int $destID 目标文件夹ID
+     * @return boolean 是否成功
+     */
+    public function folderJoin($srcID, $destID) {
+        $src = $this->view($srcID);
+        $dest = $this->view($destID);
+        if ($src && $dest && $src[$this->fxFields[5]] == 'folder' && $dest[$this->fxFields[5]] == 'folder') {
+            $srcParent = $this->viewList($srcID, null, 1, 1);
+            if ($srcParent) {
+                $sets = array($this->fxFields[3] => ':parentDest');
+                $where = '`' . $this->fxFields[3] . '` = :parentSrc';
+                $attrs = array(':parentSrc' => array($src[$this->fxFields[0]], PDO::PARAM_INT), ':parentDest' => array($dest[$this->fxFields[0]], PDO::PARAM_INT));
+                if (!$this->db->sqlUpdate($this->fxTableName, $sets, $where, $attrs)) {
+                    return false;
+                }
+            }
+            return $this->delFx($src[$this->fxFields[0]]);
+        }
+        return false;
+    }
+
+    /**
      * 查看标签列
      * @param string $type 标签类型
      * @return array 数据数组

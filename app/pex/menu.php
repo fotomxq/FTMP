@@ -3,7 +3,7 @@
  * 菜单页面
  * @authors fotomxq <fotomxq.me>
  * @date    2014-06-28 23:04:30
- * @version 3
+ * @version 4
  */
 ?>
 <ul class="nav nav-pills pull-right" id="menu">
@@ -26,6 +26,8 @@
           <li class="divider"></li>
           <li><a href="#operate-fx-edit">编辑所选</a></li>
           <li><a href="#operate-fx-del">删除所选</a></li>
+          <li><a href="#operate-fx-cut">剪切所选</a></li>
+          <li><a href="#operate-fx-move">移动到这里</a></li>
           <li><a href="#operate-fx-join">合并文件夹</a></li>
           <li class="divider"></li>
           <li><a href="#resource-more">加载更多</a></li>

@@ -75,6 +75,9 @@ upload.transferList = function() {
         'page': upload.transferPage,
         'max': upload.transferMax
     }, function(data) {
+        if(!data){
+            sendMsg('info','没有可供发布的资源了.');
+        }
         upload.transferFileList = data;
     });
 }
@@ -108,12 +111,14 @@ upload.transferFile = function() {
         'mode-dir': modeDir,
         'mode-type': $('input[name="transferTypeOptions"]:checked').val()
     }, function(data) {
-        if (data == true) {
+        if (data === true) {
             sendMsg('success', '发布成功!');
             $('#transferTitle').val('');
             $('#transferContent').val('');
             $('#uploadModal').modal('hide');
             resource.clear();
+        }else{
+            sendMsg('error','无法发布该资源!');
         }
         upload.transferList();
     });
@@ -160,6 +165,8 @@ resource.dir = 1;
 resource.selectArr = new Array();
 //当前页资源数
 resource.nowPageNum = 0;
+//剪切文件夹列
+resource.selectCutArr = new Array();
 //初始化
 resource.start = function() {
     //打开文件事件
@@ -198,10 +205,12 @@ resource.start = function() {
             'content': $('#editContent').val(),
             'tags': tags
         }, function(data) {
-            if (data == true) {
+            if (data === true) {
                 $('#editFileModal').modal('hide');
                 resource.clear();
                 sendMsg('success', '修改资源成功!');
+            }else{
+                sendMsg('error','无法修改资源信息!');
             }
         });
     });
@@ -210,10 +219,12 @@ resource.start = function() {
         actionServer('fx-del', {
             'id': resource.selectArr
         }, function(data) {
-            if (data == true) {
+            if (data === true) {
                 $('#delFileModal').modal('hide');
                 resource.clear();
                 sendMsg('success', '删除资源成功!');
+            }else{
+                sendMsg('error','无法删除资源!');
             }
         });
     });
@@ -412,7 +423,36 @@ resource.selectUpdate = function() {
 }
 //合并文件夹
 resource.folderJoin = function() {
-
+    if (resource.selectArr.length === 2) {
+        actionServer('folder-join',{
+            'folder-src':resource.selectArr[0],
+            'folder-dest':resource.selectArr[1]
+        },function(data){
+            if(data === true){
+                resource.clear();
+                sendMsg('success','合并文件夹成功!');
+            }else{
+                sendMsg('error','无法合并文件夹!');
+            }
+        });
+    }else{
+        sendMsg('info','您必须选择两个文件夹!');
+    }
+}
+//剪切文件
+resource.cut = function(cutArr, destFolder) {
+    actionServer('fx-cut', {
+        'cut-arr': cutArr,
+        'dest-folder': destFolder
+    }, function(data) {
+        if (data === true) {
+            resource.clear();
+            resource.selectCutArr = new Array();
+            sendMsg('success', '剪切成功!');
+        } else {
+            sendMsg('error', '剪切失败!');
+        }
+    });
 }
 //编辑资源信息
 resource.edit = function(id) {
@@ -675,6 +715,24 @@ menu.start = function() {
             resource.folderJoin(resource.selectArr);
         } else {
             sendMsg('error', '请选择文件或文件夹!');
+        }
+    });
+    //剪切文件夹
+    $('a[href="#operate-fx-cut"]').click(function() {
+        resource.selectUpdate();
+        if (resource.selectArr.length > 0) {
+            resource.selectCutArr = resource.selectArr;
+            sendMsg('info', '剪切文件夹已经就绪,请进入文件夹移动它们.');
+        } else {
+            sendMsg('info', '请先选择文件夹.');
+        }
+    });
+    //剪切-移动到文件夹
+    $('a[href="#operate-fx-move"]').click(function() {
+        if (resource.selectCutArr.length > 0 && resource.dir > 4) {
+            resource.cut(resource.selectCutArr, resource.dir);
+        } else {
+            sendMsg('info', '请先选择要剪切的文件夹,并确保您不在顶级目录上.');
         }
     });
 }

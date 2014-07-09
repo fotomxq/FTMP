@@ -4,7 +4,7 @@
  * 动作整合
  * @authors fotomxq <fotomxq.me>
  * @date    2014-06-30 11:51:18
- * @version 4
+ * @version 5
  */
 //引用全局
 require('glob.php');
@@ -142,10 +142,14 @@ if (isset($_GET['action']) == true) {
             break;
         case 'fx-cut':
             //剪切FX
-            if (isset($_POST['id']) == true && isset($_POST['parent']) == true) {
-                $id = (int) $_POST['id'];
-                $parent = (int) $_POST['parent'];
-                $res = $pex->cutFile($id, $parent);
+            if (isset($_POST['cut-arr']) == true && isset($_POST['dest-folder']) == true) {
+                $cutArr = $_POST['cut-arr'];
+                $destFolder = (int) $_POST['dest-folder'];
+                if (is_array($cutArr) == true) {
+                    foreach ($cutArr as $v) {
+                        $res = $pex->cutFile($v, $destFolder);
+                    }
+                }
                 CoreHeader::toJson($res);
             }
             break;
@@ -271,6 +275,16 @@ if (isset($_GET['action']) == true) {
                     $res = $pexCache->clearImg();
                 }
                 CoreHeader::toJson(true);
+            }
+            break;
+        case 'folder-join':
+            //合并文件夹
+            //folder-src为要舍弃的文件夹，folder-dest为合并并使用的文件夹
+            if (isset($_POST['folder-src']) == true && isset($_POST['folder-dest']) == true) {
+                $folderSrcID = (int) $_POST['folder-src'];
+                $folderDestID = (int) $_POST['folder-dest'];
+                $res = $pex->folderJoin($folderSrcID, $folderDestID);
+                CoreHeader::toJson(false);
             }
             break;
     }

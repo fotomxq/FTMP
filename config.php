@@ -5,14 +5,14 @@
  * 全局配置文件
  * 
  * @author fotomxq <fotomxq.me>
- * @version 7
+ * @version 8
  */
 //////////////////
 //路径定义
 //////////////////
 //路径分隔符
-if(defined('DS') == false){
-	define('DS', DIRECTORY_SEPARATOR);
+if (defined('DS') == false) {
+    define('DS', DIRECTORY_SEPARATOR);
 }
 //绝对路径
 define('DIR_ROOT', dirname(__FILE__) . DS);
@@ -23,13 +23,15 @@ define('DIR_LIB', DIR_ROOT . 'includes');
 //APP路径
 define('DIR_APP', DIR_ROOT . 'app');
 //上传文件目录
-define('UPLOAD_DIR',DIR_DATA.DS.'uploads');
+define('UPLOAD_DIR', DIR_DATA . DS . 'uploads');
 //日志目录
 define('LOG_DIR', DIR_DATA . DS . 'logs');
 //缓冲目录
 define('CACHE_DIR', DIR_DATA . DS . 'cache');
 //应用模版目录
-define('DIR_APP_TEMPALTE', DIR_APP.DS.'template');
+define('DIR_APP_TEMPALTE', DIR_APP . DS . 'template');
+//备份文件目录
+define('DIR_BACKUP', DIR_DATA . DS . 'backup');
 
 //////////////////
 //日志系统
@@ -78,11 +80,13 @@ define('TABLE_USER', 'sys_user');
 //用户元表
 define('TABLE_USER_META', 'sys_usermeta');
 //IP数据表
-define('TABLE_IP','sys_ip');
+define('TABLE_IP', 'sys_ip');
 
 //////////////////
 //数据库定义
 //////////////////
+//数据库名称,请同时修改DSN内的dbname参数.
+$dbName = 'ftmp';
 //PDO-DSN eg: mysql:host=localhost;dbname=databasename;charset=utf8
 $dbDSN = 'mysql:host=localhost;dbname=ftmp;charset=utf8';
 //数据库用户名
@@ -98,5 +102,5 @@ $dbEncoding = 'UTF8';
 //页面地址定义
 //////////////////
 //错误页面
-define('PAGE_ERRPR','error.php?t=');
+define('PAGE_ERRPR', 'error.php?t=');
 ?>

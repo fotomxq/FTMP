@@ -3,8 +3,7 @@
 /**
  * 文件操作封装
  * @author fotomxq <fotomxq.me>
- * @version 1
- * @package core
+ * @version 2
  */
 class CoreFile {
 
@@ -236,7 +235,7 @@ class CoreFile {
     static public function extractZip($src, $target) {
         if (class_exists('ZipArchive') == true) {
             $zip = new ZipArchive();
-            if(CoreFile::isDir($target) == false){
+            if (CoreFile::isDir($target) == false) {
                 CoreFile::newDir($target);
             }
             if ($zip->open($src) === true) {
@@ -246,6 +245,35 @@ class CoreFile {
             }
         }
         return false;
+    }
+
+    /**
+     * 获取文件名称
+     * @param string $src 文件路径
+     * @return string 文件名称
+     */
+    static public function getBasename($src) {
+        return preg_replace('/^.+[\\\\\\/]/', '', $src);
+    }
+
+    /**
+     * 转换GB2312字符
+     * <p>常见于文件名称中的中文字符,解决乱码.</p>
+     * @param string $src 内容
+     * @return string 获取字符串
+     */
+    static public function getCH($src) {
+        return iconv("GB2312", "UTF-8//IGNORE", $src);
+    }
+
+    /**
+     * 获取文件类型
+     * <p>根据文件后缀名获取</p>
+     * @param string $src 文件路径或名称
+     * @return string 文件类型,eg:jpg
+     */
+    static public function getType($src) {
+        return strtolower(pathinfo($src, PATHINFO_EXTENSION));
     }
 
 }

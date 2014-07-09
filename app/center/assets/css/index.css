@@ -183,3 +183,7 @@ body {
 .row-fix{
     margin-top: 30px;
 }
+
+.modal{
+    color:#000000;
+}

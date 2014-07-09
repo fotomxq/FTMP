@@ -9,7 +9,16 @@
 require('glob.php');
 
 //设定页面引用
-$pageIncludes = array('app' => array('css' => array('index.css'), 'js' => array('index.js')));
+$pageIncludes = array(
+    'app' => array(
+        'css' => array('index.css'), 
+        'js' => array('index.js')
+        ),
+    'glob' => array(
+        'css' => array('messenger.css','messenger-theme-flat.css', 'icheck-skins-flat.css'), 
+        'js' => array('messenger.js', 'icheck.js')
+        )
+    );
 
 //设定页面参数
 $appPages = array('title' => '中心');
@@ -78,6 +87,87 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
             <?php require('footer.php'); ?>
         </div>
     </div>
+</div>
+<!-- 用户设定 -->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+        <h4 class="modal-title" id="userModalLabel">用户设定</h4>
+      </div>
+        <div class="modal-body">
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">用户昵称</label>
+                    <div class="col-sm-10">
+                         <input type="text" class="form-control" id="user-name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">新的密码</label>
+                    <div class="col-sm-10">
+                         <input type="password" class="form-control" id="user-passwd">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">当前权限</label>
+                    <div class="col-sm-10">
+                         <p class="form-control-static" id="user-powers"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">当前应用</label>
+                    <div class="col-sm-10">
+                         <p class="form-control-static" id="user-apps"></p>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a type="button" href="logout.php" class="btn btn-danger">退出登录</a>
+            <button type="button" id="user-save-button" class="btn btn-primary">保存</button>
+        </div>
+    </div>
+  </div>
+</div>
+<!-- 系统设定 -->
+<div class="modal fade" id="systemModal" tabindex="-1" role="dialog" aria-labelledby="systemModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+        <h4 class="modal-title" id="systemModalLabel">系统设定</h4>
+      </div>
+        <div class="modal-body">
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">用户超时时间(秒)</label>
+                    <div class="col-sm-10">
+                         <input type="text" class="form-control" id="system-user-limit-time">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">系统状态</label>
+                    <div class="col-sm-10">
+                         <p class="form-control-static" id="system-maint"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">还原数据库</label>
+                    <div class="col-sm-10">
+                         <p class="form-control-static" id="system-database-return"></p>
+                    </div>
+                </div>
+            </form>
+        </div>
+      <div class="modal-footer">
+        <button type="button" id="system-maint-button" class="btn btn-danger">切换维护模式</button>
+        <button type="button" id="system-database-button" class="btn btn-info">备份数据库</button>
+        <button type="button" id="system-save-button" class="btn btn-primary">保存</button>
+      </div>
+    </div>
+  </div>
 </div>
 <?php
 //引用尾部模版

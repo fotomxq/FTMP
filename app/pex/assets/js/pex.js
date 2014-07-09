@@ -287,11 +287,13 @@ resource.ref = function() {
     }, function(data) {
         if (data) {
             resource.nowPageNum = data.length;
+            var isImg = 'only-text';
             for (var i = 0; i < data.length; i++) {
                 //判断是否为图片文件
-                var isImg = 'only-text';
-                if(data[i]['fx_type'] === 'jpg' || data[i]['fx_type'] === 'png' || data[i]['fx_type'] === 'gif'){
+                if (data[i]['fx_type'] === 'jpg' || data[i]['fx_type'] === 'png' || data[i]['fx_type'] === 'gif') {
                     isImg = 'only-img';
+                } else {
+                    isImg = 'only-text';
                 }
                 //根据模式插入数据
                 if (resource.mode === 'phone') {
@@ -305,9 +307,11 @@ resource.ref = function() {
             //判断并插入更多按钮
             if (data.length === resource.max) {
                 resource.more = true;
+            }else{
+                resource.more = false;
             }
             if (resource.more === true) {
-                if (isImg === 'only-text') {
+                if (isImg === 'only-text' && resource.mode !== 'operate') {
                     $('#resourceList').append('<div class="col-xs-3"><a href="#resource-more">---加载更多---</a></div>');
                 } else {
                     $('#resourceList').append('<div class="col-xs-3"><a href="#resource-more"><img src="assets/imgs/more.png" style="max-width: 140px;"></a></div>');
@@ -342,7 +346,7 @@ resource.insertRes = function(classColNum, id, title, type, content, imgSize, sh
 resource.selectMode = function(mode) {
     resource.mode = mode;
     $('a[href="#resource"]').unbind();
-    if (resource.mode == 'operate') {
+    if (resource.mode === 'operate') {
         $('a[href="#resource"]').bind('click', function() {
             if ($(this).attr('data-select') === 'true') {
                 $(this).attr('data-select', 'false');
@@ -353,7 +357,7 @@ resource.selectMode = function(mode) {
             }
         });
         $('a[href="#resource"]').bind('dblclick', function() {
-            if ($(this).attr('data-type') == 'folder') {
+            if ($(this).attr('data-type') === 'folder') {
                 resource.selectDir($(this).attr('data-id'));
             } else {
                 resource.open($(this).attr('data-id'));
@@ -361,7 +365,7 @@ resource.selectMode = function(mode) {
         });
     } else {
         $('a[href="#resource"]').bind('click', function() {
-            if ($(this).attr('data-type') == 'folder') {
+            if ($(this).attr('data-type') === 'folder') {
                 resource.selectDir($(this).attr('data-id'));
             } else {
                 resource.open($(this).attr('data-id'));

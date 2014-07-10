@@ -155,15 +155,18 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">还原数据库</label>
-                    <div class="col-sm-10">
+                    <div class="col-sm-8">
                          <p class="form-control-static" id="system-database-return"></p>
+                    </div>
+                    <div class="col-sm-2">
+                         <button type="button" id="system-backup-return-button" class="btn btn-danger">还原</button>
                     </div>
                 </div>
             </form>
         </div>
       <div class="modal-footer">
         <button type="button" id="system-maint-button" class="btn btn-danger">切换维护模式</button>
-        <button type="button" id="system-database-button" class="btn btn-info">备份数据库</button>
+        <button type="button" id="system-backup-button" class="btn btn-info">备份数据库</button>
         <button type="button" id="system-save-button" class="btn btn-primary">保存</button>
       </div>
     </div>

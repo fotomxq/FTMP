@@ -70,7 +70,7 @@ var system = new Object;
 //备份或还原数据库状态
 system.isBackup = false;
 //当前状态
-system.maint = false;
+system.maintStatus = false;
 //初始化
 system.start = function() {
     //当窗口激活
@@ -78,7 +78,7 @@ system.start = function() {
         system.updateData();
     });
     //备份数据库按钮
-    $('#system-database-button').click(function() {
+    $('#system-backup-button').click(function() {
         system.backup();
     });
     //维护切换按钮
@@ -89,22 +89,37 @@ system.start = function() {
     $('#system-save-button').click(function(){
         system.save();
     });
+    //还原数据库按钮
+    $('#system-backup-return-button').click(function(){
+        system.re();
+    });
 }
 //获取相关参数
 system.updateData = function() {
     actionServer('system-info',{},function(data){
         if(data){
             if(data['system-maint'] === '1'){
-                system.maint = true;
+                system.maintStatus = true;
                 $('#system-maint').html('系统正在维护...');
             }else{
-                system.maint = false;
+                system.maintStatus = false;
                 $('#system-maint').html('系统正常访问...');
             }
             $('#system-user-limit-time').val(data['user-limit-time']);
             $('#system-database-return').html('');
             if(data['backup-list']){
-                //////////////////////
+                $('#system-database-return').html('');
+                for(var i=0;i<data['backup-list'].length;i++){
+                    $('#system-database-return').append('<span class="label label-default" data-select="false">'+data['backup-list'][i]+'</span>');
+                }
+                $('#system-database-return span').click(function(){
+                    $('#system-database-return span[data-select="true"]').removeClass('label-success');
+                    $('#system-database-return span[data-select="true"]').addClass('label-default');
+                    $('#system-database-return span[data-select="true"]').attr('data-select','false');
+                    $(this).removeClass('label-default');
+                    $(this).addClass('label-success');
+                    $(this).attr('data-select','true');
+                });
             }
         }
     });
@@ -131,10 +146,10 @@ system.save = function() {
 system.maint = function() {
     actionServer('system-maint',{},function(data){
         if(data === 1){
-            system.maint = true;
+            system.maintStatus = true;
             sendMsg('info','系统进入维护状态...');
         }else{
-            system.maint = false;
+            system.maintStatus = false;
             sendMsg('info','系统退出维护状态.');
         }
         $('#systemModal').modal('hide');
@@ -142,10 +157,11 @@ system.maint = function() {
 }
 //备份数据库
 system.backup = function() {
-    sendMsg('info', '请稍等，正在备份数据库...');
     if (system.isBackup === true) {
         sendMsg('info', '数据库繁忙，请稍等片刻...');
         return false;
+    } else {
+        sendMsg('info', '请稍等，正在备份数据库...');
     }
     actionServer('database-backup', {}, function(data) {
         if (data === true) {
@@ -160,18 +176,23 @@ system.backup = function() {
 }
 //还原数据库
 system.re = function() {
-    sendMsg('info', '请稍等，正在还原数据库...');
+    if(!$('#system-database-return span[data-select="true"]').html()){
+        sendMsg('info', '请选择备份文件，然后再进行还原操作.');
+        return false;
+    }
     if (system.isBackup === true) {
         sendMsg('info', '数据库繁忙，请稍等片刻...');
         return false;
+    } else {
+        sendMsg('info', '请稍等，正在还原数据库...');
     }
     actionServer('database-return', {
-        'file-name': '123.zip'
+        'file-name': $('#system-database-return span[data-select="true"]').html()
     }, function(data) {
         if (data === true) {
             sendMsg('success', '数据库还原成功!');
         } else {
-            sendMsg('error', '数据库还原失败!');
+            sendMsg('error', '数据库还原失败，请尝试自行解压备份文件，清空表执行所有SQL文件和将content替换即可!');
         }
         $('#systemModal').modal('hide');
         system.isBackup = false;

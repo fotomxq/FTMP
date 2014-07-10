@@ -187,3 +187,15 @@ body {
 .modal{
     color:#000000;
 }
+#systemModal p,#userModal p{
+    float: left;
+}
+
+#system-database-return{
+    cursor: pointer;
+}
+#system-database-return span{
+    margin-left: 5px;
+    margin-bottom: 5px;
+    float: left;
+}

@@ -160,7 +160,7 @@ class CoreFile {
             $list = CoreFile::searchDir($search);
             if ($list) {
                 foreach ($list as $v) {
-                    if (CoreFile::deleteDir($v) == false) {
+                    if (CoreFile::deleteDir($v) != true) {
                         return false;
                     }
                 }

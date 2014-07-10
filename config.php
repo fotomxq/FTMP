@@ -85,8 +85,6 @@ define('TABLE_IP', 'sys_ip');
 //////////////////
 //数据库定义
 //////////////////
-//数据库名称,请同时修改DSN内的dbname参数.
-$dbName = 'ftmp';
 //PDO-DSN eg: mysql:host=localhost;dbname=databasename;charset=utf8
 $dbDSN = 'mysql:host=localhost;dbname=ftmp;charset=utf8';
 //数据库用户名

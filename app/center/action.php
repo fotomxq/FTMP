@@ -30,7 +30,7 @@ switch ($_GET['action']) {
     case 'database-backup':
         //备份数据库
         powerCheck($checkPowers['ADMIN']);
-        $backup = new SysBackup($db, DIR_BACKUP);
+        $backup = new SysBackup($db, DIR_BACKUP, DIR_DATA);
         $res = $backup->backup();
         CoreHeader::toJson($res);
         break;
@@ -39,7 +39,7 @@ switch ($_GET['action']) {
         powerCheck($checkPowers['ADMIN']);
         $res = false;
         if (isset($_POST['file-name']) == true) {
-            $backup = new SysBackup($db, DIR_BACKUP);
+            $backup = new SysBackup($db, DIR_BACKUP, DIR_DATA);
             $name = $_POST['file-name'];
             $res = $backup->re($name);
         }
@@ -49,7 +49,7 @@ switch ($_GET['action']) {
         //查看参数信息
         powerCheck($checkPowers['ADMIN']);
         $res['user-limit-time'] = $config->get('USER-LIMIT-TIME');
-        $backup = new SysBackup($db, DIR_BACKUP);
+        $backup = new SysBackup($db, DIR_BACKUP, DIR_DATA);
         $res['backup-list'] = $backup->viewList();
         $res['system-maint'] = $config->get('WEB-MAINT-ON');
         CoreHeader::toJson($res);

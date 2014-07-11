@@ -168,7 +168,11 @@ resource.nowPageNum = 0;
 //剪切文件夹列
 resource.selectCutArr = new Array();
 //是否具备更多内容
-resource.more = false;
+resource.more = true;
+//时间监控器
+resource.time;
+//时间监控器间隔 0.5秒
+resource.timeLimit = 500;
 //初始化
 resource.start = function() {
     //打开文件事件
@@ -262,7 +266,15 @@ resource.start = function() {
             sendMsg('info', '没有下一个了!');
         }
     });
-    //初始化刷新资源
+    //监控滚动条
+    resource.time = window.setInterval("resource.scroll();",resource.timeLimit);
+}
+//根据滚动条刷新资源
+resource.scroll = function() {
+    if (resource.more !== true) {
+        return false;
+    }
+    //根据滚动条高度判断
     var contentHeight = $('.container').height();
     var documentHeight = $(document).height();
     var resourceNextReady = true;
@@ -272,7 +284,7 @@ resource.start = function() {
             resourceNextReady = false;
         }
     }
-    //监控滚动条
+    //根据滚动条位置判断
 }
 //刷新资源
 resource.ref = function() {
@@ -740,7 +752,7 @@ menu.start = function() {
         }
     });
     //强制加载更多
-    $('a[href="#resource-more"]').click(function() {
+    $('a[href="#menu-resource-more"]').click(function() {
         resource.nextPage();
     });
     //合并文件夹

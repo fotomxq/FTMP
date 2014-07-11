@@ -13,8 +13,7 @@
   <li><a href="#folder-cartoon">漫画</a></li>
   <li><a href="#folder-txt">文本</a></li>
   <li class="dropdown">
-      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-          操作 <span class="caret"></span>
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#"> 操作 <span class="caret"></span>
       </a>
       <ul class="dropdown-menu" role="menu">
           <li><a href="#mode-operate">操作模式</a></li>
@@ -30,7 +29,7 @@
           <li><a href="#operate-fx-move">移动到这里</a></li>
           <li><a href="#operate-fx-join">合并文件夹</a></li>
           <li class="divider"></li>
-          <li><a href="#resource-more">加载更多</a></li>
+          <li><a href="#menu-resource-more">加载更多</a></li>
       </ul>
   </li>
   <li><a href="#set" data-toggle="modal" data-target="#setModal">设置</a></li>

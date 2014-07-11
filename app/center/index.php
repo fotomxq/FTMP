@@ -3,7 +3,7 @@
  * 中心页面
  * @authors fotomxq <fotomxq.me>
  * @date    2014-06-26 17:47:04
- * @version 2
+ * @version 3
  */
 //引用全局
 require('glob.php');
@@ -164,11 +164,21 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                 </div>
             </form>
         </div>
-      <div class="modal-footer">
-        <button type="button" id="system-maint-button" class="btn btn-danger">切换维护模式</button>
-        <button type="button" id="system-backup-button" class="btn btn-info">备份数据库</button>
-        <button type="button" id="system-save-button" class="btn btn-primary">保存</button>
-      </div>
+        <div class="modal-footer">
+            <button type="button" id="system-maint-button" class="btn btn-danger">切换维护模式</button>
+            <div class="btn-group">
+                <button type="button" id="system-backup-button" class="btn btn-info">备份数据库</button>
+                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <button type="button" id="system-backup-only-sql-button" class="btn btn-info">仅备份数据库</button>
+                    <button type="button" id="system-backup-only-file-button" class="btn btn-info">仅备份文件</button>
+                </ul>
+            </div>
+            <button type="button" id="system-save-button" class="btn btn-primary">保存</button>
+        </div>
     </div>
   </div>
 </div>

@@ -4,7 +4,7 @@
  * 中心动作
  * @author fotomxq <fotomxq.me>
  * @date    2014-07-09 15:25:51
- * @version 1
+ * @version 2
  */
 //引用全局
 require('glob.php');
@@ -22,6 +22,10 @@ function powerCheck($power) {
     }
 }
 
+//设定脚本时间
+ini_set('max_execution_time', 1800);
+set_time_limit(1800);
+
 //判断动作类型
 if (isset($_GET['action']) != true) {
     die();
@@ -30,8 +34,9 @@ switch ($_GET['action']) {
     case 'database-backup':
         //备份数据库
         powerCheck($checkPowers['ADMIN']);
+        $type = isset($_POST['type']) == true ? $_POST['type'] : 'both';
         $backup = new SysBackup($db, DIR_BACKUP, DIR_DATA);
-        $res = $backup->backup();
+        $res = $backup->backup($type);
         CoreHeader::toJson($res);
         break;
     case 'database-return':

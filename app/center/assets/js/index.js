@@ -79,7 +79,7 @@ system.start = function() {
     });
     //备份数据库按钮
     $('#system-backup-button').click(function() {
-        system.backup();
+        system.backup('both');
     });
     //维护切换按钮
     $('#system-maint-button').click(function(){
@@ -92,6 +92,14 @@ system.start = function() {
     //还原数据库按钮
     $('#system-backup-return-button').click(function(){
         system.re();
+    });
+    //仅备份数据库按钮
+    $('#system-backup-only-sql-button').click(function(){
+        system.backup('sql');
+    });
+    //仅备份文件按钮
+    $('#system-backup-only-file-button').click(function(){
+        system.backup('file');
     });
 }
 //获取相关参数
@@ -156,14 +164,16 @@ system.maint = function() {
     });
 }
 //备份数据库
-system.backup = function() {
+system.backup = function(type) {
     if (system.isBackup === true) {
         sendMsg('info', '数据库繁忙，请稍等片刻...');
         return false;
     } else {
         sendMsg('info', '请稍等，正在备份数据库...');
     }
-    actionServer('database-backup', {}, function(data) {
+    actionServer('database-backup', {
+        'type':type
+    }, function(data) {
         if (data === true) {
             sendMsg('success', '数据库备份成功!');
         } else {

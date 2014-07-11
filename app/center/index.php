@@ -168,13 +168,13 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
             <button type="button" id="system-maint-button" class="btn btn-danger">切换维护模式</button>
             <div class="btn-group">
                 <button type="button" id="system-backup-button" class="btn btn-info">备份数据库</button>
-                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
                     <span class="caret"></span>
                     <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <button type="button" id="system-backup-only-sql-button" class="btn btn-info">仅备份数据库</button>
-                    <button type="button" id="system-backup-only-file-button" class="btn btn-info">仅备份文件</button>
+                    <li><a id="system-backup-only-sql-button" href="#">仅备份数据库</a></li>
+                    <li><a id="system-backup-only-file-button" href="#">仅备份文件</a></li>
                 </ul>
             </div>
             <button type="button" id="system-save-button" class="btn btn-primary">保存</button>

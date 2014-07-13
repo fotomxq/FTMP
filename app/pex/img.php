@@ -4,7 +4,7 @@
  * 查看图片
  * @authors fotomxq <fotomxq.me>
  * @date    2014-07-06 14:52:00
- * @version 2
+ * @version 3
  */
 //引用全局
 require('glob.php');
@@ -41,7 +41,7 @@ if (isset($_GET['id']) == true) {
                 CoreHeader::toURL('assets/imgs/folder.png');
             }
         } else {
-            if ($res['fx_type'] == 'jpg' || $res['fx_type'] == 'png' || $res['fx_type'] == 'gif') {
+            if ($res['fx_type'] == 'jpg' || $res['fx_type'] == 'jpeg' || $res['fx_type'] == 'png' || $res['fx_type'] == 'gif') {
                 $src = APP_PEX_DIR . DS . 'file' . DS . $res['fx_src'];
                 if (is_file($src) == true) {
                     if ($res['fx_type'] == 'gif') {

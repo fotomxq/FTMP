@@ -5,7 +5,7 @@
  * 缓冲相关变量或值。
  * 
  * @author fotomxq <fotomxq.me>
- * @version 4
+ * @version 5
  */
 class CoreCache {
 
@@ -111,6 +111,9 @@ class CoreCache {
             $img = null;
             switch ($fileType) {
                 case 'jpg':
+                    $img = @imagecreatefromjpeg($src);
+                    break;
+                case 'jpeg':
                     $img = @imagecreatefromjpeg($src);
                     break;
                 case 'png':

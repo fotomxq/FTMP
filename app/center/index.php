@@ -3,7 +3,7 @@
  * 中心页面
  * @authors fotomxq <fotomxq.me>
  * @date    2014-06-26 17:47:04
- * @version 3
+ * @version 4
  */
 //引用全局
 require('glob.php');
@@ -27,7 +27,7 @@ $appPages = array('title' => '中心');
 $checkPowers = $user->checkPower($userID, array('ADMIN'));
 
 //所有应用名称及所在目录
-$apps = array('center');
+$apps = array('center','pex');
 
 //获取用户所有可用应用
 $checkApps = $user->checkApp($userID, $apps);
@@ -82,6 +82,15 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                         <h2>日志</h2>
                         <p>用小本本记住你</p>
                     </div>
+                </div>
+                <div class="row row-fix">
+                    <?php if($checkApps['pex']){ ?>
+                    <div class="col-lg-4">
+                        <a href="../pex/index.php" target="_self"><img class="img-circle" src="../pex/assets/imgs/favicon.png" alt="Generic placeholder image" style="width: 100px; height: 100px;"></a>
+                        <h2>PEX</h2>
+                        <p>你懂得！</p>
+                    </div>
+                    <?php } ?>
                 </div>
             </div>
             <?php require('footer.php'); ?>

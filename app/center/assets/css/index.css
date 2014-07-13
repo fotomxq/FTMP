@@ -162,6 +162,7 @@ body {
     }
     .center-content{
         overflow:scroll;
+        overflow-x:hidden;
     }
     @media (min-height: 0px){
         .center-content{

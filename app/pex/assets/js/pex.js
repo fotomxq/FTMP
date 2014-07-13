@@ -302,7 +302,7 @@ resource.ref = function() {
             var isImg = 'only-text';
             for (var i = 0; i < data.length; i++) {
                 //判断是否为图片文件
-                if (data[i]['fx_type'] === 'jpg' || data[i]['fx_type'] === 'png' || data[i]['fx_type'] === 'gif') {
+                if (data[i]['fx_type'] === 'jpg' || data[i]['fx_type'] === 'png' || data[i]['fx_type'] === 'gif' || data[i]['fx_type'] === 'jpeg') {
                     isImg = 'only-img';
                 } else {
                     isImg = 'only-text';

@@ -151,7 +151,7 @@ var resource = new Object;
 resource.type = 'photo';
 //显示页数和页长
 resource.page = 1;
-resource.max = 10;
+resource.max = 20;
 //排序方式
 resource.sort = 0;
 resource.desc = true;

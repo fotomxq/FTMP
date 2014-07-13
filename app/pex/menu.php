@@ -7,7 +7,7 @@
  */
 ?>
 <ul class="nav nav-pills pull-right" id="menu">
-  <li><a href="#release" data-toggle="modal" data-target="#uploadModal">发布</a></li>
+  <li><a href="release.php">发布</a></li>
   <li class="active"><a href="#folder-photo">照片</a></li>
   <li><a href="#folder-movie">影片</a></li>
   <li><a href="#folder-cartoon">漫画</a></li>

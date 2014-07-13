@@ -7,8 +7,3 @@
  */
 require('../template/header.php');
 ?>
-<div class="container">
-  <div class="header">
-    <?php require('menu.php'); ?>
-    <h3 class="text-muted" id="logo">PEX</h3>
-  </div>

@@ -15,278 +15,50 @@ require('app-pex.php');
 //创建对象
 $pex = new AppPex($db, APP_PEX_DIR, $log);
 
+//过滤action变量
+$action = $_GET['action'];
+
+//返回变量
+$res;
+
+//该数据是否可以缓冲
+$cacheOn = false;
+
+//缓冲名称
+$cacheName = 'PEX-' . $action;
+
 //判断动作类型
-if (isset($_GET['action']) == true) {
-    switch ($_GET['action']) {
-        case 'upload':
-            //上传文件
-            break;
-        case 'transfer-list':
-            //获取等待转移列
-            $page = isset($_POST['page']) == true ? (int) $_POST['page'] : 1;
-            $max = isset($_POST['max']) == true ? (int) $_POST['max'] : 10;
-            $res = $pex->transferList($page, $max);
-            CoreHeader::toJson($res);
-            break;
-        case 'transfer-add':
-            //发布转移文件
-            if (isset($_POST['title']) == true && isset($_POST['parent']) == true && isset($_POST['mode-type']) == true && isset($_POST['mode-dir']) == true && isset($_POST['content']) == true && isset($_POST['tags']) == true && isset($_POST['files']) == true) {
-                $res = false;
-                $title = $_POST['title'];
-                $parent = (int) $_POST['parent'];
-                $content = $_POST['content'];
-                $tags = $_POST['tags'];
-                $files = $_POST['files'];
-                $modeDir = $_POST['mode-dir'];
-                $modeType = $_POST['mode-type'];
-                //构建文件夹
-                if ($modeDir == true) {
-                    $parent = $pex->pexType[$modeType]['folder'];
-                    $parent = $pex->addFolder($title, $parent, $content);
-                    if ($parent < 1) {
-                        $res = false;
-                        $log->add('app~pex~action.php~transfer-list~1', 'add folder faild.');
-                        CoreHeader::toJson($res);
-                    }
-                    //创建标签关系
-                    if ($tags) {
-                        if (!$pex->setTx($parent, $tags, 1)) {
-                            $res = false;
-                            $log->add('app~pex~action.php~transfer-list~2', 'add tag-fx faild.');
-                            CoreHeader::toJson($res);
-                        }
-                    }
-                }
-                //创建文件
-                if ($files) {
-                    foreach ($files as $v) {
-                        $src = APP_PEX_DIR . DS . 'transfer' . DS . $v;
-                        $resFile = $pex->transferFile($src, $title, $parent, $content);
-                        if ($resFile > 0) {
-                            //创建标签关系
-                            if ($tags) {
-                                if (!$pex->setTx($resFile, $tags, 0)) {
-                                    $res = false;
-                                    $log->add('app~pex~action.php~transfer-list~3', 'add tag-fx faild.');
-                                    CoreHeader::toJson($res);
-                                }
-                            }
-                        } else {
-                            $res = false;
-                            $log->add('app~pex~action.php~transfer-list~4', 'add fx faild.');
-                            CoreHeader::toJson($res);
-                        }
-                    }
-                    $res = true;
-                }
-                CoreHeader::toJson($res);
-            }
-            break;
-        case 'folder-add':
-            //添加目录
-            if (isset($_POST['title']) == true && isset($_POST['parent']) == true && isset($_POST['content']) == true) {
-                $title = $_POST['title'];
-                $parent = (int) $_POST['parent'];
-                $content = $_POST['content'];
-                $res = $pex->addFolder($title, $parent, $content);
-                CoreHeader::toJson($res);
-            }
-            break;
-        case 'fx-view':
-            //查看FX详情
-            if (isset($_POST['id']) == true) {
-                $id = (int) $_POST['id'];
-                $res = $pex->view($id);
-                CoreHeader::toJson($res);
-            }
-            break;
-        case 'fx-list':
-            //获取FX列
-            if (isset($_POST['parent']) == true && isset($_POST['page']) == true && isset($_POST['max']) == true && isset($_POST['sort']) == true && isset($_POST['desc']) == true) {
-                $parent = (int) $_POST['parent'];
-                $page = $_POST['page'] > 0 ? (int) $_POST['page'] : 1;
-                $max = $_POST['max'] > 0 ? (int) $_POST['max'] : 10;
-                $sort = (int) $_POST['sort'];
-                $desc = $_POST['desc'] == true ? true : false;
-                $tags = isset($_POST['tags']) == true ? $_POST['tags'] : null;
-                $res = $pex->viewList($parent, $tags, $page, $max, $sort, $desc);
-                CoreHeader::toJson($res);
-            }
-            break;
-        case 'fx-edit':
-            //编辑FX信息
-            if (isset($_POST['id']) == true && isset($_POST['title']) == true && isset($_POST['content']) == true) {
-                $id = (int) $_POST['id'];
-                $res = $pex->view($id);
-                if (!$res) {
-                    CoreHeader::toJson(false);
-                }
-                $title = $_POST['title'];
-                $content = $_POST['content'];
-                $tags = isset($_POST['tags']) == true ? $_POST['tags'] : null;
-                $type = 0;
-                if ($res['fx_type'] == 'folder') {
-                    $type = 1;
-                } else {
-                    $type = 0;
-                }
-                //创建标签关系
-                if ($tags) {
-                    if (!$pex->setTx($id, $tags, $type)) {
-                        CoreHeader::toJson(false);
-                    }
-                }
-                $res = $pex->editFx($id, $title, $content);
-                CoreHeader::toJson($res);
-            }
-            break;
-        case 'fx-cut':
-            //剪切FX
-            if (isset($_POST['cut-arr']) == true && isset($_POST['dest-folder']) == true) {
-                $cutArr = $_POST['cut-arr'];
-                $destFolder = (int) $_POST['dest-folder'];
-                if (is_array($cutArr) == true) {
-                    foreach ($cutArr as $v) {
-                        $res = $pex->cutFile($v, $destFolder);
-                    }
-                }
-                CoreHeader::toJson($res);
-            }
-            break;
-        case 'fx-update-time':
-            //更新FX访问时间
-            if (isset($_POST['id']) == true) {
-                $id = (int) $_POST['id'];
-                $res = $pex->updateFxTime($id);
-                CoreHeader::toJson($res);
-            }
-            break;
-        case 'fx-del':
-            //删除FX
-            if (isset($_POST['id']) == true) {
-                $id = $_POST['id'];
-                if ($id) {
-                    foreach ($id as $v) {
-                        if (!$pex->delFx($v)) {
-                            CoreHeader::toJson(false);
-                        }
-                    }
-                    CoreHeader::toJson(true);
-                }
-            }
-            break;
-        case 'tag-list':
-            //获取所有类型的所有标签
-            $res;
+switch ($action) {
+    case 'type-default':
+        $res = $pex->pexType['photo']['key'];
+        break;
+    case 'type-all':
+        //获取所有类型
+        $res = $pex->pexType;
+        break;
+    case 'tag-all':
+        //获取所有标签
+        $cacheOn = true;
+        $res = $cache->get($cacheName);
+        if ($res) {
+            $res = json_decode($res, true);
+        } else {
             if ($pex->pexType) {
                 foreach ($pex->pexType as $v) {
                     $res[$v['key']] = $pex->viewTag($v['key']);
                 }
             }
-            CoreHeader::toJson($res);
-            break;
-        case 'tx-list':
-            //获取某文件的所有标签
-            if (isset($_POST['id']) == true) {
-                $id = (int) $_POST['id'];
-                $res = $pex->viewTx($id);
-                CoreHeader::toJson($res);
-            }
-            break;
-        case 'tag-add':
-            //添加新的标签
-            if (isset($_POST['name']) == true && isset($_POST['type']) == true) {
-                $name = $_POST['name'];
-                $type = $_POST['type'];
-                $newID = $pex->addTag($name, $type);
-                die($newID);
-            }
-            break;
-        case 'tag-edit':
-            //编辑标签名称
-            if (isset($_POST['id']) == true && isset($_POST['name']) == true) {
-                $id = (int) $_POST['id'];
-                $name = $_POST['name'];
-                $res = $pex->editTag($id, $name);
-                CoreHeader::toJson($res);
-            }
-            break;
-        case 'tag-tx-add':
-            //添加标签关系
-            if (isset($_POST['fileID']) == true && isset($_POST['tagID']) == true && isset($_POST['type']) == true) {
-                $fileID = (int) $_POST['fileID'];
-                $tagID = (int) $_POST['tagID'];
-                $type = $_POST['type'] == 'file' ? 'file' : 'folder';
-                $newID = $pex->addTx($fileID, $tagID, $type);
-                die($newID);
-            }
-            break;
-        case 'tag-tx-del':
-            //删除标签关系
-            if (isset($_POST['txID']) == true) {
-                $txID = (int) $_POST['txID'];
-                $res = $pex->delTx($txID);
-                CoreHeader::toJson($res);
-            }
-            break;
-        case 'tag-del':
-            //删除标签
-            if (isset($_POST['tagID']) == true) {
-                $tagID = (int) $_POST['tagID'];
-                $res = $pex->delTag($tagID);
-                CoreHeader::toJson($res);
-            }
-            break;
-        case 'tag-set':
-            //修改标签，自动判断添加、修改、删除操作
-            if (isset($_POST['tags']) == true) {
-                $tagRes;
-                $res = false;
-                $tags = $_POST['tags'];
-                foreach ($pex->pexType as $v) {
-                    $vList = explode('|', $tags[$v['key']]);
-                    if (!$pex->setTag($vList, $v['key'])) {
-                        CoreHeader::toJson($res);
-                    }
-                }
-                CoreHeader::toJson($res);
-            }
-            break;
-        case 'cache-clear':
-            //清理缓冲
-            $pexCache = new CoreCache(CACHE_ON, CACHE_LIMIT_TIME, APP_PEX_DIR . DS . 'cache');
-            $res = $pexCache->clearImg();
-            CoreHeader::toJson($res);
-            break;
-        case 'rotate-img':
-            //旋转当前目录下所有图片
-            if (isset($_POST['dir']) == true) {
-                $dir = (int) $_POST['dir'];
-                require(DIR_LIB . DS . 'plug-img-rotate.php');
-                $resList = $pex->viewList($dir, null, 1, 9999, 0, false);
-                if ($resList) {
-                    foreach ($resList as $v) {
-                        $src = APP_PEX_DIR . DS . 'file' . DS . $v['fx_src'];
-                        if (is_file($src) == true) {
-                            PlugImgRotate($src, 270);
-                        }
-                    }
-                    $pexCache = new CoreCache(CACHE_ON, CACHE_LIMIT_TIME, APP_PEX_DIR . DS . 'cache');
-                    $res = $pexCache->clearImg();
-                }
-                CoreHeader::toJson(true);
-            }
-            break;
-        case 'folder-join':
-            //合并文件夹
-            //folder-src为要舍弃的文件夹，folder-dest为合并并使用的文件夹
-            if (isset($_POST['folder-src']) == true && isset($_POST['folder-dest']) == true) {
-                $folderSrcID = (int) $_POST['folder-src'];
-                $folderDestID = (int) $_POST['folder-dest'];
-                $res = $pex->folderJoin($folderSrcID, $folderDestID);
-                CoreHeader::toJson(false);
-            }
-            break;
-    }
+        }
+        break;
+    default:
+        //缺省
+        break;
 }
-?>
+
+//保存缓冲
+if($cacheOn){
+    $cache->set($cacheName, json_encode($res));
+}
+
+//返回JSON
+CoreHeader::toJson($res);

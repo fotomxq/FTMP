@@ -4,7 +4,7 @@
  * 数据库处理器
  * PDO数据库处理封装。
  * 
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 3
  * @package core
  */

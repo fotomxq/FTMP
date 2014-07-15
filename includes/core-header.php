@@ -2,7 +2,7 @@
 
 /**
  * header头信息操作类
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 4
  */
 class CoreHeader {

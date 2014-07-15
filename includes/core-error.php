@@ -2,7 +2,7 @@
 
 /**
  * 核心错误处理器
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 2
  * @package core
  */

@@ -2,7 +2,7 @@
 
 /**
  * 文件操作封装
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 2
  */
 class CoreFile {

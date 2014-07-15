@@ -2,7 +2,7 @@
 /**
  * 错误页面
  * 
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 2
  */
 //错误对应提示

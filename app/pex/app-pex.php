@@ -2,7 +2,7 @@
 
 /**
  * PEX处理器
- * @authors fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-29 10:02:50
  * @version 3
  */

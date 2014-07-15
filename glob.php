@@ -4,7 +4,7 @@
  * 全局引用
  * 所有非特殊页面必须引用的页面，包含必备的配置和库引用。
  * 
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 5
  * @package web
  */

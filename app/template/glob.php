@@ -2,7 +2,7 @@
 
 /**
  * 全局设定模版
- * @authors fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-25 09:23:28
  * @version 1
  */

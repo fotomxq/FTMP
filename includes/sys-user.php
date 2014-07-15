@@ -2,7 +2,7 @@
 
 /**
  * 用户处理器
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 6
  * @package sys
  */

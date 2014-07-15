@@ -4,7 +4,7 @@
  * 备份还原系统
  * <p>必须库 : CoreDB / CoreFile / CoreHeader</p>
  * <p>备份前注意完全关闭站点，或站点相关存取交互。</p>
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 2
  */
 class SysBackup {

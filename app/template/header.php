@@ -1,7 +1,7 @@
 <?php
 /**
  * 页面顶部模版
- * @authors fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-26 17:48:17
  * @version 1
  */

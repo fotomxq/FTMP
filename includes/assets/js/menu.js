@@ -1,6 +1,6 @@
 /**
  * 通用菜单定义
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 1
  */
 $(function(){

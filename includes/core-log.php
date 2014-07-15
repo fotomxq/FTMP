@@ -1,7 +1,7 @@
 <?php
 /**
  * 日志操作类
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 4
  * @package core
  */

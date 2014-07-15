@@ -3,7 +3,7 @@
 /**
  * 发布执行代码
  * <p>删除注释并混淆代码</p>
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 1
  * @package debug
  */

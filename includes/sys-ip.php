@@ -1,7 +1,7 @@
 <?php
 /**
  * IP处理器
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 1
  * @package sys
  * @todo  稍后为互联网获取真实地址加入多种途经获取

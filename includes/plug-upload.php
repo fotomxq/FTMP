@@ -2,7 +2,7 @@
 
 /**
  * 上传文件插件
- * @authors fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-20 11:51:03
  * @version 1
  */

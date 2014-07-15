@@ -1,6 +1,6 @@
 /**
  * FTMP-Date时间处理器
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @verson 1
  */
 var FtmpDate = new Object();

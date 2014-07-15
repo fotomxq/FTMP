@@ -3,7 +3,7 @@
  * 配置处理器
  * 处理数据库配置信息
  * 
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 2
  * @package sys
  */

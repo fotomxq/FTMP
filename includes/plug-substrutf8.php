@@ -2,7 +2,7 @@
 
 /**
  * 截取字符串UTF8
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 1
  * @package plug
  */

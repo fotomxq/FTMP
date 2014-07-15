@@ -1,7 +1,7 @@
 <?php
 /**
  * PEX首页
- * @authors fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-28 22:44:12
  * @version 1
  */

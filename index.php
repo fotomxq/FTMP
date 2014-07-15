@@ -2,7 +2,7 @@
 /**
  * 网站首页
  * 
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 3
  */
 

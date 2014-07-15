@@ -4,7 +4,7 @@
  * 配置文件
  * 全局配置文件
  * 
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 8
  */
 //////////////////

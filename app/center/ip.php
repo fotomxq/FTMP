@@ -1,8 +1,9 @@
 <?php
+
 /**
- * 菜单栏
+ * 查看IP页面
  * @author liuzilu <fotomxq@gmail.com>
- * @date    2014-06-27 10:01:59
+ * @date    2014-06-26 17:43:38
  * @version 1
  */
 ?>

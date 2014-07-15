@@ -2,7 +2,7 @@
 
 /**
  * Pex应用全局设定
- * @authors fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-28 22:40:09
  * @version 2
  */

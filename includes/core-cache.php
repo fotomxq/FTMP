@@ -4,7 +4,7 @@
  * 缓冲处理器
  * 缓冲相关变量或值。
  * 
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 5
  */
 class CoreCache {

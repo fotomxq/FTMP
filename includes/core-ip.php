@@ -2,7 +2,7 @@
 /**
  * IP处理器
  * <p>废弃.</p>
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 1
  * @package core
  */

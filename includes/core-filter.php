@@ -2,7 +2,7 @@
 
 /**
  * 用户输入过滤器
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 2
  * @package core
  */

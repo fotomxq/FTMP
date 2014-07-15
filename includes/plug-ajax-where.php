@@ -4,7 +4,7 @@
  * WHERE组合插件
  * <p>该插件主要用于Ajax提交的多种条件之间的组合。</p>
  * <p>该插件仅限于简单的条件组合，如果关系复杂到需要使用括号，则需要手动建立。</p>
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @package plug
  * @todo 转移该模块到FTMP，并提交GIT
  */

@@ -5,7 +5,7 @@
  * <p>使用该函数后会自动输出图片，注意不要在前面输出任何内容，否则会造成乱码或图片错误等问题。</p>
  * <p>需要提前开启Session</p>
  * 
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 2
  * @package Plug
  */

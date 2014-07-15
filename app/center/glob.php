@@ -2,7 +2,7 @@
 
 /**
  * 应用内全局设定
- * @authors fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-26 17:43:38
  * @version 2
  */

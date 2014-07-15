@@ -3,7 +3,7 @@
 /**
  * 旋转图片
  * <p>只支持jpg格式.</p>
- * @authors fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-07-06 21:34:00
  * @version 1
  */

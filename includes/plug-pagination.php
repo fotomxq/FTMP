@@ -2,7 +2,7 @@
 
 /**
  * 页码生成器
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 2
  * @package plug
  */

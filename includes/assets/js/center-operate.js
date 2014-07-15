@@ -1,6 +1,6 @@
 /**
  * 中心设置页面
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @version 2
  */
 

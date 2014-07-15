@@ -2,7 +2,7 @@
 
 /**
  * 菜单页面
- * @authors fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-07-06 18:33:00
  * @version 1
  */

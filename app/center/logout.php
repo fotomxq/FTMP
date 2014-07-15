@@ -2,7 +2,7 @@
 
 /**
  * 退出登录
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @date 2014-07-09 16:34:41
  * @version 1
  */

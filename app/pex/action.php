@@ -2,7 +2,7 @@
 
 /**
  * 动作整合
- * @authors fotomxq <fotomxq.me>
+ * @author fotomxq <fotomxq.me>
  * @date    2014-06-30 11:51:18
  * @version 5
  */

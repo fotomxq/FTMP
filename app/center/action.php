@@ -2,7 +2,7 @@
 
 /**
  * 中心动作
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-07-09 15:25:51
  * @version 2
  */

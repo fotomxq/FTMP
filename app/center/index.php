@@ -3,31 +3,22 @@
  * 中心页面
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-26 17:47:04
- * @version 4
+ * @version 5
  */
 //引用全局
 require('glob.php');
 
 //设定页面引用
-$pageIncludes = array(
-    'app' => array(
-        'css' => array('index.css'), 
-        'js' => array('index.js')
-        ),
-    'glob' => array(
-        'css' => array('messenger.css','messenger-theme-flat.css', 'icheck-skins-flat.css'), 
-        'js' => array('messenger.js', 'icheck.js')
-        )
-    );
+$pageIncludes['app'] = array(
+    'css' => array('index.css'),
+    'js' => array('index.js')
+);
 
 //设定页面参数
-$appPages = array('title' => '中心');
-
-//用户是否为管理员
-$checkPowers = $user->checkPower($userID, array('ADMIN'));
+$appPages = array('title' => '中心', 'key' => 'CENTER-INDEX');
 
 //所有应用名称及所在目录
-$apps = array('center','pex');
+$apps = array('center', 'pex');
 
 //获取用户所有可用应用
 $checkApps = $user->checkApp($userID, $apps);
@@ -84,12 +75,12 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                     </div>
                 </div>
                 <div class="row row-fix">
-                    <?php if($checkApps['pex']){ ?>
-                    <div class="col-lg-4">
-                        <a href="../pex/index.php" target="_self"><img class="img-circle" src="../pex/assets/imgs/favicon.png" alt="Generic placeholder image" style="width: 100px; height: 100px;"></a>
-                        <h2>PEX</h2>
-                        <p>你懂得！</p>
-                    </div>
+                    <?php if ($checkApps['pex']) { ?>
+                        <div class="col-lg-4">
+                            <a href="../pex/index.php" target="_self"><img class="img-circle" src="../pex/assets/imgs/favicon.png" alt="Generic placeholder image" style="width: 100px; height: 100px;"></a>
+                            <h2>PEX</h2>
+                            <p>你懂得！</p>
+                        </div>
                     <?php } ?>
                 </div>
             </div>
@@ -99,97 +90,100 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
 </div>
 <!-- 用户设定 -->
 <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
-        <h4 class="modal-title" id="userModalLabel">用户设定</h4>
-      </div>
-        <div class="modal-body">
-            <form class="form-horizontal" role="form">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">用户昵称</label>
-                    <div class="col-sm-10">
-                         <input type="text" class="form-control" id="user-name">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+                <h4 class="modal-title" id="userModalLabel">用户设定</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">用户昵称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="user-name">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">新的密码</label>
-                    <div class="col-sm-10">
-                         <input type="password" class="form-control" id="user-passwd">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">新的密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="user-passwd">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">当前权限</label>
-                    <div class="col-sm-10">
-                         <p class="form-control-static" id="user-powers"></p>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">当前权限</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="user-powers"></p>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">当前应用</label>
-                    <div class="col-sm-10">
-                         <p class="form-control-static" id="user-apps"></p>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">当前应用</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="user-apps"></p>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <a type="button" href="logout.php" class="btn btn-danger">退出登录</a>
-            <button type="button" id="user-save-button" class="btn btn-primary">保存</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a type="button" href="logout.php" class="btn btn-danger">退出登录</a>
+                <button type="button" id="user-save-button" class="btn btn-primary">保存</button>
+            </div>
         </div>
     </div>
-  </div>
 </div>
 <!-- 系统设定 -->
 <div class="modal fade" id="systemModal" tabindex="-1" role="dialog" aria-labelledby="systemModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
-        <h4 class="modal-title" id="systemModalLabel">系统设定</h4>
-      </div>
-        <div class="modal-body">
-            <form class="form-horizontal" role="form">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">用户超时时间(秒)</label>
-                    <div class="col-sm-10">
-                         <input type="text" class="form-control" id="system-user-limit-time">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">系统状态</label>
-                    <div class="col-sm-10">
-                         <p class="form-control-static" id="system-maint"></p>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">还原数据库</label>
-                    <div class="col-sm-8">
-                         <p class="form-control-static" id="system-database-return"></p>
-                    </div>
-                    <div class="col-sm-2">
-                         <button type="button" id="system-backup-return-button" class="btn btn-danger">还原</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <button type="button" id="system-maint-button" class="btn btn-danger">切换维护模式</button>
-            <div class="btn-group">
-                <button type="button" id="system-backup-button" class="btn btn-info">备份数据库</button>
-                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a id="system-backup-only-sql-button" href="#">仅备份数据库</a></li>
-                    <li><a id="system-backup-only-file-button" href="#">仅备份文件</a></li>
-                </ul>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+                <h4 class="modal-title" id="systemModalLabel">系统设定</h4>
             </div>
-            <button type="button" id="system-save-button" class="btn btn-primary">保存</button>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">用户超时时间(秒)</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="system-user-limit-time">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">系统状态</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="system-maint"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">还原数据库</label>
+                        <div class="col-sm-8">
+                            <p class="form-control-static" id="system-database-return"></p>
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" id="system-backup-return-button" class="btn btn-danger">还原</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="ip.php" class="btn btn-info">查看IP</a>
+                <a href="log.php" class="btn btn-info">查看日志</a>
+                <button type="button" id="system-clear-cache" class="btn btn-info">清除缓冲</button>
+                <button type="button" id="system-maint-button" class="btn btn-danger">切换维护模式</button>
+                <div class="btn-group">
+                    <button type="button" id="system-backup-button" class="btn btn-info">备份数据库</button>
+                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a id="system-backup-only-sql-button" href="#">仅备份数据库</a></li>
+                        <li><a id="system-backup-only-file-button" href="#">仅备份文件</a></li>
+                    </ul>
+                </div>
+                <button type="button" id="system-save-button" class="btn btn-primary">保存</button>
+            </div>
         </div>
     </div>
-  </div>
 </div>
 <?php
 //引用尾部模版

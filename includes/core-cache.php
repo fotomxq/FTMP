@@ -49,6 +49,9 @@ class CoreCache {
         $this->cacheOpen = $cacheOpen;
         $this->limitTime = $limitTime;
         $this->cacheDir = $cacheDir;
+        if (is_dir($cacheDir) != true) {
+            mkdir($cacheDir, 0777, true);
+        }
     }
 
     /**
@@ -58,15 +61,17 @@ class CoreCache {
      * @return string       值
      */
     public function get($name) {
-        if ($this->cacheOpen == true) {
-            $src = $this->getSrc($this->getName($name));
-            if (is_file($src) == true) {
-                if ($this->checkTime($src) == true) {
-                    return $this->loadFile($src);
-                } else {
-                    $this->clear($name);
-                }
-            }
+        if ($this->cacheOpen != true) {
+            return false;
+        }
+        $src = $this->getSrc($this->getName($name));
+        if (is_file($src) != true) {
+            return false;
+        }
+        if ($this->checkTime($src) == true) {
+            return $this->loadFile($src);
+        } else {
+            $this->clear($name);
         }
         return false;
     }

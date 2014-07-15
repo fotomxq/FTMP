@@ -20,4 +20,15 @@ $appName = 'center';
 
 //引用全局
 require('..' . DS . 'template' . DS . 'glob.php');
+
+//设定页面引用
+$pageIncludes = array(
+    'glob' => array(
+        'css' => array('messenger.css', 'messenger-theme-flat.css', 'icheck-skins-flat.css'),
+        'js' => array('messenger.js', 'icheck.js')
+    )
+);
+
+//用户是否为管理员
+$checkPowers = $user->checkPower($userID, array('ADMIN'));
 ?>

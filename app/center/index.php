@@ -165,8 +165,8 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                 </form>
             </div>
             <div class="modal-footer">
-                <a href="ip.php" class="btn btn-info">查看IP</a>
-                <a href="log.php" class="btn btn-info">查看日志</a>
+                <a href="ip.php" class="btn btn-info">IP</a>
+                <a href="log.php" class="btn btn-info">日志</a>
                 <button type="button" id="system-clear-cache" class="btn btn-info">清除缓冲</button>
                 <button type="button" id="system-maint-button" class="btn btn-danger">切换维护模式</button>
                 <div class="btn-group">

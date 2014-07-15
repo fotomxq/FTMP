@@ -5,8 +5,7 @@
  * PDO数据库处理封装。
  * 
  * @author liuzilu <fotomxq@gmail.com>
- * @version 3
- * @package core
+ * @version 4
  */
 class CoreDB extends PDO {
 
@@ -123,6 +122,23 @@ class CoreDB extends PDO {
             return $this->runSQL($sql, $attrs, 3, PDO::FETCH_ASSOC);
         }
         return $this->runSQL($sql, $attrs, 1, PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * 根据条件返回记录数
+     * @param  string  $table     表名称
+     * @param  array  $fields    字段组
+     * @param  string  $where     条件语句
+     * @param  array  $attrs     条件语句对应PDO过滤器
+     * @return int 记录数，为0可能是执行失败
+     */
+    public function sqlSelectCount($table, $fields, $where = '1', $attrs = null) {
+        $sql = 'SELECT COUNT(' . $fields[0] . ') as `count` FROM `' . $table . '` WHERE ' . $where;
+        $res = $this->runSQL($sql, $attrs, 1, PDO::FETCH_ASSOC);
+        if ($res) {
+            return $res['count'];
+        }
+        return 0;
     }
 
     /**

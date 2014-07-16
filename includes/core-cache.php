@@ -5,7 +5,7 @@
  * 缓冲相关变量或值。
  * 
  * @author liuzilu <fotomxq@gmail.com>
- * @version 6
+ * @version 7
  */
 class CoreCache {
 
@@ -55,6 +55,29 @@ class CoreCache {
     }
 
     /**
+     * 根据一组数据生成标示符
+     * @param string $name 前缀名称
+     * @param array $arr 数据数组，不接收子数据为数组的情况 eg:array(int a,boolean b,string c)
+     * @return string
+     */
+    public function getName($name, $arr = '') {
+        if ($arr) {
+            foreach ($arr as $v) {
+                $vStr;
+                if (is_int($v) || is_string($v)) {
+                    $vStr = $v;
+                }
+                if (is_bool($v)) {
+                    $vStr = $v ? 'TRUE' : 'FALSE';
+                }
+                $name .= '-' . $vStr;
+            }
+        } else {
+            return $name;
+        }
+    }
+
+    /**
      * 获取一个缓冲值
      * 如果发现缓冲失效，则删除缓冲文件。
      * @param  string $name 标识码
@@ -64,7 +87,7 @@ class CoreCache {
         if ($this->cacheOpen != true) {
             return false;
         }
-        $src = $this->getSrc($this->getName($name));
+        $src = $this->getSrc($this->getNameSha1($name));
         if (is_file($src) != true) {
             return false;
         }
@@ -83,7 +106,7 @@ class CoreCache {
      * @return boolean 是否成功
      */
     public function set($name, $value) {
-        $src = $this->getSrc($this->getName($name));
+        $src = $this->getSrc($this->getNameSha1($name));
         return $this->saveFile($src, $value);
     }
 
@@ -180,7 +203,7 @@ class CoreCache {
             }
             return true;
         } else {
-            $src = $this->getSrc($this->getName($name));
+            $src = $this->getSrc($this->getNameSha1($name));
             if (is_file($src) == true) {
                 return unlink($src);
             }
@@ -230,7 +253,7 @@ class CoreCache {
      * @param  string $name 标识
      * @return string       标识SHA1值
      */
-    private function getName($name) {
+    private function getNameSha1($name) {
         return sha1($name);
     }
 

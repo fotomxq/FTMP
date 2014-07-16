@@ -47,12 +47,24 @@ switch ($_GET['action']) {
         }
         $desc = isset($_POST['desc']) == true ? $_POST['desc'] : true;
         $desc = $desc ? true : false;
+        //缓冲标识符
+        $cacheActionIPListKey = $cache->getName('CENTER-ACTION-IP', array($page, $max, $sort, $desc));
+        $cacheActionIPListContent = $cache->get($cacheActionIPKey);
+        if ($cacheActionIPListContent) {
+            $res = json_decode($cacheActionIPListContent);
+        }
         $res = $ip->viewList(null, null, null, $page, $max, $sort, $desc);
+        $cache->set($cacheActionIPListKey, json_encode($cacheActionIPListContent));
         break;
     case 'get-real':
         //获取真实地址
-        if (isset($_POST['id'])) {
+        if (isset($_POST['id']) && isset($_POST['real'])) {
             $id = (int) $_POST['id'];
+            $real = $_POST['real'];
+            if (!$real) {
+                //利用第三方API获取地址
+            }
+            $res = $ip->setReal($id, $real);
         }
         $res = false;
         //$ip->setBan($id,false);

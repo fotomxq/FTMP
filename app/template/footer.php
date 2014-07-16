@@ -4,10 +4,10 @@
  * 页面尾部模版
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-26 17:49:46
- * @version 2
+ * @version 3
  */
 //根据应用以及标示生成缓冲
-$temprFooterCacheKey = $appPages['key'] . '-FOOTER';
+$tempFooterCacheKey = $appPages['key'] . '-TEMPLATE-FOOTER';
 $tempFooterCache = $cache->get($tempFooterCacheKey);
 if (!$tempFooterCache) {
     $tempFooterCache = '<script src="../../includes/assets/js/jquery.js"></script><script src="../../includes/assets/js/bootstrap.js"></script>';

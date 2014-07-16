@@ -5,7 +5,7 @@
  * 缓冲相关变量或值。
  * 
  * @author liuzilu <fotomxq@gmail.com>
- * @version 5
+ * @version 6
  */
 class CoreCache {
 
@@ -214,6 +214,9 @@ class CoreCache {
      */
     private function checkTime($src) {
         $fileTime = filemtime($src);
+        if (!$fileTime) {
+            return false;
+        }
         $nowTime = time();
         $t = (int) $nowTime - (int) $fileTime;
         if ($t < $this->limitTime) {

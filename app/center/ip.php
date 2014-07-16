@@ -29,7 +29,7 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
         <div class="cover-container">
             <div class="masthead clearfix">
                 <div class="inner">
-                    <h3 class="masthead-brand"><?php echo $webData['WEB-TITLE'] . ' ' . $appPages['title']; ?> </h3>
+                    <h3 class="masthead-brand"><?php echo $appPages['title']; ?></h3>
                     <ul class="nav masthead-nav"> 
                         <li class="active">
                             <a href="index.php" target="_self">首页</a>

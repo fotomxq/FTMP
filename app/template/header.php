@@ -42,7 +42,7 @@
  *                         );
  */
 //根据应用以及标示生成缓冲
-$tempHeaderCacheKey = $appPages['key'] . '-HEADER';
+$tempHeaderCacheKey = $appPages['key'] . '-TEMPLATE-HEADER';
 $tempHeaderCache = $cache->get($tempHeaderCacheKey);
 if (!$tempHeaderCache) {
     $tempHeaderCache = '

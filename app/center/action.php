@@ -4,7 +4,7 @@
  * 中心动作
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-07-09 15:25:51
- * @version 2
+ * @version 3
  */
 //引用全局
 require('glob.php');
@@ -52,11 +52,16 @@ switch ($_GET['action']) {
         break;
     case 'system-info':
         //查看参数信息
+        //引用模块
+        require(DIR_LIB . DS . 'plug-disk.php');
+        //检查权限
         powerCheck($checkPowers['ADMIN']);
+        //获取数据
         $res['user-limit-time'] = $config->get('USER-LIMIT-TIME');
         $backup = new SysBackup($db, DIR_BACKUP, DIR_DATA);
         $res['backup-list'] = $backup->viewList();
         $res['system-maint'] = $config->get('WEB-MAINT-ON');
+        $res['disk'] = PlugDiskInfo(DIR_DATA);
         CoreHeader::toJson($res);
         break;
     case 'system-save':

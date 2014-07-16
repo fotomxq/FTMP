@@ -3,7 +3,7 @@
  * 中心页面
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-26 17:47:04
- * @version 5
+ * @version 6
  */
 //引用全局
 require('glob.php');
@@ -151,6 +151,12 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                         <label class="col-sm-2 control-label">系统状态</label>
                         <div class="col-sm-10">
                             <p class="form-control-static" id="system-maint"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">磁盘空间</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="disk-info"></p>
                         </div>
                     </div>
                     <div class="form-group">

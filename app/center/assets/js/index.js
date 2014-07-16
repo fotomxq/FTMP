@@ -146,6 +146,7 @@ system.updateData = function() {
                 system.maintStatus = false;
                 $('#system-maint').html('系统正常访问...');
             }
+            $('#disk-info').html('可用 : ' + Math.floor(data['disk']['free'] / 1024 / 1024) + ' MB / 共计 : ' + Math.floor(data['disk']['total'] / 1024 / 1024) + ' MB');
             $('#system-user-limit-time').val(data['user-limit-time']);
             $('#system-database-return').html('');
             if(data['backup-list']){

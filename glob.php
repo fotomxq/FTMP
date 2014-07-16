@@ -43,7 +43,7 @@ $filter = new CoreFilter();
 
 //IP类
 require(DIR_LIB . DS . 'sys-ip.php');
-$sysIP = new SysIP($db, TABLE_IP);
+$sysIP = new SysIP($db, TABLE_IP, $apiKeys);
 
 //日志类
 require(DIR_LIB . DS . 'core-log.php');

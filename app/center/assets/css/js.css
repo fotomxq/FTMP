@@ -1,0 +1,18 @@
+.pager a{
+    color:#000000;
+}
+button{
+    color:#000000;
+}
+#ip-list tr:active{
+    color:#ffffff;
+}
+#ip-list tr:hover{
+    color: #000000;
+}
+#ip-list .warning{
+    color: #000000;
+}
+#center-content th{
+    cursor: pointer;
+}

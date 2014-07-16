@@ -3,7 +3,7 @@
 /**
  * IP处理器
  * @author liuzilu <fotomxq@gmail.com>
- * @version 2
+ * @version 3
  * @todo  稍后为互联网获取真实地址加入多种途经获取
  */
 class SysIP {
@@ -33,15 +33,23 @@ class SysIP {
     public $nowID = 0;
 
     /**
+     * 定位匹配的Key组
+     * @var array
+     */
+    private $keys;
+
+    /**
      * 初始化
      * @param CoreDB $db 数据库对象
      * @param string $tableName 表名称
+     * @param array $keys 匹配的Key组
      * @return string IP地址
      */
-    public function __construct(&$db, $tableName) {
+    public function __construct(&$db, $tableName, $keys) {
         $this->db = $db;
         $this->tableName = $tableName;
         $this->nowID = $this->add($this->getIP());
+        $this->keys = $keys;
     }
 
     /**
@@ -90,7 +98,7 @@ class SysIP {
         $sortField = isset($this->fields[$sort]) == true ? $this->fields[$sort] : $this->fields[0];
         $res = $this->db->sqlSelect($this->tableName, $this->fields, $where, $attrs, $page, $max, $sortField, $desc);
         if ($res) {
-            $res[0]['max'] = $this->db->sqlSelect($this->tableName, $this->fields, $where, $attrs);
+            $res[0]['max'] = $this->db->sqlSelectCount($this->tableName, $this->fields, $where, $attrs);
         }
         return $res;
     }
@@ -125,7 +133,6 @@ class SysIP {
      * @return boolean 是否成功
      */
     public function setBan($src, $ban = false) {
-        $isBan = $this->isBan($src);
         $where;
         $attrs;
         if (is_int($src) == true) {
@@ -135,18 +142,25 @@ class SysIP {
             $where = '`' . $this->fields[1] . '` = :addr';
             $attrs = array(':addr' => array($src, PDO::PARAM_STR));
         }
-        $banStr = $ban == false ? '0' : '1';
+        $banStr = $ban ? '1' : '0';
         $sets = array($this->fields[3] => $banStr);
         return $this->db->sqlUpdate($this->tableName, $sets, $where, $attrs);
     }
 
     /**
      * 设置真实地址
+     * <p>如果提供的real为空，则通过api获取.</p>
      * @param int $id 索引
      * @param string $real 真实地址
      * @return boolean 是否成功
      */
     public function setReal($id, $real) {
+        if (!$real) {
+            $res = $this->view($id);
+            if ($res) {
+                $real = $this->getIPAddress($res['ip_addr']);
+            }
+        }
         $sets = array($this->fields[2] => ':real');
         $where = '`' . $this->fields[0] . '` = :id';
         $attrs = array(':real' => array($real, PDO::PARAM_STR), ':id' => array($id, PDO::PARAM_INT));
@@ -201,13 +215,28 @@ class SysIP {
      * @return string     地址
      */
     private function getIPAddress($ip) {
-        $url = 'http://api.map.baidu.com/location/ip?ak=' . BAIDU_KEY . '&ip=' . $ip;
-        $dataJson = file_get_contents($url);
-        if ($dataJson) {
-            $data = json_decode($dataJson);
-            return $data;
+        $res;
+        if (isset($this->keys['baidu'])) {
+            $url = 'http://api.map.baidu.com/location/ip?ak=' . $this->keys['baidu'] . '&ip=' . $ip;
+            $dataJson = file_get_contents($url);
+            if ($dataJson) {
+                $data = json_decode($dataJson, true);
+                if ($data['status'] == '0') {
+                    $res = $data['address'];
+                }
+            }
         }
-        return '';
+        if (!$res && $this->keys['blueera']) {
+            $url = 'http://ip.blueera.net/api?ip=' . $ip;
+            $dataJson = file_get_contents($url);
+            if ($dataJson) {
+                $data = json_decode($dataJson, true);
+                if ($data['country']) {
+                    $res = $data['isp'] . '-' . $data['country'] . $data['province'] . $data['city'];
+                }
+            }
+        }
+        return $res;
     }
 
 }

@@ -30,6 +30,12 @@ if (isset($_GET['action']) != true) {
     die();
 }
 switch ($_GET['action']) {
+    case 'view':
+        if (isset($_POST['id'])) {
+            $id = (int) $_POST['id'];
+            $res = $sysIP->view($id);
+        }
+        break;
     case 'list':
         //获取列表
         //核对参数
@@ -45,43 +51,32 @@ switch ($_GET['action']) {
         if ($sort < 0 || $sort > 3) {
             $sort = 0;
         }
-        $desc = isset($_POST['desc']) == true ? $_POST['desc'] : true;
-        $desc = $desc ? true : false;
+        $desc = $_POST['desc'] ? true : false;
         //缓冲标识符
         $cacheActionIPListKey = $cache->getName('CENTER-ACTION-IP', array($page, $max, $sort, $desc));
-        $cacheActionIPListContent = $cache->get($cacheActionIPKey);
+        $cacheActionIPListContent = $cache->get($cacheActionIPListKey);
         if ($cacheActionIPListContent) {
             $res = json_decode($cacheActionIPListContent);
         }
-        $res = $ip->viewList(null, null, null, $page, $max, $sort, $desc);
-        $cache->set($cacheActionIPListKey, json_encode($cacheActionIPListContent));
+        $res = $sysIP->viewList(null, null, null, $page, $max, $sort, $desc);
+        $cache->set($cacheActionIPListKey, json_encode($res));
+        unset($cacheActionIPListKey, $cacheActionIPListContent);
         break;
-    case 'get-real':
+    case 'set-real':
         //获取真实地址
         if (isset($_POST['id']) && isset($_POST['real'])) {
             $id = (int) $_POST['id'];
             $real = $_POST['real'];
-            if (!$real) {
-                //利用第三方API获取地址
-            }
-            $res = $ip->setReal($id, $real);
+            $res = $sysIP->setReal($id, $real);
         }
-        $res = false;
-        //$ip->setBan($id,false);
         break;
-    case 'set-ban-on':
+    case 'set-ban':
         //设定拉黑
-        if (isset($_POST['id'])) {
+        if (isset($_POST['id']) && isset($_POST['bool'])) {
             $id = (int) $_POST['id'];
+            $bool = (int) $_POST['bool'];
+            $res = $sysIP->setBan($id, $bool);
         }
-        $res = $ip->setBan($id, true);
-        break;
-    case 'set-ban-off':
-        //设定取消拉黑
-        if (isset($_POST['id'])) {
-            $id = (int) $_POST['id'];
-        }
-        $res = $ip->setBan($id, false);
         break;
     default:
         $res = false;

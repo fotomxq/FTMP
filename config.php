@@ -69,6 +69,8 @@ date_default_timezone_set('PRC');
 @session_start();
 //错误页面
 define('ERROR_PAGE', 'error.php');
+//API-KEY设定
+$apiKeys = array('baidu' => 'fydqD828TLANZF7H7ugymy3W', 'blueera' => true);
 
 //////////////////
 //数据表名称

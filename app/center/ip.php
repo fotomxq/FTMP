@@ -11,7 +11,7 @@ require('glob.php');
 
 //设定页面引用
 $pageIncludes['app'] = array(
-    'css' => array('index.css'),
+    'css' => array('index.css', 'js.css'),
     'js' => array('ip.js')
 );
 $pageIncludes['template'] = array(
@@ -41,27 +41,31 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>地址</th>
-                            <th>是否拉黑</th>
+                            <th data-key="1">#</th>
+                            <th data-key="2">IP</th>
+                            <th data-key="3">地址</th>
+                            <th data-key="4">访问</th>
                             <th>操作</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="ip-list">
                         <tr>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td>
-                                <a href="#" class="btn btn-info">真实地址</a>
+                                <a href="#" class="btn btn-info">获取真实地址</a>
                                 <a href="#" class="btn btn-danger">拉黑</a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <ul class="pager">
-                    <li><a href="#">上一页</a></li>
-                    <li><a href="#">下一页</a></li>
+                    <li><a href="#page-index">首页</a></li>
+                    <li><a href="#page-prev">上一页</a></li>
+                    <li id="page-show"></li>
+                    <li><a href="#page-next">下一页</a></li>
+                    <li><a href="#page-end">末页</a></li>
                 </ul>
             </div>
             <?php require('footer.php'); ?>

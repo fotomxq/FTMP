@@ -20,6 +20,14 @@ message.post = function(type, message) {
         type: type
     });
 }
+//快速发送一个boolean消息
+message.postBool = function(bool, success, faild) {
+    if (bool === true) {
+        message.post('success', success);
+    } else {
+        message.post('error', faild);
+    }
+}
 //创建屏蔽操作的提示框
 message.stop = function(msg) {
     htmlID = '#' + message.stopHtmlID;
@@ -27,7 +35,7 @@ message.stop = function(msg) {
         $(htmlID).fadeIn('fast');
     } else {
         var topFix = $(document).height() / 2;
-        $('body').append('<div id="' + message.stopHtmlID + '" style="width:100%;height:100%;position:absolute;z-index:99;top:0px;left:0px;background-color:#000;text-align:center;color:#FFF;padding-top:'+topFix+'px;">' + msg + '</div>');
+        $('body').append('<div id="' + message.stopHtmlID + '" style="width:100%;height:100%;position:absolute;z-index:99;top:0px;left:0px;background-color:#000;text-align:center;color:#FFF;padding-top:' + topFix + 'px;">' + msg + '</div>');
         $(htmlID).fadeTo('fast', 0.5);
     }
     message.stopListNum += 1;

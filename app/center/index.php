@@ -3,7 +3,7 @@
  * 中心页面
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-26 17:47:04
- * @version 6
+ * @version 7
  */
 //引用全局
 require('glob.php');
@@ -171,19 +171,31 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                 </form>
             </div>
             <div class="modal-footer">
-                <a href="ip.php" class="btn btn-info">IP</a>
-                <a href="log.php" class="btn btn-info">日志</a>
-                <button type="button" id="system-clear-cache" class="btn btn-info">清除缓冲</button>
-                <button type="button" id="system-maint-button" class="btn btn-danger">切换维护模式</button>
                 <div class="btn-group">
-                    <button type="button" id="system-backup-button" class="btn btn-info">备份数据库</button>
+                    <button type="button" class="btn btn-info">管理</button>
                     <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a id="system-backup-only-sql-button" href="#">仅备份数据库</a></li>
-                        <li><a id="system-backup-only-file-button" href="#">仅备份文件</a></li>
+                        <li> <a href="ip.php" target="_self">IP管理</a></li>
+                        <li><a href="log.php" target="_self">日志查看</a></li>
+                        <li><a href="user.php" target="_self">用户管理</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button type="button" id="system-backup-button" class="btn btn-warning">维护</button>
+                    <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a id="system-clear-cache" href="#">清除缓冲</a></li>
+                        <li><a id="system-maint-button" href="#">切换维护模式</a></li>
+                        <li class="divider"></li>
+                        <li><a id="system-backup-button" href="#">备份站点</a></li>
+                        <li><a id="system-backup-only-sql-button" href="#">备份数据库</a></li>
+                        <li><a id="system-backup-only-file-button" href="#">备份文件数据</a></li>
                     </ul>
                 </div>
                 <button type="button" id="system-save-button" class="btn btn-primary">保存</button>

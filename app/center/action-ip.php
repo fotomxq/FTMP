@@ -9,9 +9,6 @@
 //引用全局
 require('glob.php');
 
-//引用备份类
-require(DIR_LIB . DS . 'sys-backup.php');
-
 //判断当前用户权限
 $checkPowers = $user->checkPower($userID, array('NORMAL', 'ADMIN'));
 
@@ -21,6 +18,7 @@ function powerCheck($power) {
         die();
     }
 }
+powerCheck($checkPowers['ADMIN']);
 
 //反馈结果
 $res;

@@ -11,7 +11,7 @@ require('glob.php');
 
 //设定页面引用
 $pageIncludes['app'] = array(
-    'css' => array('index.css', 'js.css'),
+    'css' => array('index.css', 'ip.css'),
     'js' => array('ip.js')
 );
 $pageIncludes['template'] = array(

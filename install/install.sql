@@ -45,7 +45,8 @@ INSERT INTO `sys_config` (`id`, `config_name`, `config_value`) VALUES
 (11, 'VISITOR-USER', '1'),
 (12, 'VISITOR-USER-GROUP', '1'),
 (13, 'WEB-MAINT-ON', '0'),
-(14, 'PEX-PASSWD', '30274c47903bd1bac7633bbf09743149ebab805f');
+(14, 'PEX-PASSWD', '30274c47903bd1bac7633bbf09743149ebab805f')
+(15, 'IP-WHITE-LIST', '*');
 
 -- --------------------------------------------------------
 

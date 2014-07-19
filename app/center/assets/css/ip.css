@@ -1,3 +1,30 @@
+@media (min-width: 992px) {
+    .masthead,
+    .mastfoot,
+    .cover-container {
+        width: 700px;
+    }
+    .center-content{
+        overflow:scroll;
+        overflow-x:hidden;
+    }
+    @media (min-height: 0px){
+        .center-content{
+            height:150px;
+        }
+    }
+    @media (min-height: 500px){
+        .center-content{
+            height:300px;
+        }
+    }
+    @media (min-height: 650px){
+        .center-content{
+            overflow:hidden;
+            height:600px;
+        }
+    }
+}
 .pager a{
     color:#000000;
 }

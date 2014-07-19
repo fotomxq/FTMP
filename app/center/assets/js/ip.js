@@ -28,7 +28,7 @@ ip.start = function() {
         ip.setPage(1);
     });
     $('a[href="#page-index"]').click(function() {
-        ip.setPage(1);
+        ip.setPage(-9999);
     });
     $('a[href="#page-end"]').click(function() {
         ip.setPage(ip.maxPage);
@@ -116,11 +116,9 @@ ip.setPage = function(p) {
     ip.page = ip.page + p;
     if (ip.page < 1) {
         ip.page = 1;
-        return false;
     }
     if (ip.page > ip.maxPage) {
         ip.page = ip.maxPage;
-        return false;
     }
     ip.dataLock = false;
     ip.load();

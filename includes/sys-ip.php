@@ -3,8 +3,7 @@
 /**
  * IP处理器
  * @author liuzilu <fotomxq@gmail.com>
- * @version 3
- * @todo  稍后为互联网获取真实地址加入多种途经获取
+ * @version 4
  */
 class SysIP {
 
@@ -31,6 +30,12 @@ class SysIP {
      * @var int
      */
     public $nowID = 0;
+    
+    /**
+     * 当前Ip地址
+     * @var string 
+     */
+    public $nowAddr;
 
     /**
      * 定位匹配的Key组
@@ -48,7 +53,8 @@ class SysIP {
     public function __construct(&$db, $tableName, $keys) {
         $this->db = $db;
         $this->tableName = $tableName;
-        $this->nowID = $this->add($this->getIP());
+        $this->nowAddr = $this->getIP();
+        $this->nowID = $this->add($this->nowAddr);
         $this->keys = $keys;
     }
 

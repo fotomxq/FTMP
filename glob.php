@@ -5,8 +5,7 @@
  * 所有非特殊页面必须引用的页面，包含必备的配置和库引用。
  * 
  * @author liuzilu <fotomxq@gmail.com>
- * @version 5
- * @package web
+ * @version 6
  */
 //引用配置文件
 require(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php');
@@ -34,7 +33,7 @@ date_default_timezone_set('PRC');
 require(DIR_LIB . DS . 'core-db.php');
 $db = new CoreDB($dbDSN, $dbUser, $dbPasswd, $dbPersistent, $dbEncoding);
 if (!$db) {
-    CoreHeader::toPage(PAGE_ERRPR + 'db');
+    CoreHeader::toURL(PAGE_ERRPR . 'db');
 }
 
 //过滤器
@@ -53,9 +52,20 @@ $log = new CoreLog(LOG_ON, LOG_DIR, LOG_TYPE, $ipAddr);
 require(DIR_LIB . DS . 'sys-config.php');
 $config = new SysConfig($db, TABLE_CONFIG);
 
+//获取白名单列表
+$ipWhiteList = $config->get('IP-WHITE-LIST');
+if ($ipWhiteList != '' || $ipWhiteList != '*') {
+    $ipWhiteListArr = explode(',', $ipWhiteList);
+    if (!in_array($sysIP->nowAddr, $ipWhiteListArr)) {
+        CoreHeader::toURL(PAGE_ERRPR . 'ip-no-white');
+        $log->add('glob-ip-white', 'IP is not in the white list.');
+    }
+}
+
 //判断IP是否拉黑
-if ($sysIP->isBan($sysIP->nowIP)) {
-    CoreHeader::toPage(PAGE_ERRPR + 'ip-ban');
+if ($sysIP->isBan($sysIP->nowID)) {
+    CoreHeader::toURL(PAGE_ERRPR . 'ip-ban');
+    $log->add('glob-ip-white', 'IP pulled black.');
 }
 
 //获取网站页面通用数据
@@ -73,7 +83,7 @@ if ($webData) {
 //判断是否开启网站维护模式
 $webData['WEB-MAINT-ON'] = $config->get('WEB-MAINT-ON');
 if (DEBUG_ON == false && $webData['WEB-MAINT-ON'] !== '0') {
-    CoreHeader::toPage(PAGE_ERRPR + 'maint');
+    CoreHeader::toURL(PAGE_ERRPR . 'maint');
 }
 
 //用户处理器

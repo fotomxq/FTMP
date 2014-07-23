@@ -35,7 +35,7 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                     </ul>
                 </div>
             </div>
-            <div class="inner cover center-content" id="user-content" data-powers="" data-apps="">
+            <div class="inner cover center-content" id="user-content">
                 <table class="table table-hover">
                     <thead>
                         <tr>

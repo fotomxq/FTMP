@@ -15,7 +15,9 @@ arrayExtend.diff = function(arrA, arrB) {
         return res;
     }
     if (arrA && arrB) {
-        res = arrA;
+        for (var i = 0; i < arrA.length; i++) {
+            res.push(arrA[i]);
+        }
         for (var i = 0; i < arrB.length; i++) {
             var f = arrA.indexOf(arrB[i]);
             if (f > -1) {

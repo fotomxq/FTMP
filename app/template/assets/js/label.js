@@ -12,8 +12,10 @@ var label = new Object;
  */
 label.insertArr = function(dom, arr, type) {
     dom.html('');
-    for (var i = 0; i < arr.length; i++) {
-        label.insert(dom, arr[i], type);
+    if (arr) {
+        for (var i = 0; i < arr.length; i++) {
+            label.insert(dom, arr[i], type);
+        }
     }
 }
 /**

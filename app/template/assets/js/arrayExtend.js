@@ -8,7 +8,20 @@ var arrayExtend = new Object;
  */
 arrayExtend.diff = function(arrA, arrB) {
     var res = new Array();
-    for (var i = 0; i < arrB.length; i++) {
-        if(arrA.indexOf(arrB))
+    if (arrA && !arrB) {
+        return arrA;
     }
+    if (!arrA) {
+        return res;
+    }
+    if (arrA && arrB) {
+        res = arrA;
+        for (var i = 0; i < arrB.length; i++) {
+            var f = arrA.indexOf(arrB[i]);
+            if (f > -1) {
+                res.splice(f, 1);
+            }
+        }
+    }
+    return res;
 }

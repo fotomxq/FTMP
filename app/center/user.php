@@ -14,7 +14,7 @@ $pageIncludes['app'] = array(
     'js' => array('user.js')
 );
 $pageIncludes['template'] = array(
-    'js' => array('message.js', 'ajax.js', 'label.js')
+    'js' => array('message.js', 'ajax.js', 'label.js', 'arrayExtend.js')
 );
 
 //设定页面参数
@@ -42,8 +42,7 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                             <th data-key="1">#</th>
                             <th data-key="2">昵称</th>
                             <th data-key="3">用户名</th>
-                            <th data-key="5">创建日期</th>
-                            <th data-key="6">访问IP</th>
+                            <th data-key="7">状态</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -194,12 +193,6 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" role="form">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">登录名</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="edit-login-name">
-                        </div>
-                    </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">用户昵称</label>
                         <div class="col-sm-10">

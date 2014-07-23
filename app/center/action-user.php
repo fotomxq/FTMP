@@ -64,25 +64,75 @@ switch ($_GET['action']) {
         break;
     case 'add':
         //添加用户
-        if (!isset($_POST['login']) || !isset($_POST['nicename']) || !isset($_POST['passwd']) || !isset($_POST['power']) || !isset($_POST['app'])) {
+        if (!isset($_POST['login']) || !isset($_POST['nicename']) || !isset($_POST['passwd'])) {
             $res = false;
             break;
         }
+        $addLogin = $_POST['login'];
+        $addNicename = $_POST['nicename'];
+        $addPasswd = $_POST['passwd'];
+        $addPower = is_array($_POST['power']) ? $_POST['power'] : null;
+        $addApp = is_array($_POST['app']) ? $_POST['app'] : null;
+        if (!$addLogin || !$addNicename || ($addPasswd && strlen($addPasswd) < 6)) {
+            $res = false;
+            break;
+        }
+        $res = $user->addUser($addNicename, $addLogin, $addPasswd);
+        if (!$res) {
+            break;
+        }
+        $res = $user->setMetaValList($res, $user->powerMetaName, $addPower);
+        if (!$res) {
+            break;
+        }
+        $res = $user->setMetaValList($res, $user->appMetaName, $addApp);
+        $cache->clear();
         break;
     case 'edit':
         //编辑用户
-        if (!isset($_POST['id']) || !isset($_POST['login']) || !isset($_POST['nicename']) || !isset($_POST['passwd']) || !isset($_POST['power']) || !isset($_POST['app'])) {
+        if (!isset($_POST['id']) || !isset($_POST['nicename']) || !isset($_POST['passwd'])) {
             $res = false;
             break;
         }
+        $editId = (int) $_POST['id'];
+        $editNicename = $_POST['nicename'];
+        $editPasswd = $_POST['passwd'];
+        $editPower = is_array($_POST['power']) ? $_POST['power'] : null;
+        $editApp = is_array($_POST['app']) ? $_POST['app'] : null;
+        if (!$editId || !$editNicename || ($editPasswd && strlen($editPasswd) < 6)) {
+            $res = false;
+            break;
+        }
+        $res = $user->editUser($editId, $editNicename, $editPasswd);
+        if (!$res) {
+            break;
+        }
+        $res = $user->setMetaValList($editId, $user->powerMetaName, $editPower);
+        if (!$res) {
+            break;
+        }
+        $res = $user->setMetaValList($editId, $user->appMetaName, $editApp);
+        $cache->clear();
+        break;
+    case 'edit-status':
+        //将用户踢出登陆状态
+        if (!isset($_POST['id'])) {
+            $res = false;
+            break;
+        }
+        $editID = (int) $_POST['id'];
+        $res = $user->editUser($editID, null, null, 0);
+        $cache->clear();
         break;
     case 'del':
         //删除用户
         if (!isset($_POST['id'])) {
+            $res = false;
             break;
         }
-        $id = (int) $_POST['id'];
-        $res = $user->del();
+        $delID = (int) $_POST['id'];
+        $res = $user->delUser($delID);
+        $cache->clear();
         break;
     default:
         //默认返回

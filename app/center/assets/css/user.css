@@ -31,13 +31,13 @@
 button{
     color:#000000;
 }
-#ip-list tr:active{
+#user-list tr:active{
     color:#ffffff;
 }
-#ip-list tr:hover{
+#user-list tr:hover{
     color: #000000;
 }
-#ip-list .warning{
+#user-list .warning{
     color: #000000;
 }
 #center-content th{

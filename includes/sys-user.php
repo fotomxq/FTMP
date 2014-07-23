@@ -3,7 +3,7 @@
 /**
  * 用户处理器
  * @author liuzilu <fotomxq@gmail.com>
- * @version 7
+ * @version 8
  */
 class SysUser {
 
@@ -319,6 +319,7 @@ class SysUser {
      * @param  int $id       用户ID
      * @param  string $nicename 昵称
      * @param  string $passwd   密码
+     * @param  int $status   登陆状态键值
      * @return boolean 是否成功
      */
     public function editUser($id, $nicename = null, $passwd = null, $status = null) {

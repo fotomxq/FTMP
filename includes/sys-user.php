@@ -3,8 +3,7 @@
 /**
  * 用户处理器
  * @author liuzilu <fotomxq@gmail.com>
- * @version 6
- * @package sys
+ * @version 7
  */
 class SysUser {
 
@@ -233,7 +232,7 @@ class SysUser {
      * @param  array $attrs 条件PDO过滤
      * @return int        总数
      */
-    public function viewUserListCount($where='1',$attrs=null){
+    public function viewUserListCount($where = '1', $attrs = null) {
         $sql = 'SELECT COUNT(`' . $this->fieldsUser[0] . '`) FROM `' . $this->tableNameUser . '` WHERE ' . $where;
         return $this->db->runSQL($sql, $attrs, 2, 0);
     }
@@ -242,12 +241,22 @@ class SysUser {
      * 查看用户某个元数据
      * @param  int $userID   ID
      * @param  string $metaName 元数据名称
-     * @return array 数据组，如果为空则返回null
+     * @param  boolean $onlyValue 是否只返回值，否则返回记录值
+     * @return array|string 数据，如果为空则返回null
      */
-    public function viewMeta($userID, $metaName) {
+    public function viewMeta($userID, $metaName, $onlyValue = false) {
         $sql = 'SELECT `' . implode('`,`', $this->fieldsMeta) . '` FROM `' . $this->tableNameMeta . '` WHERE `' . $this->fieldsMeta[1] . '` = :userID and `' . $this->fieldsMeta[2] . '` = :metaName';
         $attrs = array(':userID' => array($userID, PDO::PARAM_INT), ':metaName' => array($metaName, PDO::PARAM_STR));
-        return $this->db->runSQL($sql, $attrs, 3, PDO::FETCH_ASSOC);
+        $res = $this->db->runSQL($sql, $attrs, 3, PDO::FETCH_ASSOC);
+        if ($onlyValue) {
+            if ($res) {
+                return $res[0][$this->fieldsMeta[3]];
+            } else {
+                return null;
+            }
+        } else {
+            return $res;
+        }
     }
 
     /**
@@ -381,12 +390,12 @@ class SysUser {
     public function checkPower($userID, $powers) {
         $res = $this->getMetaValList($userID, $this->powerMetaName);
         $resPowers;
-        foreach($powers as $v){
+        foreach ($powers as $v) {
             $resPowers[$v] = false;
         }
         if ($res) {
-            foreach($powers as $v){
-                $resPowers[$v] = in_array($v,$res);
+            foreach ($powers as $v) {
+                $resPowers[$v] = in_array($v, $res);
             }
         }
         return $resPowers;
@@ -401,12 +410,12 @@ class SysUser {
     public function checkApp($userID, $apps) {
         $res = $this->getMetaValList($userID, $this->appMetaName);
         $resApps;
-        foreach($apps as $v){
+        foreach ($apps as $v) {
             $resApps[$v] = false;
         }
         if ($res) {
-            foreach($apps as $v){
-                $resApps[$v] = in_array($v,$res);
+            foreach ($apps as $v) {
+                $resApps[$v] = in_array($v, $res);
             }
         }
         return $resApps;
@@ -419,10 +428,10 @@ class SysUser {
      * @param  string $metaName 元数据名称
      * @return array       数据数组
      */
-    public function getMetaValList($userID,$metaName){
-        $res = $this->viewMeta($userID,$metaName);
-        if($res){
-            return explode('|',$res[0][$this->fieldsMeta[3]]);
+    public function getMetaValList($userID, $metaName) {
+        $res = $this->viewMeta($userID, $metaName);
+        if ($res) {
+            return explode('|', $res[0][$this->fieldsMeta[3]]);
         }
         return null;
     }
@@ -434,13 +443,13 @@ class SysUser {
      * @param  array $vals 数据数组
      * @return boolean|int       是否成功，如果第一次添加则返回元数据ID
      */
-    public function setMetaValList($userID,$metaName,$vals){
+    public function setMetaValList($userID, $metaName, $vals) {
         $val = implode('|', $vals);
-        $res = $this->viewMeta($userID,$metaName);
-        if($res){
-            return $this->editMeta($res[0][$this->fieldsMeta[0]],$val);
-        }else{
-            return $this->addMeta($userID,$metaName,$val);
+        $res = $this->viewMeta($userID, $metaName);
+        if ($res) {
+            return $this->editMeta($res[0][$this->fieldsMeta[0]], $val);
+        } else {
+            return $this->addMeta($userID, $metaName, $val);
         }
     }
 
@@ -507,10 +516,10 @@ class SysUser {
      * 修改登录计数器
      * @param string 类型，add-添加一位;?-设置为0
      */
-    private function setLoginNum($type){
-        if($type == 'add'){
-            $_SESSION[$this->sessionLoginNum] = $_SESSION[$this->sessionLoginNum]+1;
-        }else{
+    private function setLoginNum($type) {
+        if ($type == 'add') {
+            $_SESSION[$this->sessionLoginNum] = $_SESSION[$this->sessionLoginNum] + 1;
+        } else {
             $_SESSION[$this->sessionLoginNum] = 0;
         }
     }
@@ -519,10 +528,10 @@ class SysUser {
      * 判断登录计数器是否超过限制
      * @return boolean
      */
-    private function isLoginNum(){
-        if($_SESSION[$this->sessionLoginNum] <= $this->limitLoginNum){
+    private function isLoginNum() {
+        if ($_SESSION[$this->sessionLoginNum] <= $this->limitLoginNum) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

@@ -3,7 +3,7 @@
  * 用户管理页面
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-07-18 08:15:09
- * @version 1
+ * @version 2
  */
 //引用全局
 require('glob.php');
@@ -14,7 +14,7 @@ $pageIncludes['app'] = array(
     'js' => array('user.js')
 );
 $pageIncludes['template'] = array(
-    'js' => array('message.js', 'ajax.js')
+    'js' => array('message.js', 'ajax.js', 'label.js')
 );
 
 //设定页面参数
@@ -30,9 +30,8 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                 <div class="inner">
                     <h3 class="masthead-brand"><?php echo $appPages['title']; ?></h3>
                     <ul class="nav masthead-nav"> 
-                        <li class="active">
-                            <a href="index.php" target="_self">首页</a>
-                        </li>
+                        <li class="active"><a href="index.php" target="_self">首页</a></li>
+                        <li><a href="#add-user-modal" target="_self">创建用户</a></li>
                     </ul>
                 </div>
             </div>
@@ -41,28 +40,14 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                     <thead>
                         <tr>
                             <th data-key="1">#</th>
-                            <th data-key="2">用户名</th>
-                            <th data-key="3">创建日期</th>
-                            <th data-key="4">访问IP</th>
-                            <th>权限</th>
-                            <th>应用</th>
+                            <th data-key="2">昵称</th>
+                            <th data-key="3">用户名</th>
+                            <th data-key="5">创建日期</th>
+                            <th data-key="6">访问IP</th>
                             <th>操作</th>
                         </tr>
                     </thead>
-                    <tbody id="user-list">
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <a href="#user-edit-modal" class="btn btn-info">编辑</a>
-                                <a href="#user-del-modal" class="btn btn-danger">删除</a>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody id="user-list"></tbody>
                 </table>
                 <ul class="pager">
                     <li><a href="#page-index">首页</a></li>
@@ -105,15 +90,13 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">密码</label>
-                        <div class="col-sm-10">
-                            <input type="password" class="form-control" id="add-passwd-2">
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label class="col-sm-2 control-label">可选权限</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static" id="add-powers-ready"></p>
+                            <p class="form-control-static" id="add-powers-ready">
+                                <?php foreach($user->powerValues as $v){ ?>
+                                <span class="label label-primary"><?php echo $v; ?></span>
+                                <?php } ?>
+                            </p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -125,7 +108,11 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                     <div class="form-group">
                         <label class="col-sm-2 control-label">可选应用</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static" id="add-apps-ready"></p>
+                            <p class="form-control-static" id="add-apps-ready">
+                                <?php foreach($apps as $v){ ?>
+                                <span class="label label-info"><?php echo $v; ?></span>
+                                <?php } ?>
+                            </p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -142,8 +129,63 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
         </div>
     </div>
 </div>
+<!-- 查看用户 -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-key="">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+                <h4 class="modal-title" id="infoModalLabel">查看用户</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">登录名</label>
+                        <div class="col-sm-10">
+                            <p id="info-login"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">昵称</label>
+                        <div class="col-sm-10">
+                            <p id="info-nicename"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">创建时间</label>
+                        <div class="col-sm-10">
+                            <p id="info-create-date"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">最后一次登录IP</label>
+                        <div class="col-sm-10">
+                            <p id="info-ip"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">应用</label>
+                        <div class="col-sm-10">
+                            <p id="info-app"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">权限</label>
+                        <div class="col-sm-10">
+                            <p id="info-power"></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="info-edit-button" class="btn btn-primary">修改</button>
+                <button type="button" id="info-del-button" class="btn btn-danger">删除</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- 修改用户 -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true" data-key="">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -203,7 +245,7 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
     </div>
 </div>
 <!-- 删除用户 -->
-<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true" data-id="">
+<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true" data-key="">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -211,10 +253,10 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                 <h4 class="modal-title" id="delModalLabel">删除用户</h4>
             </div>
             <div class="modal-body">
-                <p>您确定要删除<span class="label label-warning">username</span>用户吗？</p>
+                <p>您确定要删除 <span class="label label-warning" id="del-name">username</span> 用户吗？</p>
             </div>
             <div class="modal-footer">
-                <button type="button" id="del-button" class="btn btn-danger">删除</button>
+                <button type="button" id="del-button" class="btn btn-danger">确定删除</button>
             </div>
         </div>
     </div>

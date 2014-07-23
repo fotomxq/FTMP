@@ -3,7 +3,7 @@
  * 中心页面
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-26 17:47:04
- * @version 7
+ * @version 8
  */
 //引用全局
 require('glob.php');
@@ -16,9 +16,6 @@ $pageIncludes['app'] = array(
 
 //设定页面参数
 $appPages = array('title' => '中心', 'key' => 'CENTER-INDEX');
-
-//所有应用名称及所在目录
-$apps = array('center', 'pex');
 
 //获取用户所有可用应用
 $checkApps = $user->checkApp($userID, $apps);

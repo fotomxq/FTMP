@@ -4,7 +4,7 @@
  * 应用内全局设定
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-26 17:43:38
- * @version 2
+ * @version 3
  */
 //路径分隔符
 if (defined('DS') == false) {
@@ -31,4 +31,7 @@ $pageIncludes = array(
 
 //用户是否为管理员
 $checkPowers = $user->checkPower($userID, array('ADMIN'));
+
+//所有应用名称及所在目录
+$apps = array('center', 'pex');
 ?>

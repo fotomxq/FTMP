@@ -43,3 +43,6 @@ button{
 #center-content th{
     cursor: pointer;
 }
+.modal p{
+    float: left;
+}

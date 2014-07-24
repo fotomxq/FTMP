@@ -262,7 +262,7 @@ user.setPage = function(p) {
 //初始化
 $(function() {
     //初始化相关组件
-    message.start();
+    message.start('messenger-fixed messenger-on-bottom', 'flat');
     ajax.url = 'action-user.php';
     user.start();
 });

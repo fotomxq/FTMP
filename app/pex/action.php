@@ -29,25 +29,56 @@ $cacheName = 'PEX-' . $action;
 
 //判断动作类型
 switch ($action) {
-    case 'type-default':
-        $res = $pex->pexType['photo']['key'];
-        break;
-    case 'type-all':
-        //获取所有类型
-        $res = $pex->pexType;
-        break;
-    case 'tag-all':
-        //获取所有标签
+    case 'info':
+        //获取所有非记录信息
         $cacheOn = true;
         $res = $cache->get($cacheName);
         if ($res) {
             $res = json_decode($res, true);
         } else {
+            $res['type-default'] = $pex->pexType['photo']['key'];
+            $res['type'] = $pex->pexType;
+            $i = 0;
+            $lsType;
+            foreach ($res['type'] as $k => $v) {
+                $lsType[$i] = $v;
+                $i++;
+            }
+            $res['type'] = $lsType;
             if ($pex->pexType) {
                 foreach ($pex->pexType as $v) {
-                    $res[$v['key']] = $pex->viewTag($v['key']);
+                    $res['tag'][$v['key']] = $pex->viewTag($v['key']);
                 }
             }
+        }
+        break;
+    case 'resource':
+        //获取资源记录
+        break;
+    case 'edit':
+        //编辑资源
+        $res = false;
+        if (!$_POST['id']) {
+            break;
+        }
+        break;
+    case 'del':
+        //删除资源
+        $res = false;
+        if (!$_POST['del']) {
+            break;
+        }
+        $del = $_POST['del'];
+        if (is_array($del)) {
+            foreach ($del as $v) {
+                $res = $pex->delFx($v);
+                if (!$res) {
+                    break;
+                }
+            }
+        } else {
+            $del = (int) $del;
+            $res = $pex->delFx($del);
         }
         break;
     default:
@@ -56,7 +87,7 @@ switch ($action) {
 }
 
 //保存缓冲
-if($cacheOn){
+if ($cacheOn) {
     $cache->set($cacheName, json_encode($res));
 }
 

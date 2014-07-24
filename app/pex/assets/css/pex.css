@@ -169,11 +169,13 @@ h6, .h6 {
 /*
  * pex
  */
-.content-type,.content-tag,.content-resource{
+.content-type,.content-tag,.content-operate,#content-resource{
     padding-top: 30px;
 }
 .label{
     margin-left: 5px;
     margin-top: 5px;
     cursor: pointer;
+    height:20px;
+    float:left;
 }

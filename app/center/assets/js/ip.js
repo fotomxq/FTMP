@@ -155,7 +155,7 @@ $(function() {
     //修改ajax方法URL
     ajax.url = 'action-ip.php';
     //初始化消息框架
-    message.start();
+    message.start('messenger-fixed messenger-on-bottom', 'flat');
     //初始化IP
     ip.start();
 });

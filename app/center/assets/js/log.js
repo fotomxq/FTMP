@@ -59,7 +59,7 @@ log.setPage = function(p){
 //初始化
 $(function() {
     //初始化相关组件
-    message.start();
+    message.start('messenger-fixed messenger-on-bottom', 'flat');
     ajax.url = 'action-log.php';
     //初始化日志
     log.start();

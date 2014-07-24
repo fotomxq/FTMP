@@ -110,3 +110,15 @@ label.getSelect = function(dom) {
     });
     return res;
 }
+/**
+ * 清除所有已选
+ * @param DOM dom 控制Dom
+ * @param string unSelectType 未选择类型
+ */
+label.clearSelect = function(dom, unSelectType) {
+    var doms = dom.children('span[data-select="1"]');
+    doms.each(function(k, v) {
+        $(this).attr('span[data-select="0"]');
+        $(this).attr('class', 'label label-' + unSelectType);
+    });
+}

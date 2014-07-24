@@ -6,32 +6,14 @@
  * @version 4
  */
 ?>
-<ul class="nav nav-pills pull-right" id="menu">
-  <li><a href="release.php">发布</a></li>
-  <li class="active"><a href="#folder-photo">照片</a></li>
-  <li><a href="#folder-movie">影片</a></li>
-  <li><a href="#folder-cartoon">漫画</a></li>
-  <li><a href="#folder-txt">文本</a></li>
-  <li class="dropdown">
-      <a class="dropdown-toggle" data-toggle="dropdown" href="#"> 操作 <span class="caret"></span>
-      </a>
-      <ul class="dropdown-menu" role="menu">
-          <li><a href="#mode-operate">操作模式</a></li>
-          <li><a href="#mode-view">预览模式</a></li>
-          <li><a href="#mode-phone">手机模式</a></li>
-          <li class="divider"></li>
-          <li><a href="#clear-cache">清理缓冲</a></li>
-          <li><a href="#rotate-img">旋转当前目录图片</a></li>
-          <li class="divider"></li>
-          <li><a href="#operate-fx-edit">编辑所选</a></li>
-          <li><a href="#operate-fx-del">删除所选</a></li>
-          <li><a href="#operate-fx-cut">剪切所选</a></li>
-          <li><a href="#operate-fx-move">移动到这里</a></li>
-          <li><a href="#operate-fx-join">合并文件夹</a></li>
-          <li class="divider"></li>
-          <li><a href="#menu-resource-more">加载更多</a></li>
-      </ul>
-  </li>
-  <li><a href="#set" data-toggle="modal" data-target="#setModal">设置</a></li>
-  <li><a href="../center/index.php" target="_self">中心</a></li>
-</ul>
+<div class="blog-masthead">
+    <div class="container">
+        <nav class="blog-nav">
+            <a class="blog-nav-item active" href="index.php">首页</a>
+            <a class="blog-nav-item" href="#release">发布</a>
+            <a class="blog-nav-item" href="#set">设置</a>
+            <a class="blog-nav-item" href="../center/index.php">中心</a>
+            <a class="blog-nav-item" href="../center/logout.php">退出</a>
+        </nav>
+    </div>
+</div>

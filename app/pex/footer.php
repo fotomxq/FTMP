@@ -7,7 +7,6 @@
  */
 ?>
 <div class="blog-footer">
-    <p>PEX by <a href="http://fotomxq.me" target="_blank">liuzilu</a>.</p>
     <p>
         <a href="#">回到顶部</a>
     </p>

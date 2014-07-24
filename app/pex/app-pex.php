@@ -4,7 +4,7 @@
  * PEX处理器
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-29 10:02:50
- * @version 3
+ * @version 4
  */
 class AppPex {
 
@@ -232,7 +232,7 @@ class AppPex {
 
     /**
      * 查询FX列
-     * @param string $parent 上一级Id 
+     * @param int $parent 上一级Id 
      * @param array $tags 标签组,eg:array(1,4,6)
      * @param int $page 页数
      * @param int $max 页长
@@ -241,7 +241,7 @@ class AppPex {
      * @return array 数据数组
      */
     public function viewList($parent = 0, $tags = null, $page = 1, $max = 10, $sort = 0, $desc = false) {
-        $where = '`' . $this->fxFields[3] . '` = :parent';
+        $where = $this->fxTableName . '.' . $this->fxFields[3] . ' = :parent';
         $attrs = array(':parent' => array($parent, PDO::PARAM_INT));
         $sortField = isset($this->folderFields[$sort]) == true ? $this->getFxField($sort) : $this->getFxField(0);
         $descStr = $desc === true ? 'DESC' : 'ASC';

@@ -22,7 +22,7 @@ require('menu.php');
 <div class="container">
 
     <div class="row content-type">
-        <div class="col-xs-2">查看类型 : </div>
+        <div class="col-xs-2">类型 : </div>
         <div class="col-xs-10" id="content-type"></div>
     </div>
 
@@ -49,12 +49,90 @@ require('menu.php');
             <button type="button" class="btn btn-default" id="operate-delete" data-mode="normal">删除</button>
             <button type="button" class="btn btn-default" id="opreate-revolve" data-mode="normal">旋转所选图片</button>
             <button type="button" class="btn btn-default" id="operate-merge" data-mode="normal">合并文件夹</button>
+            <button type="button" class="btn btn-default" id="operate-same" data-mode="normal">查询重复文件</button>
         </div>
 
     </div>
+    
+    <hr>
+    
+    <div class="row">
+        <div class="col-xs-12" id="content-resource">正在加载数据...</div>
+    </div>
 </div>
 
-<div class="row" id="content-resource">
+<!--查看文件 -->
+<div class="modal fade" id="viewModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+        <h4 class="modal-title">查看文件</h4>
+      </div>
+      <div class="modal-body" id="viewContent"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info">打开文件</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--编辑文件 -->
+<div class="modal fade" id="editModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+        <h4 class="modal-title">编辑文件</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">确认修改</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--删除文件 -->
+<div class="modal fade" id="delModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+        <h4 class="modal-title">删除文件</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger">确定删除</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--发布文件 -->
+<div class="modal fade" id="releaseModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+        <h4 class="modal-title">发布文件</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">发布</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 </div>

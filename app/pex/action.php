@@ -54,18 +54,32 @@ switch ($action) {
         break;
     case 'resource':
         //获取资源记录
+        $res = null;
+        if (!isset($_POST['parent']) || !isset($_POST['page']) || !isset($_POST['max']) || !isset($_POST['sort']) || !isset($_POST['desc'])) {
+            break;
+        }
+        $parent = (int) $_POST['parent'];
+        $page = (int) $_POST['page'];
+        $max = (int) $_POST['max'];
+        $sort = (int) $_POST['sort'];
+        $desc = $_POST['desc'] == '1' ? true : false;
+        $tags = isset($_POST['tags']) ? $_POST['tags'] : null;
+        $res = $pex->viewList($parent, $tags, $page, $max, $sort, $desc);
+        break;
+    case 'release':
+        //发布资源
         break;
     case 'edit':
         //编辑资源
         $res = false;
-        if (!$_POST['id']) {
+        if (!isset($_POST['id']) || !isset($_POST['parent']) || !isset($_POST['title'])) {
             break;
         }
         break;
     case 'del':
         //删除资源
         $res = false;
-        if (!$_POST['del']) {
+        if (!isset($_POST['del'])) {
             break;
         }
         $del = $_POST['del'];

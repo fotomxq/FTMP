@@ -427,6 +427,13 @@ class AppPex {
         $type = $type == 1 ? 1 : 0;
         $nowTagRes = $this->viewTx($id);
         if ($nowTagRes) {
+            if (!$tags) {
+                foreach ($nowTagRes as $v) {
+                    if (!$this->delTxTag($id, $v[$this->txFields[2]])) {
+                        return false;
+                    }
+                }
+            }
             $nowTags;
             foreach ($nowTagRes as $v) {
                 $nowTags[] = $v[$this->txFields[2]];

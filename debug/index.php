@@ -7,6 +7,7 @@
 
 //debug列表
 $debugList = array(
+  array('title'=>'PEX测试','link'=>'app-pex.php'),
   array('title'=>'文件管理器测试','link'=>'sys-file.php'),
   array('title'=>'体重处理器测试','link'=>'app-weight.php'),
   array('title'=>'用户系统测试','link'=>'sys-user.php'),

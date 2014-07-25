@@ -42,9 +42,8 @@ require('menu.php');
             <button type="button" class="btn btn-default" id="operate-edit" data-mode="normal">编辑</button>
             <button type="button" class="btn btn-default" id="operate-select-all" data-mode="normal">全选</button>
             <button type="button" class="btn btn-default" id="operate-select-reverse" data-mode="normal">反选</button>
-            <button type="button" class="btn btn-default" id="operate-select-cancel" data-mode="normal">取消</button>
             <button type="button" class="btn btn-default" id="operate-cut" data-mode="normal">剪切</button>
-            <button type="button" class="btn btn-default" id="opreate-copy" data-mode="normal">复制</button>
+            <button type="button" class="btn btn-default" id="operate-cut-cancel" data-mode="normal">取消</button>
             <button type="button" class="btn btn-default" id="operate-paste" data-mode="normal">粘贴</button>
             <button type="button" class="btn btn-default" id="operate-delete" data-mode="normal">删除</button>
             <button type="button" class="btn btn-default" id="opreate-revolve" data-mode="normal">旋转所选图片</button>
@@ -81,7 +80,7 @@ require('menu.php');
 </div>
 
 <!--编辑文件 -->
-<div class="modal fade" id="editModal">
+<div class="modal fade" id="editModal" data-id="">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -113,7 +112,7 @@ require('menu.php');
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">确认修改</button>
+                <button type="button" class="btn btn-primary" id="edit-button">确认修改</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
             </div>
         </div>

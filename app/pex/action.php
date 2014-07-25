@@ -2,9 +2,9 @@
 
 /**
  * 动作整合
- * @author fotomxq <fotomxq.me>
+ * @author liuzilu <fotomxq.me>
  * @date    2014-06-30 11:51:18
- * @version 6
+ * @version 7
  */
 //引用全局
 require('glob.php');
@@ -106,6 +106,29 @@ switch ($action) {
             if ($res) {
                 //编辑文件标签
                 $res = $pex->setTx($fileInfo['id'], $editTags, $fileInfo['tx_type']);
+            }
+        }
+        //清理缓冲
+        if ($res) {
+            $cache->clear();
+        }
+        break;
+    case 'cut':
+        //剪切
+        $res = false;
+        //过滤参数
+        if (!isset($_POST['select']) || !isset($_POST['parent'])) {
+            break;
+        }
+        $select = $_POST['select'];
+        $parent = (int) $_POST['parent'];
+        if (is_array($select)) {
+            foreach ($select as $v) {
+                $id = (int) $v;
+                $res = $pex->cutFile($id, $parent);
+                if (!$res) {
+                    break;
+                }
             }
         }
         //清理缓冲

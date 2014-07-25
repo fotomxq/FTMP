@@ -13,6 +13,10 @@ resource.lock = false;
 resource.dom = $('#content-resource');
 //当前选择列
 resource.select = new Array();
+//剪切的文件列
+resource.selectCut = new Array();
+//剪切原所属目录
+resource.cutParent = 0;
 //是否清空数据
 resource.isClear = true;
 //当前模式
@@ -89,7 +93,7 @@ resource.update = function() {
         //输出数据
         $(data).each(function(k, v) {
             var newK = k + dataLen;
-            resource.dom.append('<div class="resource-' + resource.mode + '" data-key="' + newK + '" data-type="' + v['fx_type'] + '"><img src="img.php?id=' + v['id'] + '" class="img-rounded"><p>' + v['fx_title'] + '</p></div>');
+            resource.dom.append('<div class="resource-' + resource.mode + '" data-key="' + newK + '" data-type="' + v['fx_type'] + '" data-select="0"><img src="img.php?id=' + v['id'] + '" class="img-rounded"><p>' + v['fx_title'] + '</p></div>');
         });
         //加载更多按钮
         if (data.length === resource.max) {
@@ -235,22 +239,79 @@ operate.start = function() {
     });
     //反选操作
     $('#operate-select-reverse').click(function() {
-        resource.selectDom(resource.dom.children('div[id!="resource-more"]'), 'reverse');
+        var nowSelectDom = resource.dom.children('div[id!="resource-more"][data-select="1"]');
+        var nowUnSelectDom = resource.dom.children('div[id!="resource-more"][data-select="0"]');
+        resource.selectDom(nowSelectDom, 'reverse');
+        resource.selectDom(nowUnSelectDom, 'all');
     });
+    //剪切操作
+    $('#operate-cut').click(function() {
+        if (resource.select.length > 0) {
+            resource.selectCut = resource.select;
+            resource.cutParent = resource.parent;
+            message.post('info', '剪切就绪，请进入相应的文件夹粘贴即可。');
+            $('#operate-cut-cancel').show();
+            $('#operate-paste').show();
+        } else {
+            message.post('error', '请先选择文件或文件夹再试！');
+        }
+    });
+    //取消剪切操作
+    $('#operate-cut-cancel').click(function() {
+        resource.selectCut = new Array();
+        resource.cutParent = 0;
+        message.post('info', '已取消剪切或复制的文件或文件夹。');
+        $('#operate-cut-cancel').hide();
+        $('#operate-paste').hide();
+    });
+    //粘贴操作
+    $('#operate-paste').click(function() {
+        //是否无剪切内容。此部分内容基本不能出现，否则是逻辑严重异常
+        if (resource.selectCut.length < 1) {
+            return false;
+        }
+        //检查剪切到位置是否没有改变
+        if (resource.cutParent === resource.parent && resource.cutParent > 0) {
+            message.post('error', '无法完成剪切/粘贴，文件位置没有任何改变，请选择其他文件夹再试！');
+            return false;
+        }
+        //和服务器通讯
+        ajax.post('cut', {
+            'select': resource.selectCut,
+            'parent': resource.parent
+        }, function(data) {
+            message.postBool(data, '粘贴成功！', '无法粘贴文件，请稍后重试！');
+            if (data === true) {
+                resource.isClear = true;
+                resource.update();
+                $('#operate-cut-cancel').hide();
+                $('#operate-paste').hide();
+            }
+        });
+    });
+    //隐藏取消剪切和粘贴按钮
+    $('#operate-cut-cancel').hide();
+    $('#operate-paste').hide();
     //激活编辑文件框架
     $('#operate-edit').click(function() {
         if (resource.select.length === 1) {
             //获取数据
             var d = resource.data[$(resource.dom.children('div[data-select="1"]')).attr('data-key')];
             //写入标题和内容数据
+            $('#editModal').attr('data-id', d['id'])
             $('#edit-title').val(d['fx_title']);
             $('#edit-content').val(d['fx_content']);
             //设定所属标签组
             info.editTypeUpdate(info.nowType, info.domEditType.children('span[data-key="' + info.nowTypeKey + '"]'));
-            if (d['tags'].length > 0) {
+            //清空标签选择
+            $('#edit-tags span').attr('data-select', '0');
+            $('#edit-tags span').attr('class', 'label label-default');
+            if (d['tags']) {
                 //如果标签存在
-                var tags = new Array();
                 for (var i = 0; i < d['tags'].length; i++) {
+                    var dom = $('#edit-tags span[data-id="' + d['tags'][i]['tag_id'] + '"]');
+                    dom.attr('data-select', '1');
+                    dom.attr('class', 'label label-info');
                 }
             }
             //显示框架
@@ -260,7 +321,7 @@ operate.start = function() {
         }
     });
     //执行编辑文件
-    $('#editButton').click(function() {
+    $('#edit-button').click(function() {
         operate.edit();
     });
     //激活删除文件框架
@@ -294,19 +355,31 @@ operate.edit = function() {
         tags.push($(this).attr('data-id'));
     });
     if (resource.select.length === 1) {
+        //获取参数
+        var editID = $('#editModal').attr('data-id');
+        var editTitle = $('#edit-title').val();
+        var editContent = $('#edit-content').val();
+        //过滤参数
+        if (!editID || !editTitle || !tags) {
+            message.post('error', '请填写文件标题，并最少选择一个标签。');
+            return false;
+        }
         //和服务器通讯
         ajax.post('edit', {
-            'title': $('#edit-title').val(),
+            'id': editID,
+            'title': editTitle,
+            'content': editContent,
             'tags': tags
         }, function(data) {
             resource.lock = false;
-            message.postBool(data, '删除成功！', '无法删除文件，请稍后重试！');
+            message.postBool(data, '修改成功！', '无法修改文件信息，请稍后重试！');
             if (data === true) {
                 resource.isClear = true;
                 resource.update();
                 $('#edit-title').val('');
                 $('#edit-content').val('');
                 $('#edit-tags span').remove();
+                $('#editModal').modal('hide');
             }
         });
         //关闭框架

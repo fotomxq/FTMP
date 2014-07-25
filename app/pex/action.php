@@ -55,6 +55,9 @@ switch ($action) {
     case 'resource':
         //获取资源记录
         $res = null;
+        //启动缓冲
+        $cacheOn = true;
+        //过滤参数
         if (!isset($_POST['parent']) || !isset($_POST['page']) || !isset($_POST['max']) || !isset($_POST['sort']) || !isset($_POST['desc'])) {
             break;
         }
@@ -64,7 +67,16 @@ switch ($action) {
         $sort = (int) $_POST['sort'];
         $desc = $_POST['desc'] == '1' ? true : false;
         $tags = isset($_POST['tags']) ? $_POST['tags'] : null;
-        $res = $pex->viewList($parent, $tags, $page, $max, $sort, $desc);
+        //生成缓冲名称
+        $cacheName .= '-' . $parent . '-' . $page . '-' . $max . '-' . $sort . '-' . $_POST['desc'] . '-' . implode('-', $tags);
+        //获取缓冲数据
+        $res = $cache->get($cacheName);
+        if ($res) {
+            $res = json_decode($res, true);
+        } else {
+            //获取数据
+            $res = $pex->viewList($parent, $tags, $page, $max, $sort, $desc);
+        }
         break;
     case 'release':
         //发布资源
@@ -104,6 +116,9 @@ switch ($action) {
 if ($cacheOn) {
     $cache->set($cacheName, json_encode($res));
 }
+
+//清理数据
+unset($cacheName);
 
 //返回JSON
 CoreHeader::toJson($res);

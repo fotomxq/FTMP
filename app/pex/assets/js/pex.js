@@ -13,6 +13,8 @@ resource.lock = false;
 resource.dom = $('#content-resource');
 //当前选择列
 resource.select = new Array();
+//是否清空数据
+resource.isClear = true;
 //当前模式
 resource.mode = 'normal';
 //原始数据
@@ -25,6 +27,13 @@ resource.update = function() {
         return false;
     }
     resource.lock = true;
+    //是否清空数据
+    if (resource.isClear === true) {
+        resource.data = new Array();
+        resource.dom.html('');
+        resource.page = 1;
+        resource.isClear = false;
+    }
     //获取标签
     var tags = info.updateSelect(info.domTag);
     //与服务器通讯
@@ -78,6 +87,11 @@ resource.update = function() {
                     $(this).attr('data-select', '1');
                     $(this).attr('style', 'background-color:#D2E2FF;');
                 }
+                //刷新已选列
+                resource.select = new Array();
+                resource.dom.children('div[id!="resource-more"][data-select="1"]').each(function(k, v) {
+                    resource.select.push(resource.data[$(this).attr('data-key')]['id']);
+                });
             });
             //双击打开FX
             resource.dom.children('div[id!="resource-more"]').dblclick(function() {
@@ -95,9 +109,8 @@ resource.update = function() {
 resource.viewFx = function(key) {
     var t = resource.data[key]['fx_type'];
     if (t === 'folder') {
-        alert(resource.dom.children('div:eq(0)').width());
-        //resource.setParent(key);
-    } else if (t === 'jpg' || t === 'jpeg' || t === 'png' || t === 'gif') {
+        resource.setParent(key);
+    } else if (resource.isType(t) === 'photo' || resource.isType(t) === 'cartoon') {
         var maxWidth = Math.abs($('#viewModal').width() - 20);
         $('#viewContent').html('<img src="img.php?id=' + resource.data[key]['id'] + '" style="max-width:' + maxWidth + 'px;">');
         $('#viewModal').modal('show');
@@ -131,15 +144,22 @@ resource.setPage = function(p) {
 resource.setParent = function(key) {
     var id = resource.data[key]['id'];
     resource.parent = id;
-    resource.dom.html('');
-    resource.page = 1;
+    resource.isClear = true;
     resource.update();
 }
-//清空并刷新数据
-resource.clear = function() {
-    resource.dom.html('');
-    resource.page = 1;
-    resource.update();
+/**
+ * 获取文件类型属于哪个分类类型下
+ * @param string t 文件类型
+ * @returns string 分类类型Key
+ */
+resource.isType = function(t) {
+    for (var i = 0; i < info.data['type'].length; i++) {
+        for (var j = 0; j < info.data['type'][i]['type'].length; j++) {
+            if (info.data['type'][i]['type'][j] === t) {
+                return info.data['type'][i]['key'];
+            }
+        }
+    }
 }
 
 //操作类
@@ -161,7 +181,8 @@ operate.start = function() {
     });
     //开始搜索
     $('#operate-search').click(function() {
-        resource.clear();
+        resource.isClear = true;
+        resource.update();
     });
     //切换到手机模式
     $('#operate-view-phone').click(function() {
@@ -171,19 +192,36 @@ operate.start = function() {
     $('#operate-view-normal').click(function() {
         operate.selectMode('normal');
     });
+    //删除文件
+    $('#operate-delete').click(function(){
+        if(resource.lock === true){
+            message.post('info', '系统繁忙,请稍等片刻...');
+            return false;
+        }
+        if(resource.select.length > 0){
+            resource.lock = true;
+            ajax.post('del',{
+                'del':resource.select
+            },function(data){
+                resource.lock = false;
+                message.postBool(data,'删除成功！','无法删除文件，请稍后重试！');
+                if(data === true){
+                    resource.isClear = true;
+                    resource.update();
+                }
+            });
+        }
+    });
     //强制刷新模式
     operate.selectMode('normal');
-}
-//选择了文件
-operate.selectResource = function() {
-
 }
 //切换模式
 operate.selectMode = function(mode) {
     resource.mode = mode;
     operate.dom.children('button[data-mode!="' + mode + '"][data-mode!="all"]').hide();
     operate.dom.children('button[data-mode="' + mode + '"]').show();
-    resource.clear();
+    resource.isClear = true;
+    resource.update();
 }
 
 //非记录信息类
@@ -254,16 +292,21 @@ info.update = function() {
         $('#content-type span:eq(' + info.nowTypeKey + ')').attr('class', 'label label-success');
         //修正当前目录
         resource.parent = info.data['type'][info.nowTypeKey]['folder'];
-        //创建按钮事件
+        //点击分类类型按钮事件
         $('#content-type span').click(function() {
             info.nowType = info.data['type'][$(this).attr('data-key')]['key'];
             label.insertSelect(info.domTag, info.dataTag[info.nowType], 'default', 'info');
             $('#content-type span[class="label label-success"]').attr('class', 'label label-default');
             $(this).attr('class', 'label label-success');
+            //插入key标记
+            $('#content-tag span').each(function(k, v) {
+                $(this).attr('data-key', k);
+            });
             //修正当前目录
             resource.parent = info.data['type'][$(this).attr('data-key')]['folder'];
             //清空并刷新数据
-            resource.clear();
+            resource.isClear = true;
+            resource.update();
         });
         //关闭屏幕锁定
         message.stopOff();

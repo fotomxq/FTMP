@@ -4,7 +4,7 @@
  * PEX处理器
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-29 10:02:50
- * @version 4
+ * @version 5
  */
 class AppPex {
 
@@ -68,9 +68,9 @@ class AppPex {
      * @var array 
      */
     public $pexType = array(
-        'photo' => array('key' => 'photo', 'folder' => 1, 'title' => '照片', 'type' => array('jpg', 'png', 'gif')),
+        'photo' => array('key' => 'photo', 'folder' => 1, 'title' => '照片', 'type' => array('jpg', 'png', 'gif', 'jpeg')),
         'movie' => array('key' => 'movie', 'folder' => 2, 'title' => '影片', 'type' => array('mp4')),
-        'cartoon' => array('key' => 'cartoon', 'folder' => 3, 'title' => '漫画', 'cartoon' => array('jpg', 'png')),
+        'cartoon' => array('key' => 'cartoon', 'folder' => 3, 'title' => '漫画', 'cartoon' => array('jpg', 'png', 'jpeg')),
         'txt' => array('key' => 'txt', 'folder' => 4, 'title' => '文本', 'txt' => array('txt'))
     );
 
@@ -97,7 +97,7 @@ class AppPex {
      * @var string
      */
     private $dataFolderTransferSrc;
-    
+
     /**
      * 垃圾箱目录
      * @var string 

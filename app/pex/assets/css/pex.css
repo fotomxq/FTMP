@@ -270,6 +270,7 @@ h6, .h6 {
 }
 .resource-phone p{
     text-align: center;
+    height:20px;
     overflow:hidden;
 }
 .resource-normal p{

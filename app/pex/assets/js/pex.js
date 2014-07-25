@@ -19,6 +19,28 @@ resource.isClear = true;
 resource.mode = 'normal';
 //原始数据
 resource.data = new Array();
+//初始化
+resource.start = function() {
+    //打开文件
+    $('#view-open-button').click(function() {
+        resource.openFx($('#viewModal').attr('data-key'));
+    });
+    //上下切换文件
+    $('#view-prev-button').click(function() {
+        var key = Math.abs($('#viewModal').attr('data-key'));
+        key = key - 1;
+        if (key > -1) {
+            resource.viewFx(key);
+        }
+    });
+    $('#view-next-button').click(function() {
+        var key = Math.abs($('#viewModal').attr('data-key'));
+        key = key + 1;
+        if (key < resource.dom.children('div[id!="resource-more"]').length) {
+            resource.viewFx(key);
+        }
+    });
+}
 //刷新资源
 resource.update = function() {
     //锁定
@@ -56,6 +78,8 @@ resource.update = function() {
             }
             return false;
         }
+        //重新设定已选
+        resource.select = new Array();
         //获取当前已有数据长度
         var dataLen = resource.data.length;
         //保存原始数据
@@ -80,13 +104,7 @@ resource.update = function() {
         if (resource.mode === 'normal') {
             //单击选择FX
             resource.dom.children('div[id!="resource-more"]').click(function() {
-                if ($(this).attr('data-select') === '1') {
-                    $(this).attr('data-select', '0');
-                    $(this).attr('style', '');
-                } else {
-                    $(this).attr('data-select', '1');
-                    $(this).attr('style', 'background-color:#D2E2FF;');
-                }
+                resource.selectDom($(this), 'auto');
                 //刷新已选列
                 resource.select = new Array();
                 resource.dom.children('div[id!="resource-more"][data-select="1"]').each(function(k, v) {
@@ -105,6 +123,24 @@ resource.update = function() {
         }
     });
 }
+//选择和已选切换
+resource.selectDom = function(dom, t) {
+    if (t === 'auto') {
+        if (dom.attr('data-select') === '1') {
+            dom.attr('data-select', '0');
+            dom.attr('style', '');
+        } else {
+            dom.attr('data-select', '1');
+            dom.attr('style', 'background-color:#D2E2FF;');
+        }
+    } else if (t === 'all') {
+        dom.attr('data-select', '1');
+        dom.attr('style', 'background-color:#D2E2FF;');
+    } else if (t === 'reverse') {
+        dom.attr('data-select', '0');
+        dom.attr('style', '');
+    }
+}
 //查看FX
 resource.viewFx = function(key) {
     var t = resource.data[key]['fx_type'];
@@ -113,6 +149,7 @@ resource.viewFx = function(key) {
     } else if (resource.isType(t) === 'photo' || resource.isType(t) === 'cartoon') {
         var maxWidth = Math.abs($('#viewModal').width() - 20);
         $('#viewContent').html('<img src="img.php?id=' + resource.data[key]['id'] + '" style="max-width:' + maxWidth + 'px;">');
+        $('#viewModal').attr('data-key', key);
         $('#viewModal').modal('show');
     } else {
         resource.openFx(key);
@@ -192,28 +229,110 @@ operate.start = function() {
     $('#operate-view-normal').click(function() {
         operate.selectMode('normal');
     });
-    //删除文件
-    $('#operate-delete').click(function(){
-        if(resource.lock === true){
-            message.post('info', '系统繁忙,请稍等片刻...');
-            return false;
-        }
-        if(resource.select.length > 0){
-            resource.lock = true;
-            ajax.post('del',{
-                'del':resource.select
-            },function(data){
-                resource.lock = false;
-                message.postBool(data,'删除成功！','无法删除文件，请稍后重试！');
-                if(data === true){
-                    resource.isClear = true;
-                    resource.update();
+    //全选操作
+    $('#operate-select-all').click(function() {
+        resource.selectDom(resource.dom.children('div[id!="resource-more"]'), 'all');
+    });
+    //反选操作
+    $('#operate-select-reverse').click(function() {
+        resource.selectDom(resource.dom.children('div[id!="resource-more"]'), 'reverse');
+    });
+    //激活编辑文件框架
+    $('#operate-edit').click(function() {
+        if (resource.select.length === 1) {
+            //获取数据
+            var d = resource.data[$(resource.dom.children('div[data-select="1"]')).attr('data-key')];
+            //写入标题和内容数据
+            $('#edit-title').val(d['fx_title']);
+            $('#edit-content').val(d['fx_content']);
+            //设定所属标签组
+            info.editTypeUpdate(info.nowType, info.domEditType.children('span[data-key="' + info.nowTypeKey + '"]'));
+            if (d['tags'].length > 0) {
+                //如果标签存在
+                var tags = new Array();
+                for (var i = 0; i < d['tags'].length; i++) {
                 }
-            });
+            }
+            //显示框架
+            $('#editModal').modal('show');
+        } else {
+            message.post('error', '只能选择一个文件进行编辑操作！');
         }
+    });
+    //执行编辑文件
+    $('#editButton').click(function() {
+        operate.edit();
+    });
+    //激活删除文件框架
+    $('#operate-delete').click(function() {
+        $('#delStr').html('');
+        if (resource.select.length > 0) {
+            var str = '';
+            for (var i = 0; i < resource.select.length; i++) {
+                str += '<span class="label label-warning">' + resource.select[i] + '</span> ';
+            }
+            $('#delStr').html(str);
+            $('#delModal').modal('show');
+        }
+    });
+    //执行删除文件按钮
+    $('#delButton').click(function() {
+        operate.del();
     });
     //强制刷新模式
     operate.selectMode('normal');
+}
+//执行编辑文件
+operate.edit = function() {
+    if (resource.lock === true) {
+        message.post('info', '系统繁忙,请稍等片刻...');
+        return false;
+    }
+    //获取标签
+    var tags = new Array();
+    $('#edit-tags span[data-select="1"]').each(function(k, v) {
+        tags.push($(this).attr('data-id'));
+    });
+    if (resource.select.length === 1) {
+        //和服务器通讯
+        ajax.post('edit', {
+            'title': $('#edit-title').val(),
+            'tags': tags
+        }, function(data) {
+            resource.lock = false;
+            message.postBool(data, '删除成功！', '无法删除文件，请稍后重试！');
+            if (data === true) {
+                resource.isClear = true;
+                resource.update();
+                $('#edit-title').val('');
+                $('#edit-content').val('');
+                $('#edit-tags span').remove();
+            }
+        });
+        //关闭框架
+        $('#delModal').modal('hide');
+    }
+}
+//执行删除文件
+operate.del = function() {
+    if (resource.lock === true) {
+        message.post('info', '系统繁忙,请稍等片刻...');
+        return false;
+    }
+    if (resource.select.length > 0) {
+        resource.lock = true;
+        ajax.post('del', {
+            'del': resource.select
+        }, function(data) {
+            resource.lock = false;
+            message.postBool(data, '删除成功！', '无法删除文件，请稍后重试！');
+            if (data === true) {
+                resource.isClear = true;
+                resource.update();
+            }
+            $('#delModal').modal('hide');
+        });
+    }
 }
 //切换模式
 operate.selectMode = function(mode) {
@@ -237,6 +356,8 @@ info.dataTag = new Array();
 //Dom
 info.domType = $('#content-type');
 info.domTag = $('#content-tag');
+info.domEditType = $('#edit-type');
+info.domEditTag = $('#edit-tags');
 //当前类型
 info.nowType = '';
 info.nowTypeKey = 0;
@@ -281,32 +402,50 @@ info.update = function() {
         //创建显示数据
         label.insertArr(info.domType, info.dataType, 'default');
         label.insertSelect(info.domTag, info.dataTag[info.nowType], 'default', 'info');
+        label.insertArr(info.domEditType, info.dataType, 'default');
+        label.insertSelect(info.domEditTag, info.dataTag[info.nowType], 'default', 'info');
         //插入Key标记
-        $('#content-type span').each(function(k, v) {
+        info.domType.children('span').each(function(k, v) {
             $(this).attr('data-key', k);
         });
-        $('#content-tag span').each(function(k, v) {
+        info.domTag.children('span').each(function(k, v) {
             $(this).attr('data-key', k);
+        });
+        $(info.domEditType).children('span').each(function(k, v) {
+            $(this).attr('data-key', k);
+        });
+        $(info.domEditTag).children('span').each(function(k, v) {
+            $(this).attr('data-key', k);
+            $(this).attr('data-id', info.data['tag'][info.nowType][k]['id']);
         });
         //修改当前选择类型标记
-        $('#content-type span:eq(' + info.nowTypeKey + ')').attr('class', 'label label-success');
+        info.domType.children('span:eq(' + info.nowTypeKey + ')').attr('class', 'label label-success');
+        info.domEditType.children('span:eq(' + info.nowTypeKey + ')').attr('class', 'label label-success');
         //修正当前目录
         resource.parent = info.data['type'][info.nowTypeKey]['folder'];
         //点击分类类型按钮事件
-        $('#content-type span').click(function() {
+        info.domType.children('span').click(function() {
             info.nowType = info.data['type'][$(this).attr('data-key')]['key'];
+            info.nowTypeKey = $(this).attr('data-key');
             label.insertSelect(info.domTag, info.dataTag[info.nowType], 'default', 'info');
-            $('#content-type span[class="label label-success"]').attr('class', 'label label-default');
+            info.domType.children('span[class="label label-success"]').attr('class', 'label label-default');
             $(this).attr('class', 'label label-success');
             //插入key标记
-            $('#content-tag span').each(function(k, v) {
+            info.domTag.children('span').each(function(k, v) {
                 $(this).attr('data-key', k);
             });
+            //修正编辑框架标签组
+            info.editTypeUpdate(info.nowType, info.domEditType.children('span[data-key="' + $(this).attr('data-key') + '"]'));
             //修正当前目录
             resource.parent = info.data['type'][$(this).attr('data-key')]['folder'];
             //清空并刷新数据
             resource.isClear = true;
             resource.update();
+        });
+        //点击编辑分类按钮事件
+        info.domEditType.children('span').click(function() {
+            var key = info.data['type'][$(this).attr('data-key')]['key'];
+            info.editTypeUpdate(key, $(this));
         });
         //关闭屏幕锁定
         message.stopOff();
@@ -314,6 +453,17 @@ info.update = function() {
         info.lock = true;
         //初始化按钮组
         operate.start();
+    });
+}
+//向编辑标签组初始化序列
+info.editTypeUpdate = function(key, dom) {
+    label.insertSelect(info.domEditTag, info.dataTag[key], 'default', 'info');
+    info.domEditType.children('span[class="label label-success"]').attr('class', 'label label-default');
+    dom.attr('class', 'label label-success');
+    //插入key和ID标记
+    info.domEditTag.children('span').each(function(k, v) {
+        $(this).attr('data-key', k);
+        $(this).attr('data-id', info.data['tag'][key][k]['id']);
     });
 }
 //分析刷新当前已选标签
@@ -339,4 +489,6 @@ $(function() {
     message.start('messenger-fixed messenger-on-bottom', 'flat');
     //初始化类型和标签信息
     info.update();
+    //初始化资源按钮组
+    resource.start();
 });

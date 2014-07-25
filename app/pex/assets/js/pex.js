@@ -147,7 +147,7 @@ resource.viewFx = function(key) {
     if (t === 'folder') {
         resource.setParent(key);
     } else if (resource.isType(t) === 'photo' || resource.isType(t) === 'cartoon') {
-        var maxWidth = Math.abs($('#viewModal').width() - 20);
+        var maxWidth = Math.ceil($('#viewContent').width()) - 20;
         $('#viewContent').html('<img src="img.php?id=' + resource.data[key]['id'] + '" style="max-width:' + maxWidth + 'px;">');
         $('#viewModal').attr('data-key', key);
         $('#viewModal').modal('show');

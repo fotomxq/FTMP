@@ -38,7 +38,7 @@ label.insertChange = function(domA, domB, arrA, arrB, typeA, typeB) {
     });
 }
 /**
- * 插入数据并绑定选择事件
+ * 插入数据并绑定选择事件，多选模式
  * 对应span会添加"data-select='0' / '1'"属性
  * @param DOM dom 控制的DOM,如$('#dom')
  * @param array arr 数据数组,如array('title1','title2',...)
@@ -59,6 +59,31 @@ label.insertSelect = function(dom, arr, unSelectType, selectType) {
             $(this).attr('data-select', '0');
             $(this).removeClass('label-' + selectType);
             $(this).addClass('label-' + unSelectType);
+        }
+    });
+}
+/**
+ * 插入数据并绑定选择事件，仅选模式
+ * 对应span会添加"data-select='0' / '1'"属性，和data-key属性
+ * @param DOM dom 控制的DOM,如$('#dom')
+ * @param string selectKey 已选key
+ * @param array arr 数据数组,如array('title1','title2',...)
+ * @param string unSelectType 未选择类型
+ * @param string selectType 选择后类型
+ */
+label.insertSelectOnly = function(dom, arr, selectKey, unSelectType, selectType) {
+    dom.html('');
+    for (var i = 0; i < arr.length; i++) {
+        dom.append('<span class="label label-' + unSelectType + '" data-select="0" data-key="' + i + '" style="cursor:pointer;">' + arr[i] + '</span> ');
+    }
+    dom.children('span[data-key="' + selectKey + '"]').attr('class', 'label label-' + selectType);
+    dom.children('span[data-key="' + selectKey + '"]').attr('data-select', '1');
+    dom.children('span').click(function() {
+        if ($(this).attr('data-select') === '0') {
+            dom.children('span').attr('class', 'label label-' + unSelectType);
+            dom.children('span').attr('data-select', '0');
+            $(this).attr('data-select', '1');
+            $(this).attr('class', 'label label-' + selectType);
         }
     });
 }

@@ -157,6 +157,11 @@ require('menu.php');
                 <hr>
                 <form class="form-horizontal" role="form">
                     <div class="form-group">
+                        <label class="col-sm-2 control-label">等待文件</label>
+                        <div class="col-sm-10" id="release-ready-list"></div>
+                    </div>
+                    <hr>
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">文件名</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="release-title">
@@ -226,6 +231,56 @@ require('menu.php');
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="add-folder-button">创建</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--设定 -->
+<div class="modal fade" id="setModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+                <h4 class="modal-title">设定</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-2"></div>
+                    <div class="col-xs-10">
+                        请严格按照分隔符“|”的格式存储，否则将出现其他异常。
+                    </div>
+                </div>
+                <form class="form-horizontal" role="form">
+                    <?php foreach ($pex->pexType as $v) { ?>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><?php echo $v['title']; ?></label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="3" id="set-tag-<?php echo $v['key']; ?>"></textarea>
+                            </div>
+                        </div>
+                    <?php } ?>
+                    <hr>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">访问密码</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="set-passwd" placeholder="不修改则留空">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">排序字段</label>
+                        <div class="col-sm-10" id="set-sort"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">是否倒叙</label>
+                        <div class="col-sm-10" id="set-desc"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="set-button">保存</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
             </div>
         </div>

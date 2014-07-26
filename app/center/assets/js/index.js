@@ -23,10 +23,10 @@ user.dataLock = false;
 user.start = function() {
     //当窗口激活
     $('#userModal').on('show.bs.modal', function() {
-        if(postLock === true){
+        if (postLock === true) {
             return false;
         }
-        if(user.dataLock === true){
+        if (user.dataLock === true) {
             return false;
         }
         postLock = true;
@@ -56,7 +56,7 @@ user.start = function() {
 }
 //保存用户信息
 user.save = function() {
-    if(postLock === true){
+    if (postLock === true) {
         return false;
     }
     var nicename = $('#user-name').val();
@@ -106,61 +106,62 @@ system.start = function() {
         system.backup('both');
     });
     //维护切换按钮
-    $('#system-maint-button').click(function(){
+    $('#system-maint-button').click(function() {
         system.maint();
     });
     //保存参数
-    $('#system-save-button').click(function(){
+    $('#system-save-button').click(function() {
         system.save();
     });
     //还原数据库按钮
-    $('#system-backup-return-button').click(function(){
+    $('#system-backup-return-button').click(function() {
         system.re();
     });
     //仅备份数据库按钮
-    $('#system-backup-only-sql-button').click(function(){
+    $('#system-backup-only-sql-button').click(function() {
         system.backup('sql');
     });
     //仅备份文件按钮
-    $('#system-backup-only-file-button').click(function(){
+    $('#system-backup-only-file-button').click(function() {
         system.backup('file');
     });
 }
 //获取相关参数
 system.updateData = function() {
-    if(postLock === true){
+    if (postLock === true) {
         return false;
     }
-    if(system.dataLock === true){
+    if (system.dataLock === true) {
         return false;
     }
     postLock = true;
-    actionServer('system-info',{},function(data){
+    actionServer('system-info', {}, function(data) {
         postLock = false;
-        if(data){
+        if (data) {
             system.dataLock = true;
-            if(data['system-maint'] === '1'){
+            if (data['system-maint'] === '1') {
                 system.maintStatus = true;
                 $('#system-maint').html('系统正在维护...');
-            }else{
+            } else {
                 system.maintStatus = false;
                 $('#system-maint').html('系统正常访问...');
             }
             $('#disk-info').html('可用 : ' + Math.floor(data['disk']['free'] / 1024 / 1024) + ' MB / 共计 : ' + Math.floor(data['disk']['total'] / 1024 / 1024) + ' MB');
             $('#system-user-limit-time').val(data['user-limit-time']);
+            $('#system-ip-white-list').val(data['ip-white-list']);
             $('#system-database-return').html('');
-            if(data['backup-list']){
+            if (data['backup-list']) {
                 $('#system-database-return').html('');
-                for(var i=0;i<data['backup-list'].length;i++){
-                    $('#system-database-return').append('<span class="label label-default" data-select="false">'+data['backup-list'][i]+'</span>');
+                for (var i = 0; i < data['backup-list'].length; i++) {
+                    $('#system-database-return').append('<span class="label label-default" data-select="false">' + data['backup-list'][i] + '</span>');
                 }
-                $('#system-database-return span').click(function(){
+                $('#system-database-return span').click(function() {
                     $('#system-database-return span[data-select="true"]').removeClass('label-success');
                     $('#system-database-return span[data-select="true"]').addClass('label-default');
-                    $('#system-database-return span[data-select="true"]').attr('data-select','false');
+                    $('#system-database-return span[data-select="true"]').attr('data-select', 'false');
                     $(this).removeClass('label-default');
                     $(this).addClass('label-success');
-                    $(this).attr('data-select','true');
+                    $(this).attr('data-select', 'true');
                 });
             }
         }
@@ -168,7 +169,7 @@ system.updateData = function() {
 }
 //保存参数
 system.save = function() {
-    if(postLock === true){
+    if (postLock === true) {
         return false;
     }
     var userLimitTime = $('#system-user-limit-time').val();
@@ -178,7 +179,8 @@ system.save = function() {
     }
     postLock = true;
     actionServer('system-save', {
-        'user-limit-time': userLimitTime
+        'user-limit-time': userLimitTime,
+        'ip-white-list': $('#system-ip-white-list').val()
     }, function(data) {
         postLock = false;
         if (data === true) {
@@ -192,26 +194,26 @@ system.save = function() {
 }
 //切换维护模式
 system.maint = function() {
-    if(postLock === true){
+    if (postLock === true) {
         return false;
     }
     postLock = true;
-    actionServer('system-maint',{},function(data){
+    actionServer('system-maint', {}, function(data) {
         postLock = false;
-        if(data === 1){
+        if (data === 1) {
             system.maintStatus = true;
             system.dataLock = false;
-            sendMsg('info','系统进入维护状态...');
-        }else{
+            sendMsg('info', '系统进入维护状态...');
+        } else {
             system.maintStatus = false;
-            sendMsg('info','系统退出维护状态.');
+            sendMsg('info', '系统退出维护状态.');
         }
         $('#systemModal').modal('hide');
     });
 }
 //备份数据库
 system.backup = function(type) {
-    if(postLock === true){
+    if (postLock === true) {
         return false;
     }
     if (system.isBackup === true) {
@@ -222,7 +224,7 @@ system.backup = function(type) {
     }
     postLock = true;
     actionServer('database-backup', {
-        'type':type
+        'type': type
     }, function(data) {
         postLock = false;
         if (data === true) {
@@ -238,10 +240,10 @@ system.backup = function(type) {
 }
 //还原数据库
 system.re = function() {
-    if(postLock === true){
+    if (postLock === true) {
         return false;
     }
-    if(!$('#system-database-return span[data-select="true"]').html()){
+    if (!$('#system-database-return span[data-select="true"]').html()) {
         sendMsg('info', '请选择备份文件，然后再进行还原操作.');
         return false;
     }

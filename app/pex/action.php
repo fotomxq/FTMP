@@ -31,11 +31,11 @@ $cacheName = 'PEX-' . $action;
 switch ($action) {
     case 'info':
         //获取所有非记录信息
-        $cacheOn = true;
         $res = $cache->get($cacheName);
         if ($res) {
             $res = json_decode($res, true);
         } else {
+            $cacheOn = true;
             $res['type-default'] = $pex->pexType['photo']['key'];
             $res['type'] = $pex->pexType;
             $i = 0;
@@ -50,13 +50,13 @@ switch ($action) {
                     $res['tag'][$v['key']] = $pex->viewTag($v['key']);
                 }
             }
+            $res['sort'] = $config->get('PEX-SORT');
+            $res['desc'] = $config->get('PEX-DESC');
         }
         break;
     case 'resource':
         //获取资源记录
         $res = null;
-        //启动缓冲
-        $cacheOn = true;
         //过滤参数
         if (!isset($_POST['parent']) || !isset($_POST['page']) || !isset($_POST['max']) || !isset($_POST['sort']) || !isset($_POST['desc'])) {
             break;
@@ -74,6 +74,8 @@ switch ($action) {
         if ($res) {
             $res = json_decode($res, true);
         } else {
+            //启动缓冲
+            $cacheOn = true;
             //获取数据
             $res = $pex->viewList($parent, $tags, $page, $max, $sort, $desc);
             //获取资源对应的标签组
@@ -84,29 +86,50 @@ switch ($action) {
             }
         }
         break;
+    case 'release-ready-list':
+        //获取待转移文件
+        $cacheName .= '-RELEASE-READY-LIST-1-50';
+        $res = $cache->get($cacheName);
+        if ($res) {
+            $res = json_decode($res, true);
+        } else {
+            $cacheOn = true;
+            $res = $pex->transferList(1, 50);
+        }
+        break;
     case 'release':
         //发布资源
         $res = false;
         //过滤参数
-        if (!isset($_POST['title']) || !isset($_POST['content']) || !isset($_POST['tags']) || !isset($_POST['parent'])) {
+        if (!isset($_POST['title']) || !isset($_POST['content']) || !isset($_POST['tags']) || !isset($_POST['parent']) || !isset($_POST['option-save'])) {
             break;
         }
         $parent = (int) $_POST['parent'];
         $title = $_POST['title'];
         $content = $_POST['content'];
         $tags = $_POST['tags'];
+        $optionSave = $_POST['option-save'] == '1' ? true : false;
+        //根据选项创建文件夹
+        if ($optionSave) {
+            $parent = $pex->addFolder($title, $parent, $content);
+            $res = $pex->setTx($parent, $tags, 1);
+        }
+        if ($parent < 1 || !$res) {
+            break;
+        }
         //转移文件
         $transferList = $pex->transferList($step, 9999);
         if (!$transferList) {
             break;
         }
         foreach ($transferList as $v) {
-            $res = $pex->transferFile($v, $title, $parent, $content);
+            $src = DIR_DATA . DS . 'pex' . DS . 'transfer' . DS . $v;
+            $res = $pex->transferFile($src, $title, $parent, $content);
             if (!$res) {
                 break;
             }
-            if ($res > 0) {
-                $res = $pex->setTx($res, $tags, 1);
+            if ($res) {
+                $res = $pex->setTx($res, $tags, 0);
             }
             if (!$res) {
                 break;
@@ -207,6 +230,65 @@ switch ($action) {
             //如果是单个
             $del = (int) $del;
             $res = $pex->delFx($del);
+        }
+        //清理缓冲
+        if ($res) {
+            $cache->clear();
+        }
+        break;
+    case 'set-load':
+        //获取系统设定
+        $res['sort'] = $config->get('PEX-SORT');
+        $res['desc'] = $config->get('PEX-DESC');
+        $res['fx-fields'] = $pex->getFxAllField();
+        break;
+    case 'set-save':
+        //保存系统设定
+        //过滤参数
+        $setPasswd = isset($_POST['set-passwd']) ? $_POST['set-passwd'] : false;
+        $setTags = isset($_POST['set-tags']) ? $_POST['set-tags'] : false;
+        $setSort = isset($_POST['set-sort']) ? $_POST['set-sort'] : false;
+        $setDesc = isset($_POST['set-desc']) ? $_POST['set-desc'] : false;
+        $bool = null;
+        //设定密码
+        if ($setPasswd) {
+            $bool[] = $config->set('PEX-PASSWD', sha1($setPasswd));
+        }
+        //设定标签
+        if ($setTags) {
+            foreach ($setTags as $k => $v) {
+                if ($v) {
+                    $vArr = explode('|', $v);
+                    $bool[] = $pex->setTag($v, $k);
+                }
+            }
+        }
+        //设定排序字段
+        if ($setSort) {
+            $setSort = ceil($setSort);
+            if ($setSort < 1) {
+                $setSort = 1;
+            }
+            if ($setSort > 11) {
+                $setSort = 11;
+            }
+            $setSort = $setSort - 1;
+            $bool[] = $config->save('PEX-SORT', $setSort);
+        }
+        //设定排序方式
+        if ($setDesc) {
+            if ($setDesc != '2') {
+                $setDesc = '1';
+            }
+            $setDesc = $setDesc - 1;
+            $bool[] = $config->save('PEX-DESC', $setDesc);
+        }
+        //整合判断失败
+        $res = true;
+        foreach ($bool as $v) {
+            if (!$v) {
+                $res = false;
+            }
         }
         //清理缓冲
         if ($res) {

@@ -4,7 +4,7 @@
  * 中心动作
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-07-09 15:25:51
- * @version 3
+ * @version 4
  */
 //引用全局
 require('glob.php');
@@ -61,6 +61,7 @@ switch ($_GET['action']) {
         $backup = new SysBackup($db, DIR_BACKUP, DIR_DATA);
         $res['backup-list'] = $backup->viewList();
         $res['system-maint'] = $config->get('WEB-MAINT-ON');
+        $res['ip-white-list'] = $config->get('IP-WHITE-LIST');
         $res['disk'] = PlugDiskInfo(DIR_DATA);
         CoreHeader::toJson($res);
         break;
@@ -69,9 +70,11 @@ switch ($_GET['action']) {
         powerCheck($checkPowers['ADMIN']);
         $boolean = array();
         $systemUserLimitTime = isset($_POST['user-limit-time']) == true ? $_POST['user-limit-time'] : $config->get('USER-LIMIT-TIME');
+        $systemIPWhiteList = isset($_POST['ip-white-list']) ? $_POST['ip-white-list'] : $config->get('IP-WHITE-LIST');
         if ($systemUserLimitTime > 120) {
             $boolean[] = $config->save('USER-LIMIT-TIME', $systemUserLimitTime);
         }
+        $boolean[] = $config->save('IP-WHITE-LIST', $systemIPWhiteList);
         $res = true;
         foreach ($boolean as $v) {
             if ($v == false) {

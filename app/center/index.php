@@ -3,7 +3,7 @@
  * 中心页面
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-26 17:47:04
- * @version 8
+ * @version 9
  */
 //引用全局
 require('glob.php');
@@ -145,6 +145,12 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-sm-2 control-label">IP白名单</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="3" id="system-ip-white-list"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">系统状态</label>
                         <div class="col-sm-10">
                             <p class="form-control-static" id="system-maint"></p>
@@ -157,7 +163,7 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">还原数据库</label>
+                        <label class="col-sm-2 control-label">还原数据</label>
                         <div class="col-sm-8">
                             <p class="form-control-static" id="system-database-return"></p>
                         </div>

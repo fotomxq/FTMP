@@ -4,7 +4,7 @@
  * PEX处理器
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-29 10:02:50
- * @version 6
+ * @version 7
  */
 class AppPex {
 
@@ -510,6 +510,14 @@ class AppPex {
         $where = '`' . $this->txFields[0] . '` = :id';
         $attrs = array(':id' => array($id, PDO::PARAM_INT));
         return $this->db->sqlDelete($this->txTableName, $where, $attrs);
+    }
+
+    /**
+     * 获取文件字段列
+     * @return array 字段数组
+     */
+    public function getFxAllField() {
+        return $this->fxFields;
     }
 
     /**

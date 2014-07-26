@@ -19,6 +19,8 @@ resource.selectCut = new Array();
 resource.cutParent = 0;
 //是否清空数据
 resource.isClear = true;
+//等待转移文件序列
+resource.releaseFileList = new Array();
 //当前模式
 resource.mode = 'normal';
 //原始数据
@@ -46,16 +48,42 @@ resource.start = function() {
     });
     //发布文件
     $('a[href="#release"]').click(function() {
+        //是否锁定
+        if (resource.lock === true) {
+            message.post('info', '系统繁忙,请稍等片刻...');
+            return false;
+        }
         if ($('#release-type').html() === '') {
+            //初始化
             $('#release-title').val('');
             $('#release-content').val('');
             info.insertTypeTag($('#release-type'), $('#release-tags'), info.nowTypeKey, null);
-            var optionSave = new Array('在该目录下以标题建立目录','');
+            var optionSave = new Array('在该目录下以标题建立目录', '');
             label.insertSelect($('#release-option-save'), optionSave, 'default', 'primary');
-            $('#release-option-save').children('span').attr('data-select','1');
-            $('#release-option-save').children('span').attr('class','label label-primary');
+            $('#release-option-save').children('span').attr('data-select', '1');
+            $('#release-option-save').children('span').attr('class', 'label label-primary');
         }
+        //显示框架
         $('#releaseModal').modal('show');
+        if (resource.releaseFileList.length < 1) {
+            //加载待转移文件
+            $('#release-ready-list').html('正在加载文件...');
+            //锁定
+            resource.lock = true;
+            //和服务器通讯
+            ajax.post('release-ready-list', {}, function(data) {
+                resource.lock = false;
+                if (!data) {
+                    resource.releaseFileList = new Array();
+                    $('#release-ready-list').html('');
+                    message.post('info', '没有文件可以转移，请先通过FTP上传文件到content/pex/transfer目录！');
+                    $('#releaseModal').modal('hide');
+                } else {
+                    resource.releaseFileList = data;
+                    label.insertArr($('#release-ready-list'), data, 'default');
+                }
+            });
+        }
     });
     //执行发布文件
     $('#release-button').click(function() {
@@ -80,7 +108,7 @@ resource.update = function() {
         resource.isClear = false;
     }
     //获取标签
-    var tags = info.updateSelect(info.domTag);
+    var tags = info.getSelectTag(info.domTag);
     //与服务器通讯
     ajax.post('resource', {
         'parent': resource.parent,
@@ -157,8 +185,9 @@ resource.release = function() {
     //过滤参数
     var releaseParent = resource.parent;
     var releaseTitle = $('#release-title').val();
-    var releaseContent = $('#release').val();
+    var releaseContent = $('#release-content').val();
     var releaseTags = info.getSelectTag($('#release-tags'));
+    var releaseOptionSave = $('#release-option-save span').attr('data-select');
     if (releaseTitle === '' || releaseTags.length < 1 || releaseParent < 1) {
         message.post('error', '请输入标题，并至少选择一个标签。');
         return false;
@@ -170,11 +199,14 @@ resource.release = function() {
         'parent': releaseParent,
         'title': releaseTitle,
         'content': releaseContent,
-        'tags': releaseTags
+        'tags': releaseTags,
+        'option-save': releaseOptionSave
     }, function(data) {
         resource.lock = false;
         message.postBool(data, '发布成功！', '无法发布，请稍后重试！');
         if (data === true) {
+            $('#release-type').html('');
+            resource.releaseFileList = new Array();
             resource.isClear = true;
             resource.update();
         }
@@ -403,8 +435,60 @@ operate.start = function() {
     $('#delButton').click(function() {
         operate.del();
     });
+    //设定操作
+    $('a[href="#set"]').click(function() {
+        for (var i = 0; i < info.dataTypeKey.length; i++) {
+            var key = info.dataTypeKey[i];
+            var dom = $('#set-tag-' + key);
+            var val = '';
+            if (info.data['tag'][key]) {
+                for (var j = 0; j < info.data['tag'][key].length; j++) {
+                    val += info.data['tag'][key][j]['tag_name'] + '|';
+                }
+                val = val.slice(0, -1);
+            }
+            dom.val(val);
+        }
+        ajax.post('set-load', {}, function(data) {
+            if (!data) {
+                message.post('error', '服务器异常，无法获取设定信息！');
+                return false;
+            }
+            label.insertSelectOnly($('#set-sort'), data['fx-fields'], data['sort'], 'default', 'info');
+            label.insertSelectOnly($('#set-desc'), new Array('否', '是'), data['desc'], 'default', 'info');
+        });
+        $('#setModal').modal('show');
+    });
+    //执行设定操作
+    $('#set-button').click(function() {
+        operate.set();
+    });
     //强制刷新模式
     operate.selectMode('normal');
+}
+//执行设定操作
+operate.set = function() {
+    //获取并过滤参数
+    var setPasswd = $('#set-passwd').val();
+    var setSort = Math.abs($('#set-sort').children('span[data-select="1"]').attr('data-key')) + 1;
+    var setDesc = Math.abs($('#set-desc').children('span[data-select="1"]').attr('data-key')) + 1;
+    var setTags = new Array();
+    for (var i = 0; i < info.dataTypeKey.length; i++) {
+        setTags[info.dataTypeKey] = new Array();
+        setTags[info.dataTypeKey].push($('#set-tag-' + info.dataTypeKey).val());
+    }
+    //与服务器通讯
+    ajax.post('set-save', {
+        'set-passwd': setPasswd,
+        'set-sort': setSort,
+        'set-desc': setDesc,
+        'set-tags': setTags
+    }, function(data) {
+        message.postBool(data, '设定保存成功！', '无法修改设定，请稍后再试！');
+        if (data === true) {
+            location.href = 'index.php';
+        }
+    });
 }
 //执行编辑文件
 operate.edit = function() {
@@ -413,10 +497,7 @@ operate.edit = function() {
         return false;
     }
     //获取标签
-    var tags = new Array();
-    $('#edit-tags span[data-select="1"]').each(function(k, v) {
-        tags.push($(this).attr('data-id'));
-    });
+    var tags = info.getSelectTag($('#edit-tags'));
     if (resource.select.length === 1) {
         //获取参数
         var editID = $('#editModal').attr('data-id');
@@ -517,6 +598,7 @@ info.lock = false;
 info.data;
 //类型数据列
 info.dataType = new Array();
+info.dataTypeKey = new Array();
 //标签数据列
 info.dataTag = new Array();
 //Dom
@@ -552,6 +634,7 @@ info.update = function() {
             for (var i = 0; i < data['type'].length; i++) {
                 var key = data['type'][i]['key'];
                 info.dataType.push(data['type'][i]['title']);
+                info.dataTypeKey.push(data['type'][i]['key']);
                 if (data['tag']) {
                     if (data['tag'][key]) {
                         info.dataTag[key] = new Array();
@@ -565,6 +648,9 @@ info.update = function() {
                 }
             }
         }
+        //修正排序规则
+        resource.sort = data['sort'];
+        resource.desc = data['desc'];
         //修正当前目录
         resource.parent = info.data['type'][info.nowTypeKey]['folder'];
         //创建显示数据
@@ -633,7 +719,7 @@ info.insertTag = function(dom, t, selectTag) {
     }
 }
 /**
- * 获取Dom下已选标签
+ * 获取Dom下已选标签ID
  * @param DOM dom Dom
  * @returns array ID数组
  */
@@ -644,27 +730,17 @@ info.getSelectTag = function(dom) {
     });
     return tag;
 }
-//向编辑标签组初始化序列
-info.editTypeUpdate = function(key, dom) {
-    label.insertSelect(info.domEditTag, info.dataTag[key], 'default', 'info');
-    info.domEditType.children('span[class="label label-success"]').attr('class', 'label label-default');
-    dom.attr('class', 'label label-success');
-    //插入key和ID标记
-    info.domEditTag.children('span').each(function(k, v) {
-        $(this).attr('data-key', k);
-        $(this).attr('data-id', info.data['tag'][key][k]['id']);
+/**
+ * 获取DOM下已选标签KEY
+ * @param DOM dom DOM
+ * @returns array key数组
+ */
+info.getSelect = function(dom) {
+    var arr = new Array();
+    dom.children('span[data-select="1"]').each(function(k, v) {
+        arr.push($(this).attr('data-key'));
     });
-}
-//分析刷新当前已选标签
-info.updateSelect = function(dom) {
-    var doms = dom.children('span[data-select="1"]');
-    var tagArr = new Array();
-    if (doms) {
-        doms.each(function(k, v) {
-            tagArr.push(info.data['tag'][info.nowType][$(v).attr('data-key')]['id']);
-        });
-    }
-    return tagArr;
+    return arr;
 }
 
 //初始化

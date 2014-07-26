@@ -4,7 +4,7 @@
  * 动作整合
  * @author liuzilu <fotomxq.me>
  * @date    2014-06-30 11:51:18
- * @version 7
+ * @version 8
  */
 //引用全局
 require('glob.php');
@@ -86,6 +86,57 @@ switch ($action) {
         break;
     case 'release':
         //发布资源
+        $res = false;
+        //过滤参数
+        if (!isset($_POST['title']) || !isset($_POST['content']) || !isset($_POST['tags']) || !isset($_POST['parent'])) {
+            break;
+        }
+        $parent = (int) $_POST['parent'];
+        $title = $_POST['title'];
+        $content = $_POST['content'];
+        $tags = $_POST['tags'];
+        //转移文件
+        $transferList = $pex->transferList($step, 9999);
+        if (!$transferList) {
+            break;
+        }
+        foreach ($transferList as $v) {
+            $res = $pex->transferFile($v, $title, $parent, $content);
+            if (!$res) {
+                break;
+            }
+            if ($res > 0) {
+                $res = $pex->setTx($res, $tags, 1);
+            }
+            if (!$res) {
+                break;
+            }
+        }
+        //清理缓冲
+        if ($res) {
+            $cache->clear();
+        }
+        break;
+    case 'add-folder':
+        //创建文件夹
+        $res = false;
+        //过滤参数
+        if (!isset($_POST['title']) || !isset($_POST['parent']) || !isset($_POST['content']) || !isset($_POST['tags'])) {
+            break;
+        }
+        $addParent = (int) $_POST['parent'];
+        $addTitle = $_POST['title'];
+        $addContent = $_POST['content'];
+        $addTags = $_POST['tags'];
+        //添加文件夹
+        $res = $pex->addFolder($addTitle, $addParent, $addContent);
+        if ($res > 0) {
+            $res = $pex->setTx($res, $addTags, 1);
+        }
+        //清理缓冲
+        if ($res) {
+            $cache->clear();
+        }
         break;
     case 'edit':
         //编辑资源

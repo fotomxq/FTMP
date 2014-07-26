@@ -44,6 +44,23 @@ resource.start = function() {
             resource.viewFx(key);
         }
     });
+    //发布文件
+    $('a[href="#release"]').click(function() {
+        if ($('#release-type').html() === '') {
+            $('#release-title').val('');
+            $('#release-content').val('');
+            info.insertTypeTag($('#release-type'), $('#release-tags'), info.nowTypeKey, null);
+            var optionSave = new Array('在该目录下以标题建立目录','');
+            label.insertSelect($('#release-option-save'), optionSave, 'default', 'primary');
+            $('#release-option-save').children('span').attr('data-select','1');
+            $('#release-option-save').children('span').attr('class','label label-primary');
+        }
+        $('#releaseModal').modal('show');
+    });
+    //执行发布文件
+    $('#release-button').click(function() {
+        resource.release();
+    });
 }
 //刷新资源
 resource.update = function() {
@@ -53,6 +70,8 @@ resource.update = function() {
         return false;
     }
     resource.lock = true;
+    //开启屏幕锁定
+    message.stop('稍等，正在加载数据...');
     //是否清空数据
     if (resource.isClear === true) {
         resource.data = new Array();
@@ -71,8 +90,9 @@ resource.update = function() {
         'sort': resource.sort,
         'desc': resource.desc
     }, function(data) {
-        //锁定
+        //解除锁定
         resource.lock = false;
+        message.stopOff();
         //数据是否存在
         if (!data) {
             if (resource.page > 1) {
@@ -125,6 +145,40 @@ resource.update = function() {
                 resource.viewFx($(this).attr('data-key'));
             });
         }
+    });
+}
+//发布文件
+resource.release = function() {
+    //是否锁定
+    if (resource.lock === true) {
+        message.post('info', '系统繁忙,请稍等片刻...');
+        return false;
+    }
+    //过滤参数
+    var releaseParent = resource.parent;
+    var releaseTitle = $('#release-title').val();
+    var releaseContent = $('#release').val();
+    var releaseTags = info.getSelectTag($('#release-tags'));
+    if (releaseTitle === '' || releaseTags.length < 1 || releaseParent < 1) {
+        message.post('error', '请输入标题，并至少选择一个标签。');
+        return false;
+    }
+    //锁定
+    resource.lock = true;
+    //与服务器通讯
+    ajax.post('release', {
+        'parent': releaseParent,
+        'title': releaseTitle,
+        'content': releaseContent,
+        'tags': releaseTags
+    }, function(data) {
+        resource.lock = false;
+        message.postBool(data, '发布成功！', '无法发布，请稍后重试！');
+        if (data === true) {
+            resource.isClear = true;
+            resource.update();
+        }
+        $('#releaseModal').modal('hide');
     });
 }
 //选择和已选切换
@@ -195,9 +249,11 @@ resource.setParent = function(key) {
  */
 resource.isType = function(t) {
     for (var i = 0; i < info.data['type'].length; i++) {
-        for (var j = 0; j < info.data['type'][i]['type'].length; j++) {
-            if (info.data['type'][i]['type'][j] === t) {
-                return info.data['type'][i]['key'];
+        if (info.data['type'][i]['type']) {
+            for (var j = 0; j < info.data['type'][i]['type'].length; j++) {
+                if (info.data['type'][i]['type'][j] === t) {
+                    return info.data['type'][i]['key'];
+                }
             }
         }
     }
@@ -232,6 +288,17 @@ operate.start = function() {
     //切换到普通模式
     $('#operate-view-normal').click(function() {
         operate.selectMode('normal');
+    });
+    //添加文件夹
+    $('#operate-add-folder').click(function() {
+        $('#add-folder-title').val('');
+        $('#add-folder-content').val('');
+        info.insertTypeTag($('#add-folder-type'), $('#add-folder-tags'), 0, null);
+        $('#addFolderModal').modal('show');
+    });
+    //执行添加文件夹
+    $('#add-folder-button').click(function() {
+        operate.addFolder();
     });
     //全选操作
     $('#operate-select-all').click(function() {
@@ -301,19 +368,15 @@ operate.start = function() {
             $('#editModal').attr('data-id', d['id'])
             $('#edit-title').val(d['fx_title']);
             $('#edit-content').val(d['fx_content']);
-            //设定所属标签组
-            info.editTypeUpdate(info.nowType, info.domEditType.children('span[data-key="' + info.nowTypeKey + '"]'));
-            //清空标签选择
-            $('#edit-tags span').attr('data-select', '0');
-            $('#edit-tags span').attr('class', 'label label-default');
+            //获取标签组
+            var tags = new Array();
             if (d['tags']) {
-                //如果标签存在
                 for (var i = 0; i < d['tags'].length; i++) {
-                    var dom = $('#edit-tags span[data-id="' + d['tags'][i]['tag_id'] + '"]');
-                    dom.attr('data-select', '1');
-                    dom.attr('class', 'label label-info');
+                    tags.push(d['tags'][i]['tag_id']);
                 }
             }
+            //设定所属标签组
+            info.insertTypeTag(info.domEditType, info.domEditTag, info.nowTypeKey, tags);
             //显示框架
             $('#editModal').modal('show');
         } else {
@@ -385,6 +448,36 @@ operate.edit = function() {
         //关闭框架
         $('#delModal').modal('hide');
     }
+}
+//添加文件夹
+operate.addFolder = function() {
+    if (resource.lock === true) {
+        message.post('info', '系统繁忙,请稍等片刻...');
+        return false;
+    }
+    var parent = resource.parent;
+    var addFolderTitle = $('#add-folder-title').val();
+    var addFolderContent = $('#add-folder-content').val();
+    var tags = info.getSelectTag($('#add-folder-tags'));
+    if (parent < 1 || addFolderTitle === '' || tags.length < 1) {
+        message('error', '请输入标题，并至少选择一个标签。');
+        return false;
+    }
+    resource.lock = true;
+    ajax.post('add-folder', {
+        'parent': parent,
+        'title': addFolderTitle,
+        'content': addFolderContent,
+        'tags': tags
+    }, function(data) {
+        resource.lock = false;
+        message.postBool(data, '创建文件夹成功！', '无法创建文件夹，请稍后重试！');
+        if (data === true) {
+            resource.isClear = true;
+            resource.update();
+            $('#addFolderModal').modal('hide');
+        }
+    });
 }
 //执行删除文件
 operate.del = function() {
@@ -472,53 +565,19 @@ info.update = function() {
                 }
             }
         }
-        //创建显示数据
-        label.insertArr(info.domType, info.dataType, 'default');
-        label.insertSelect(info.domTag, info.dataTag[info.nowType], 'default', 'info');
-        label.insertArr(info.domEditType, info.dataType, 'default');
-        label.insertSelect(info.domEditTag, info.dataTag[info.nowType], 'default', 'info');
-        //插入Key标记
-        info.domType.children('span').each(function(k, v) {
-            $(this).attr('data-key', k);
-        });
-        info.domTag.children('span').each(function(k, v) {
-            $(this).attr('data-key', k);
-        });
-        $(info.domEditType).children('span').each(function(k, v) {
-            $(this).attr('data-key', k);
-        });
-        $(info.domEditTag).children('span').each(function(k, v) {
-            $(this).attr('data-key', k);
-            $(this).attr('data-id', info.data['tag'][info.nowType][k]['id']);
-        });
-        //修改当前选择类型标记
-        info.domType.children('span:eq(' + info.nowTypeKey + ')').attr('class', 'label label-success');
-        info.domEditType.children('span:eq(' + info.nowTypeKey + ')').attr('class', 'label label-success');
         //修正当前目录
         resource.parent = info.data['type'][info.nowTypeKey]['folder'];
+        //创建显示数据
+        info.insertTypeTag(info.domType, info.domTag, info.nowTypeKey, null)
         //点击分类类型按钮事件
         info.domType.children('span').click(function() {
             info.nowType = info.data['type'][$(this).attr('data-key')]['key'];
             info.nowTypeKey = $(this).attr('data-key');
-            label.insertSelect(info.domTag, info.dataTag[info.nowType], 'default', 'info');
-            info.domType.children('span[class="label label-success"]').attr('class', 'label label-default');
-            $(this).attr('class', 'label label-success');
-            //插入key标记
-            info.domTag.children('span').each(function(k, v) {
-                $(this).attr('data-key', k);
-            });
-            //修正编辑框架标签组
-            info.editTypeUpdate(info.nowType, info.domEditType.children('span[data-key="' + $(this).attr('data-key') + '"]'));
             //修正当前目录
             resource.parent = info.data['type'][$(this).attr('data-key')]['folder'];
             //清空并刷新数据
             resource.isClear = true;
             resource.update();
-        });
-        //点击编辑分类按钮事件
-        info.domEditType.children('span').click(function() {
-            var key = info.data['type'][$(this).attr('data-key')]['key'];
-            info.editTypeUpdate(key, $(this));
         });
         //关闭屏幕锁定
         message.stopOff();
@@ -527,6 +586,63 @@ info.update = function() {
         //初始化按钮组
         operate.start();
     });
+}
+/**
+ * 向指定DOM添加标签序列
+ * @param DOM typeDom 插入类型Dom
+ * @param DOM tagDom 插入标签Dom
+ * @param int selectType 正在选择的类型Key
+ * @param array selectTags 已选择的标签列
+ */
+info.insertTypeTag = function(typeDom, tagDom, selectType, selectTags) {
+    typeDom.html('');
+    label.insertSelect(typeDom, info.dataType, 'default', 'info');
+    typeDom.children('span').each(function(k, v) {
+        $(this).attr('data-key', k);
+    });
+    typeDom.children('span[data-key="' + selectType + '"]').attr('data-select', '1');
+    typeDom.children('span[data-key="' + selectType + '"]').attr('class', 'label label-info');
+    info.insertTag(tagDom, selectType, selectTags);
+    typeDom.children('span').click(function() {
+        typeDom.children('span').attr('data-select', '0');
+        typeDom.children('span').attr('class', 'label label-default');
+        $(this).attr('data-select', '1');
+        $(this).attr('class', 'label label-info');
+        info.insertTag(tagDom, $(this).attr('data-key'), selectTags);
+    });
+}
+/**
+ * 向指定DOM添加标签序列
+ * @param DOM dom 插入Dom
+ * @param int t 类型Key
+ * @param array selectTag 正在选择的标签ID组
+ */
+info.insertTag = function(dom, t, selectTag) {
+    dom.html('');
+    var key = info.data['type'][t]['key'];
+    label.insertSelect(dom, info.dataTag[key], 'default', 'info');
+    dom.children('span').each(function(k, v) {
+        $(this).attr('data-key', k);
+        $(this).attr('data-id', info.data['tag'][key][k]['id']);
+    });
+    if (selectTag) {
+        for (var i = 0; i < selectTag.length; i++) {
+            dom.children('span[data-id="' + selectTag[i] + '"]').attr('data-select', '1');
+            dom.children('span[data-id="' + selectTag[i] + '"]').attr('class', 'label label-info');
+        }
+    }
+}
+/**
+ * 获取Dom下已选标签
+ * @param DOM dom Dom
+ * @returns array ID数组
+ */
+info.getSelectTag = function(dom) {
+    var tag = new Array();
+    dom.children('span[data-select="1"]').each(function(k, v) {
+        tag.push($(this).attr('data-id'));
+    });
+    return tag;
 }
 //向编辑标签组初始化序列
 info.editTypeUpdate = function(key, dom) {

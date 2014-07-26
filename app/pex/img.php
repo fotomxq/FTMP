@@ -4,7 +4,7 @@
  * 查看图片
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-07-06 14:52:00
- * @version 3
+ * @version 4
  */
 //引用全局
 require('glob.php');
@@ -32,7 +32,7 @@ if (isset($_GET['id']) == true) {
                     CoreHeader::toURL('assets/imgs/folder-txt.png');
                 } elseif ($resParent[0]['fx_type'] == 'mp4') {
                     CoreHeader::toURL('assets/imgs/folder-movie.png');
-                } elseif ($resParent[0]['fx_type'] == 'jpg' || $resParent[0]['px_type'] == 'png' || $resParent[0]['px_type'] == 'gif') {
+                } elseif ($resParent[0]['fx_type'] == 'jpg' || $resParent[0]['fx_type'] == 'jpeg' || $resParent[0]['px_type'] == 'png' || $resParent[0]['px_type'] == 'gif') {
                     CoreHeader::toURL('assets/imgs/folder-photo.png');
                 } else {
                     CoreHeader::toURL('assets/imgs/folder.png');

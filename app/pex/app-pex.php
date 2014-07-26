@@ -4,7 +4,7 @@
  * PEX处理器
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-29 10:02:50
- * @version 5
+ * @version 6
  */
 class AppPex {
 
@@ -128,7 +128,7 @@ class AppPex {
      * 查询等待转移文件
      * @param int $page 页数
      * @param int $max 页长
-     * @return array 数据数组
+     * @return array 数据数组，文件路径组成
      */
     public function transferList($page = 1, $max = 10) {
         $list = CoreFIle::searchDir($this->dataFolderTransferSrc . DS . '*');

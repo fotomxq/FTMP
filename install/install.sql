@@ -48,7 +48,8 @@ INSERT INTO `sys_config` (`id`, `config_name`, `config_value`) VALUES
 (14, 'PEX-PASSWD', '30274c47903bd1bac7633bbf09743149ebab805f'),
 (15, 'IP-WHITE-LIST', '*'),
 (16, 'PEX-SORT', '0'),
-(17, 'PEX-DESC', '1');
+(17, 'PEX-DESC', '1'),
+(18, 'TOOL-PASSWD', '4MiK5LgFVXvvrQqn');
 
 -- --------------------------------------------------------
 

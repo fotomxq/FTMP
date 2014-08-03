@@ -125,6 +125,9 @@ system.start = function() {
     $('#system-backup-only-file-button').click(function() {
         system.backup('file');
     });
+    $('#system-clear-cache').click(function() {
+        system.clearCache();
+    });
 }
 //获取相关参数
 system.updateData = function() {
@@ -268,6 +271,21 @@ system.re = function() {
         system.isBackup = false;
     });
     system.isBackup = true;
+}
+//清理缓冲
+system.clearCache = function() {
+    if (postLock === true) {
+        return false;
+    }
+    postLock = true;
+    actionServer('clear-cache', {}, function(data) {
+        postLock = false;
+        if (data === true) {
+            sendMsg('success', '清理成功！');
+        } else {
+            sendMsg('error', '无法删除缓冲！');
+        }
+    });
 }
 
 //页面初始化

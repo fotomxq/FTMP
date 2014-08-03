@@ -130,25 +130,10 @@ switch ($_GET['action']) {
         }
         CoreHeader::toJson($res);
         break;
-    case 'user-view':
-        //查看指定用户信息
-        powerCheck($checkPowers['ADMIN']);
-        break;
-    case 'user-list':
-        //查看用户列表
-        powerCheck($checkPowers['ADMIN']);
-        break;
-    case 'user-add':
-        //添加用户
-        powerCheck($checkPowers['ADMIN']);
-        break;
-    case 'user-edit':
-        //编辑用户
-        powerCheck($checkPowers['ADMIN']);
-        break;
-    case 'user-del':
-        //删除用户
-        powerCheck($checkPowers['ADMIN']);
+    case 'clear-cache':
+        //清理缓冲
+        $res = $cache->clear();
+        CoreHeader::toJson($res);
         break;
 }
 ?>

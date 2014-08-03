@@ -499,10 +499,9 @@ operate.set = function() {
     var setPasswd = $('#set-passwd').val();
     var setSort = Math.abs($('#set-sort').children('span[data-select="1"]').attr('data-key')) + 1;
     var setDesc = Math.abs($('#set-desc').children('span[data-select="1"]').attr('data-key')) + 1;
-    var setTags = new Array();
+    var setTags = {};
     for (var i = 0; i < info.dataTypeKey.length; i++) {
-        setTags[info.dataTypeKey] = new Array();
-        setTags[info.dataTypeKey].push($('#set-tag-' + info.dataTypeKey).val());
+        setTags[info.dataTypeKey[i]] = $('#set-tag-' + info.dataTypeKey[i]).val();
     }
     //与服务器通讯
     ajax.post('set-save', {

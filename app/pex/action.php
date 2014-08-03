@@ -256,11 +256,11 @@ switch ($action) {
             $bool[] = $config->set('PEX-PASSWD', sha1($setPasswd));
         }
         //设定标签
-        if ($setTags) {
-            foreach ($setTags as $k => $v) {
-                if ($v) {
-                    $vArr = explode('|', $v);
-                    $bool[] = $pex->setTag($v, $k);
+        if ($setTags && $pex->pexType) {
+            foreach ($pex->pexType as $typeV) {
+                if ($setTags[$typeV['key']]) {
+                    $tagArr = explode('|', $setTags[$typeV['key']]);
+                    $bool[] = $pex->setTag($tagArr, $typeV['key']);
                 }
             }
         }

@@ -238,22 +238,28 @@ class AppPex {
      * @param int $max 页长
      * @param int $sort 排序字段键位值
      * @param boolean $desc 是否倒叙
+     * @param boolean $or 是否或查询
      * @return array 数据数组
      */
-    public function viewList($parent = 0, $tags = null, $page = 1, $max = 10, $sort = 0, $desc = false) {
+    public function viewList($parent = 0, $tags = null, $page = 1, $max = 10, $sort = 0, $desc = false, $or = true) {
         $where = $this->fxTableName . '.' . $this->fxFields[3] . ' = :parent';
         $attrs = array(':parent' => array($parent, PDO::PARAM_INT));
         $sortField = isset($this->folderFields[$sort]) == true ? $this->getFxField($sort) : $this->getFxField(0);
         $descStr = $desc === true ? 'DESC' : 'ASC';
         $whereTag = '1';
+        $orStr = $or ? 'or' : 'and';
         if ($tags) {
             $whereTag = '';
             foreach ($tags as $k => $v) {
                 $aK = ':tagID' . $k;
-                $whereTag .= $this->getTxField(2) . ' = ' . $aK . ' or ';
+                $whereTag .= $this->getTxField(2) . ' = ' . $aK . ' ' . $orStr . ' ';
                 $attrs[$aK] = array($v, PDO::PARAM_INT);
             }
-            $whereTag = substr($whereTag, 0, -4);
+            if ($or) {
+                $whereTag = substr($whereTag, 0, -4);
+            } else {
+                $whereTag = substr($whereTag, 0, -5);
+            }
         }
         $sql = 'SELECT ' . $this->fxTableName . '.* FROM `' . $this->fxTableName . '`,`' . $this->txTableName . '` WHERE ' . $where . ' and ' . $this->getTxField(1) . ' = ' . $this->getFxField(0) . ' and (' . $whereTag . ') GROUP BY ' . $sortField . ' ' . $descStr . ' LIMIT ' . (($page - 1) * $max) . ',' . $max;
         return $this->db->runSQL($sql, $attrs, 3, PDO::FETCH_ASSOC);

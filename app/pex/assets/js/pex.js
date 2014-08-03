@@ -25,6 +25,11 @@ resource.releaseFileList = new Array();
 resource.mode = 'normal';
 //原始数据
 resource.data = new Array();
+//联合筛选标记
+resource.searchOr = 1;
+//上级列队
+resource.parentList = new Array();
+resource.parentPageList = new Array();
 //初始化
 resource.start = function() {
     //打开文件
@@ -116,7 +121,8 @@ resource.update = function() {
         'page': resource.page,
         'max': resource.max,
         'sort': resource.sort,
-        'desc': resource.desc
+        'desc': resource.desc,
+        'or':resource.searchOr
     }, function(data) {
         //解除锁定
         resource.lock = false;
@@ -270,6 +276,8 @@ resource.setPage = function(p) {
 //选择目录
 resource.setParent = function(key) {
     var id = resource.data[key]['id'];
+    resource.parentList.push(resource.parent);
+    resource.parentPageList.push(resource.page);
     resource.parent = id;
     resource.isClear = true;
     resource.update();
@@ -297,6 +305,18 @@ var operate = new Object;
 operate.dom = $('#content-operate');
 //初始化
 operate.start = function() {
+    //返回上一级
+    $('#operate-return').click(function() {
+        if (resource.parentList.length > 0) {
+            resource.parent = resource.parentList[resource.parentList.length - 1];
+            resource.parentList.pop();
+            resource.page = resource.parentPageList[resource.parentPageList.length - 1];
+            resource.parentPageList.pop();
+            resource.data = new Array();
+            resource.dom.html('');
+            resource.update();
+        }
+    });
     //如果点击标签
     $(info.domTag).children('span').click(function() {
         if (label.getSelect(info.domTag)) {
@@ -310,6 +330,13 @@ operate.start = function() {
     });
     //开始搜索
     $('#operate-search').click(function() {
+        resource.searchOr = 1;
+        resource.isClear = true;
+        resource.update();
+    });
+    //联合筛选
+    $('#operate-search-and').click(function(){
+        resource.searchOr = 0;
         resource.isClear = true;
         resource.update();
     });
@@ -584,8 +611,8 @@ operate.del = function() {
 //切换模式
 operate.selectMode = function(mode) {
     resource.mode = mode;
-    operate.dom.children('button[data-mode!="' + mode + '"][data-mode!="all"]').hide();
-    operate.dom.children('button[data-mode="' + mode + '"]').show();
+    operate.dom.children('[data-mode!="' + mode + '"][data-mode!="all"]').hide();
+    operate.dom.children('[data-mode="' + mode + '"]').show();
     resource.isClear = true;
     resource.update();
 }
@@ -661,10 +688,16 @@ info.update = function() {
             info.nowTypeKey = $(this).attr('data-key');
             //修正当前目录
             resource.parent = info.data['type'][$(this).attr('data-key')]['folder'];
+            resource.parentList = new Array();
+            resource.parentList.push(resource.parent);
+            resource.parentPageList = new Array();
+            resource.parentPageList.push(1);
             //清空并刷新数据
             resource.isClear = true;
             resource.update();
         });
+        resource.parentList.push(resource.parent);
+        resource.parentPageList.push(1);
         //关闭屏幕锁定
         message.stopOff();
         //锁定数据

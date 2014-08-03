@@ -3,7 +3,7 @@
  * PEX首页
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-28 22:44:12
- * @version 1
+ * @version 2
  */
 //引用全局
 require('glob.php');
@@ -34,8 +34,18 @@ require('menu.php');
     <div class="row content-operate">
         <div class="col-xs-2">操作 : </div>
         <div class="col-xs-10" id="content-operate">
+            <button type="button" class="btn btn-default" id="operate-return" data-mode="all">返回</button>
             <button type="button" class="btn btn-default" id="operate-clear" data-mode="all">清空</button>
-            <button type="button" class="btn btn-default" id="operate-search" data-mode="all">筛选</button>
+            <div class="btn-group" data-mode="all">
+                <button type="button" class="btn btn-default" id="operate-search">筛选</button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">下拉菜单</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#" id="operate-search-and">联合筛选</a></li>
+                </ul>
+            </div>
             <button type="button" class="btn btn-default" id="operate-view-phone" data-mode="normal">手机模式</button>
             <button type="button" class="btn btn-default" id="operate-view-normal" data-mode="phone">普通模式</button>
             <button type="button" class="btn btn-default" id="operate-add-folder" data-mode="normal">建立文件夹</button>

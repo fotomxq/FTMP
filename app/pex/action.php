@@ -58,7 +58,7 @@ switch ($action) {
         //获取资源记录
         $res = null;
         //过滤参数
-        if (!isset($_POST['parent']) || !isset($_POST['page']) || !isset($_POST['max']) || !isset($_POST['sort']) || !isset($_POST['desc'])) {
+        if (!isset($_POST['parent']) || !isset($_POST['page']) || !isset($_POST['max']) || !isset($_POST['sort']) || !isset($_POST['desc']) || !isset($_POST['or'])) {
             break;
         }
         $parent = (int) $_POST['parent'];
@@ -67,8 +67,9 @@ switch ($action) {
         $sort = (int) $_POST['sort'];
         $desc = $_POST['desc'] == '1' ? true : false;
         $tags = isset($_POST['tags']) ? $_POST['tags'] : null;
+        $or = $_POST['or'] == '1' ? true : false;
         //生成缓冲名称
-        $cacheName .= '-' . $parent . '-' . $page . '-' . $max . '-' . $sort . '-' . $_POST['desc'] . '-' . implode('-', $tags);
+        $cacheName .= '-' . $parent . '-' . $page . '-' . $max . '-' . $sort . '-' . $_POST['desc'] . '-' . implode('-', $tags) . '-' . $_POST['or'];
         //获取缓冲数据
         $res = $cache->get($cacheName);
         if ($res) {
@@ -77,7 +78,7 @@ switch ($action) {
             //启动缓冲
             $cacheOn = true;
             //获取数据
-            $res = $pex->viewList($parent, $tags, $page, $max, $sort, $desc);
+            $res = $pex->viewList($parent, $tags, $page, $max, $sort, $desc, $or);
             //获取资源对应的标签组
             if ($res) {
                 foreach ($res as $k => $v) {

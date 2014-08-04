@@ -4,7 +4,7 @@
  * PEX处理器
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-29 10:02:50
- * @version 7
+ * @version 8
  */
 class AppPex {
 
@@ -105,6 +105,12 @@ class AppPex {
     private $dataFolderTrashSrc;
 
     /**
+     * 文件路径分隔符
+     * @var string 
+     */
+    private $ds;
+
+    /**
      * 初始化
      * @param CoreDB $db            数据库对象
      * @param string $dataFolderSrc 文件数据目录路径
@@ -118,6 +124,7 @@ class AppPex {
         $this->dataFolderTransferSrc = $dataFolderSrc . DS . 'transfer';
         $this->dataFolderTrashSrc = $dataFolderSrc . DS . 'trash';
         $this->log = $log;
+        $this->ds = DIRECTORY_SEPARATOR;
     }
 
     public function uploadFile($files) {
@@ -142,6 +149,61 @@ class AppPex {
             return $res;
         }
         return null;
+    }
+
+    /**
+     * 转移发布文件夹模式
+     * @param int $parent 上一级ID
+     * @param array $tags 标签组
+     * @return boolean 是否成功
+     */
+    public function transferFolder($parent, $tags) {
+        //是否为顶级目录
+        $isUpParent = false;
+        foreach ($this->pexType as $v) {
+            if ($parent == $v['folder']) {
+                $isUpParent = true;
+                break;
+            }
+        }
+        //获取等待转移区所有文件夹
+        $waitFolderSearch = $this->dataFolderTransferSrc . $this->ds . '*';
+        $waitFolderList = CoreFile::searchDir($waitFolderSearch, GLOB_ONLYDIR);
+        if (!$waitFolderList) {
+            return false;
+        }
+        //获取并遍历所有文件夹下的文件
+        foreach ($waitFolderList as $folderV) {
+            //获取基本信息
+            $folderName = $this->getBasename($folderV);
+            //建立文件夹
+            $folderID = $this->addFolder($folderName, $parent, '');
+            if ($folderID < 1) {
+                return false;
+            }
+            if (!$this->setTx($folderID, $tags, $this->txType[1])) {
+                return false;
+            }
+            //遍历文件并转移
+            $waitFileSearch = $folderV . $this->ds . '*.*';
+            $waitFileList = CoreFile::searchDir($waitFileSearch);
+            if (!$waitFileList) {
+                continue;
+            }
+            foreach ($waitFileList as $fileV) {
+                $fileName = $this->getBasename($fileV);
+                $fileID = $this->transferFile($fileV, $fileName, $folderID, '');
+                if ($fileID < 1) {
+                    continue;
+                }
+                if (!$this->setTx($fileID, $tags, $this->txType[0])) {
+                    continue;
+                }
+            }
+            //删除文件夹
+            CoreFile::deleteDir($folderV);
+        }
+        return true;
     }
 
     /**

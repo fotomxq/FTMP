@@ -3,7 +3,7 @@
  * 中心页面
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-26 17:47:04
- * @version 9
+ * @version 10
  */
 //引用全局
 require('glob.php');
@@ -187,7 +187,7 @@ require(DIR_APP_TEMPALTE . DS . 'header.php');
                     </ul>
                 </div>
                 <div class="btn-group">
-                    <button type="button" id="system-backup-button" class="btn btn-warning">维护</button>
+                    <button type="button" class="btn btn-warning">维护</button>
                     <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
                         <span class="sr-only">Toggle Dropdown</span>

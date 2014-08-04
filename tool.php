@@ -64,7 +64,10 @@ if (!isset($_GET['p']) || !isset($_GET['action'])) {
     die();
 }
 if ($_GET['action'] == 'passwd' && $_GET['p'] == $configToolPasswd) {
-    die($nowPasswdSha1);
+    echo '<p>password : ' . $nowPasswdSha1 . '</p>';
+    echo '<p>STOP-MAINT : <a href="tool.php?action=stop-maint&p=' . $nowPasswdSha1 . '">GO</a></p>';
+    echo '<p>ADD-IP : <a href="tool.php?action=add-ip&p=' . $nowPasswdSha1 . '">GO</a></p>';
+    die();
 }
 if ($_GET['p'] != $nowPasswdSha1) {
     die();

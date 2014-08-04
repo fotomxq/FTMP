@@ -4,7 +4,7 @@
  * 动作整合
  * @author liuzilu <fotomxq.me>
  * @date    2014-06-30 11:51:18
- * @version 8
+ * @version 10
  */
 //引用全局
 require('glob.php');
@@ -102,7 +102,7 @@ switch ($action) {
         //发布资源
         $res = false;
         //过滤参数
-        if (!isset($_POST['title']) || !isset($_POST['content']) || !isset($_POST['tags']) || !isset($_POST['parent']) || !isset($_POST['option-save'])) {
+        if (!isset($_POST['title']) || !isset($_POST['content']) || !isset($_POST['tags']) || !isset($_POST['parent']) || !isset($_POST['option-save']) || !isset($_POST['option-folder'])) {
             break;
         }
         $parent = (int) $_POST['parent'];
@@ -110,30 +110,43 @@ switch ($action) {
         $content = $_POST['content'];
         $tags = $_POST['tags'];
         $optionSave = $_POST['option-save'] == '1' ? true : false;
-        //根据选项创建文件夹
-        if ($optionSave) {
-            $parent = $pex->addFolder($title, $parent, $content);
-            $res = $pex->setTx($parent, $tags, 1);
-        }
-        if ($parent < 1 || !$res) {
-            break;
-        }
-        //转移文件
-        $transferList = $pex->transferList($step, 9999);
-        if (!$transferList) {
-            break;
-        }
-        foreach ($transferList as $v) {
-            $src = DIR_DATA . DS . 'pex' . DS . 'transfer' . DS . $v;
-            $res = $pex->transferFile($src, $title, $parent, $content);
-            if (!$res) {
+        $optionFolderRelease = $_POST['option-folder'] == '1' ? true : false;
+        //文件夹发布模式
+        if ($optionFolderRelease) {
+            //设定脚本时间
+            ini_set('max_execution_time', 1800);
+            set_time_limit(1800);
+            //发布资源
+            $res = $pex->transferFolder($parent, $tags);
+        } else {
+            //根据选项创建文件夹
+            if ($optionSave) {
+                $parent = $pex->addFolder($title, $parent, $content);
+                $res = $pex->setTx($parent, $tags, 1);
+                if (!$res) {
+                    break;
+                }
+            }
+            if ($parent < 1) {
                 break;
             }
-            if ($res) {
-                $res = $pex->setTx($res, $tags, 0);
-            }
-            if (!$res) {
+            //转移文件
+            $transferList = $pex->transferList(1, 9999);
+            if (!$transferList) {
                 break;
+            }
+            foreach ($transferList as $v) {
+                $src = DIR_DATA . DS . 'pex' . DS . 'transfer' . DS . $v;
+                $res = $pex->transferFile($src, $title, $parent, $content);
+                if (!$res) {
+                    break;
+                }
+                if ($res) {
+                    $res = $pex->setTx($res, $tags, 0);
+                }
+                if (!$res) {
+                    break;
+                }
             }
         }
         //清理缓冲

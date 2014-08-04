@@ -3,7 +3,7 @@
  * PEX首页
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-28 22:44:12
- * @version 2
+ * @version 3
  */
 //引用全局
 require('glob.php');
@@ -187,6 +187,10 @@ require('menu.php');
                     <div class="form-group">
                         <label class="col-sm-2 control-label">存储方式</label>
                         <div class="col-sm-10" id="release-option-save"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">发布模式</label>
+                        <div class="col-sm-10" id="release-option-folder"></div>
                     </div>
                     <hr>
                     <div class="form-group">

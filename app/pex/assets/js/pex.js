@@ -67,6 +67,8 @@ resource.start = function() {
             label.insertSelect($('#release-option-save'), optionSave, 'default', 'primary');
             $('#release-option-save').children('span').attr('data-select', '1');
             $('#release-option-save').children('span').attr('class', 'label label-primary');
+            var optionFolder = new Array('根据待转区文件夹进行发布');
+            label.insertSelect($('#release-option-folder'), optionFolder, 'default', 'primary');
         }
         //显示框架
         $('#releaseModal').modal('show');
@@ -82,7 +84,6 @@ resource.start = function() {
                     resource.releaseFileList = new Array();
                     $('#release-ready-list').html('');
                     message.post('info', '没有文件可以转移，请先通过FTP上传文件到content/pex/transfer目录！');
-                    $('#releaseModal').modal('hide');
                 } else {
                     resource.releaseFileList = data;
                     label.insertArr($('#release-ready-list'), data, 'default');
@@ -194,6 +195,7 @@ resource.release = function() {
     var releaseContent = $('#release-content').val();
     var releaseTags = info.getSelectTag($('#release-tags'));
     var releaseOptionSave = $('#release-option-save span').attr('data-select');
+    var releaseOptionFolder = $('#release-option-folder span').attr('data-select');
     if (releaseTitle === '' || releaseTags.length < 1 || releaseParent < 1) {
         message.post('error', '请输入标题，并至少选择一个标签。');
         return false;
@@ -206,7 +208,8 @@ resource.release = function() {
         'title': releaseTitle,
         'content': releaseContent,
         'tags': releaseTags,
-        'option-save': releaseOptionSave
+        'option-save': releaseOptionSave,
+        'option-folder': releaseOptionFolder
     }, function(data) {
         resource.lock = false;
         message.postBool(data, '发布成功！', '无法发布，请稍后重试！');

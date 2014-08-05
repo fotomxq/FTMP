@@ -4,7 +4,7 @@
  * PEX处理器
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-29 10:02:50
- * @version 8
+ * @version 9
  */
 class AppPex {
 
@@ -259,7 +259,15 @@ class AppPex {
     public function view($id) {
         $where = '`' . $this->fxFields[0] . '` = :id';
         $attrs = array(':id' => array($id, PDO::PARAM_INT));
-        return $this->db->sqlSelect($this->fxTableName, $this->fxFields, $where, $attrs);
+        $res = $this->db->sqlSelect($this->fxTableName, $this->fxFields, $where, $attrs);
+        if ($res) {
+            if (PATH_SEPARATOR == ':') {
+                $res[$this->fxFields[7]] = str_replace('\\', '/', $res[$this->fxFields[7]]);
+            } else {
+                $res[$this->fxFields[7]] = str_replace('/', '\\', $res[$this->fxFields[7]]);
+            }
+        }
+        return $res;
     }
 
     /**

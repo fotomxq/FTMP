@@ -4,7 +4,7 @@ var resource = new Object;
 resource.parent = 0;
 //页数相关数据
 resource.page = 1;
-resource.max = 10;
+resource.max = 20;
 resource.sort = 0;
 resource.desc = 1;
 //加载锁定

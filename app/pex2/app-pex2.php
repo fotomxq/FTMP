@@ -146,6 +146,10 @@ class AppPex2 {
     public function getTx($target, $targetType = 'file') {
         
     }
+    
+    public function releaseReady(){
+        
+    }
 
     public function release($src, $tags) {
         

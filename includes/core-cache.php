@@ -5,7 +5,7 @@
  * 缓冲相关变量或值。
  * 
  * @author liuzilu <fotomxq@gmail.com>
- * @version 7
+ * @version 8
  */
 class CoreCache {
 
@@ -125,13 +125,8 @@ class CoreCache {
         $fileSha1 = sha1_file($src);
         $fileType = pathinfo($src, PATHINFO_EXTENSION);
         //生成缓冲文件路径
-        $dir = $this->cacheDir . DS . $w . $h;
-        if (!is_dir($dir)) {
-            if (!mkdir($dir, 0777, true)) {
-                return '';
-            }
-        }
-        $cacheSrc = $dir . DS . $fileSha1 . '.jpg';
+        $childDir = $w . $h;
+        $cacheSrc = $this->getSrc($fileSha1, '.jpg', $childDir);
         if (is_file($cacheSrc)) {
             return $cacheSrc;
         } else {
@@ -198,7 +193,11 @@ class CoreCache {
             $fileList = glob($s);
             if ($fileList) {
                 foreach ($fileList as $v) {
-                    unlink($v);
+                    if (is_file($v)) {
+                        unlink($v);
+                    } else if (is_dir($v)) {
+                        CoreFile::deleteDir($v);
+                    }
                 }
             }
             return true;
@@ -260,10 +259,27 @@ class CoreCache {
     /**
      * 获取文件全部路径
      * @param  string $name 文件名称
+     * @param  string $type 文件类型
+     * @param  string $childDir 细分目录
      * @return string       文件路径
      */
-    private function getSrc($name) {
-        return $this->cacheDir . $this->ds . $name . $this->suffix;
+    private function getSrc($name, $type = null, $childDir = null) {
+        $dir = $this->cacheDir . $this->ds;
+        if ($childDir) {
+            $dir .= $childDir . $this->ds;
+        }
+        $firstStr = substr($name, 0, 2);
+        $dir .= $firstStr;
+        if (!CoreFile::newDir($dir)) {
+            return false;
+        }
+        $suffix;
+        if ($type) {
+            $suffix = $type;
+        } else {
+            $suffix = $this->suffix;
+        }
+        return $dir . $this->ds . $name . $suffix;
     }
 
 }

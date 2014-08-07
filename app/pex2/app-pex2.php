@@ -4,7 +4,7 @@
  * APP-PEX2
  * @author liuzilu <fotomxq.me>
  * @date    2014-08-05 21:39:00
- * @version 1
+ * @version 2
  */
 class AppPex2 {
 
@@ -36,19 +36,19 @@ class AppPex2 {
      * 标签数据表字段
      * @var array
      */
-    private $tagFields = array('id', 'tag_name', 'tag_type');
+    private $tagFields = array('id', 'name', 'class');
 
     /**
      * 文件数据表字段
      * @var array 
      */
-    private $fxFields = array('id', 'fx_title', 'fx_name', 'fx_parent', 'fx_size', 'fx_type', 'fx_sha1', 'fx_src', 'fx_create_time', 'fx_visit_time', 'fx_content');
+    private $fxFields = array('id', 'parent', 'title', 'type', 'class', 'sort', 'src', 'name', 'sha1', 'create_time', 'visit_time', 'content');
 
     /**
      * 文件和标签关系数据表字段
      * @var array
      */
-    private $txFields = array('id', 'file_id', 'tag_id', 'tx_type');
+    private $txFields = array('id', 'file_id', 'tag_id');
 
     /**
      * 文件和标签关系表类型
@@ -87,18 +87,6 @@ class AppPex2 {
     private $dataFolderFileSrc;
 
     /**
-     * 缓冲图片目录
-     * @var string
-     */
-    private $dataFolderCacheImgsSrc;
-
-    /**
-     * 等待发布文件目录
-     * @var string
-     */
-    private $dataFolderTransferSrc;
-
-    /**
      * 垃圾箱目录
      * @var string 
      */
@@ -111,20 +99,26 @@ class AppPex2 {
     private $ds;
 
     /**
+     * 缓冲处理器
+     * @var CoreCache 
+     */
+    private $cache;
+
+    /**
      * 初始化
      * @param CoreDB $db            数据库对象
      * @param string $dataFolderSrc 文件数据目录路径
      * @param CoreLog $log 日志对象
+     * @param CoreCache $cache 缓冲处理器
      */
-    public function __construct(&$db, $dataFolderSrc, &$log) {
+    public function __construct(&$db, $dataFolderSrc, &$log, &$cache) {
+        $this->ds = DIRECTORY_SEPARATOR;
         $this->db = $db;
         $this->dataFolderSrc = $dataFolderSrc;
-        $this->dataFolderFileSrc = $dataFolderSrc . DS . 'file';
-        $this->dataFolderCacheImgsSrc = $dataFolderSrc . DS . 'imgs';
-        $this->dataFolderTransferSrc = $dataFolderSrc . DS . 'transfer';
-        $this->dataFolderTrashSrc = $dataFolderSrc . DS . 'trash';
+        $this->dataFolderFileSrc = $dataFolderSrc . $this->ds . 'file';
+        $this->dataFolderTrashSrc = $dataFolderSrc . $this->ds . 'trash';
         $this->log = $log;
-        $this->ds = DIRECTORY_SEPARATOR;
+        $this->cache = $cache;
     }
 
     public function getFileList($page, $max, $sort, $desc) {
@@ -146,8 +140,8 @@ class AppPex2 {
     public function getTx($target, $targetType = 'file') {
         
     }
-    
-    public function releaseReady(){
+
+    public function releaseReady() {
         
     }
 

@@ -85,8 +85,7 @@ resource.start = function() {
                     $('#release-ready-list').html('');
                     message.post('info', '没有文件可以转移，请先通过FTP上传文件到content/pex/transfer目录！');
                 } else {
-                    resource.releaseFileList = data;
-                    label.insertArr($('#release-ready-list'), data, 'default');
+                    $('#release-ready-list').html('共计'+data+'个文件。');
                 }
             });
         }

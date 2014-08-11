@@ -133,8 +133,16 @@ class AppPex2 {
         
     }
 
+    /**
+     * 获取标签信息
+     * @param int $tagID 标签ID
+     * @return array 数据数组
+     */
     public function getTag($tagID) {
-        
+        $where = '`' . $this->fxFields[0] . '` = :id';
+        $attr = array(':id' => array($tagID, PDO::PARAM_INT));
+        $res = $this->db->sqlSelect($this->fxTableName, $this->fxFields, $where, $attr);
+        return $res;
     }
 
     public function getTx($target, $targetType = 'file') {

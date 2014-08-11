@@ -4,7 +4,7 @@
  * 动作整合
  * @author liuzilu <fotomxq.me>
  * @date    2014-06-30 11:51:18
- * @version 10
+ * @version 11
  */
 //引用全局
 require('glob.php');
@@ -89,13 +89,13 @@ switch ($action) {
         break;
     case 'release-ready-list':
         //获取待转移文件
-        $cacheName .= '-RELEASE-READY-LIST-1-50';
+        $cacheName .= '-RELEASE-READY-LIST-NUM';
         $res = $cache->get($cacheName);
         if ($res) {
             $res = json_decode($res, true);
         } else {
             $cacheOn = true;
-            $res = $pex->transferList(1, 50);
+            $res = $pex->transferListNum();
         }
         break;
     case 'release':
@@ -111,11 +111,11 @@ switch ($action) {
         $tags = $_POST['tags'];
         $optionSave = $_POST['option-save'] == '1' ? true : false;
         $optionFolderRelease = $_POST['option-folder'] == '1' ? true : false;
+        //设定脚本时间
+        ini_set('max_execution_time', 1800);
+        set_time_limit(1800);
         //文件夹发布模式
         if ($optionFolderRelease) {
-            //设定脚本时间
-            ini_set('max_execution_time', 1800);
-            set_time_limit(1800);
             //发布资源
             $res = $pex->transferFolder($parent, $tags);
         } else {

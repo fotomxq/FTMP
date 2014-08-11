@@ -4,7 +4,7 @@
  * PEX处理器
  * @author liuzilu <fotomxq@gmail.com>
  * @date    2014-06-29 10:02:50
- * @version 9
+ * @version 10
  */
 class AppPex {
 
@@ -149,6 +149,18 @@ class AppPex {
             return $res;
         }
         return null;
+    }
+
+    /**
+     * 获取等待文件个数
+     * @return int
+     */
+    public function transferListNum() {
+        $list = CoreFIle::searchDir($this->dataFolderTransferSrc . DS . '*');
+        if ($list) {
+            return count($list);
+        }
+        return 0;
     }
 
     /**

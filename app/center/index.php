@@ -1,9 +1,9 @@
 <?php
 
 /**
- * 全局设定
+ * 中心首页
  * @author liuzilu <fotomxq@gmail.com>
- * @date    2014-08-20 17:07:07
+ * @date    2014-08-21 15:34:03
  * @version 1
  */
 ?>
